@@ -6,8 +6,4 @@ export const DIRECTORY_ROUTES: Routes = [
     path: '',
     component: HouseholdDirectoryComponent,
   },
-  {
-    path: '',
-    component: HouseholdDirectoryComponent,
-  },
 ];
