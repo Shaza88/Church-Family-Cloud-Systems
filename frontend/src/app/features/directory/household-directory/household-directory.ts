@@ -10,7 +10,14 @@ import { HouseholdStore } from '../../../core/store/household.store';
 @Component({
   selector: 'cfcs-household-directory',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatIconModule],
+  imports: [
+    CommonModule,
+    MatTableModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './household-directory.html',
   styleUrl: './household-directory.scss',
 })

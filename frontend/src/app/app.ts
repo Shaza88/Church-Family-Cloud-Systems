@@ -17,7 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatListModule,
     MatIconModule,
     MatToolbarModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
