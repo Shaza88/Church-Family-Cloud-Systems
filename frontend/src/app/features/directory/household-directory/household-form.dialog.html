@@ -1,33 +1,30 @@
 <div class="flex justify-between items-center pr-4">
-  <h2 mat-dialog-title class="!pb-2">{{ isEditMode ? 'Edit Household' : 'Add Household' }}</h2>
+  <h2 mat-dialog-title class="pb-2">{{ isEditMode ? 'Edit Household' : 'Add Household' }}</h2>
   <button mat-icon-button (click)="cancel()">
     <mat-icon>close</mat-icon>
   </button>
 </div>
 
-<mat-dialog-content class="mat-typography !w-[1100px] !max-h-[85vh] pt-6 overflow-visible">
-  <form [formGroup]="form" class="flex flex-col gap-6" style="margin-top: 40px">
+<mat-dialog-content class="mat-typography w-[1100px] max-h-[85vh] pt-6 overflow-visible">
+  <form [formGroup]="form" class="flex flex-col gap-6 mt-10">
     <!-- Household Info -->
-    <div
-      class="grid grid-cols-12 gap-6"
-      style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px"
-    >
+    <div class="grid grid-cols-12 gap-6">
       <!-- Family Name (Row 1, Full Width) -->
-      <div class="col-span-12" style="grid-column: span 12">
+      <div class="col-span-12">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Household Name (Auto-Computed)</mat-label>
           <input
             matInput
             formControlName="name"
             [readonly]="true"
-            class="!bg-gray-50 text-gray-700 cursor-default font-medium"
+            class="bg-gray-50 text-gray-700 cursor-default font-medium"
           />
           <mat-icon matSuffix class="text-gray-400">lock</mat-icon>
         </mat-form-field>
       </div>
 
       <!-- Status (Row 2, Start) -->
-      <div class="col-span-3" style="grid-column: span 3">
+      <div class="col-span-3">
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Status</mat-label>
           <mat-select formControlName="status">
@@ -39,8 +36,8 @@
       </div>
 
       <!-- Address Group (Flows after Status) -->
-      <div formGroupName="address" style="display: contents">
-        <div class="col-span-3" style="grid-column: span 3">
+      <div formGroupName="address" class="contents">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Street Address</mat-label>
             <input matInput formControlName="street1" placeholder="Ex. 123 Main St" />
@@ -49,28 +46,28 @@
             >
           </mat-form-field>
         </div>
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Street Address 2</mat-label>
             <input matInput formControlName="street2" placeholder="Ex. Apt 4B" />
           </mat-form-field>
         </div>
 
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>City</mat-label>
             <input matInput formControlName="city" />
             <mat-error *ngIf="form.get('address.city')?.hasError('required')">Required</mat-error>
           </mat-form-field>
         </div>
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>State</mat-label>
             <input matInput formControlName="state" />
             <mat-error *ngIf="form.get('address.state')?.hasError('required')">Required</mat-error>
           </mat-form-field>
         </div>
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Zip Code</mat-label>
             <input matInput formControlName="zip" />
@@ -80,17 +77,14 @@
       </div>
     </div>
 
-    <mat-divider class="!border-gray-200"></mat-divider>
+    <mat-divider class="border-gray-200"></mat-divider>
 
     <!-- Primary Contact -->
     <div class="flex flex-col gap-6" formGroupName="primary">
       <h3 class="text-lg font-semibold text-gray-700 m-0 mb-2">Primary Contact</h3>
 
-      <div
-        class="grid grid-cols-12 gap-6 leading-tight"
-        style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px"
-      >
-        <div class="col-span-3" style="grid-column: span 3">
+      <div class="grid grid-cols-12 gap-6 leading-tight">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>First Name</mat-label>
             <input matInput formControlName="firstName" />
@@ -99,13 +93,13 @@
             >
           </mat-form-field>
         </div>
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Middle Name</mat-label>
             <input matInput formControlName="middleName" />
           </mat-form-field>
         </div>
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Last Name</mat-label>
             <input matInput formControlName="lastName" />
@@ -115,7 +109,7 @@
           </mat-form-field>
         </div>
 
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Gender</mat-label>
             <mat-select formControlName="gender">
@@ -124,7 +118,7 @@
             <mat-error *ngIf="form.get('primary.gender')?.hasError('required')">Required</mat-error>
           </mat-form-field>
         </div>
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Date of Birth</mat-label>
             <input matInput [matDatepicker]="primaryDob" formControlName="dateOfBirth" />
@@ -169,11 +163,8 @@
         formGroupName="spouse"
         class="flex flex-col gap-6 animate-fade-in"
       >
-        <div
-          class="grid grid-cols-12 gap-6 leading-tight"
-          style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px"
-        >
-          <div class="col-span-3" style="grid-column: span 3">
+        <div class="grid grid-cols-12 gap-6 leading-tight">
+          <div class="col-span-3">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>First Name</mat-label>
               <input matInput formControlName="firstName" />
@@ -182,13 +173,13 @@
               >
             </mat-form-field>
           </div>
-          <div class="col-span-3" style="grid-column: span 3">
+          <div class="col-span-3">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Middle Name</mat-label>
               <input matInput formControlName="middleName" />
             </mat-form-field>
           </div>
-          <div class="col-span-3" style="grid-column: span 3">
+          <div class="col-span-3">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Last Name</mat-label>
               <input matInput formControlName="lastName" />
@@ -198,7 +189,7 @@
             </mat-form-field>
           </div>
 
-          <div class="col-span-3" style="grid-column: span 3">
+          <div class="col-span-3">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Gender</mat-label>
               <mat-select formControlName="gender">
@@ -209,7 +200,7 @@
               >
             </mat-form-field>
           </div>
-          <div class="col-span-3" style="grid-column: span 3">
+          <div class="col-span-3">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Date of Birth</mat-label>
               <input matInput [matDatepicker]="spouseDob" formControlName="dateOfBirth" />
@@ -217,7 +208,7 @@
               <mat-datepicker #spouseDob></mat-datepicker>
             </mat-form-field>
           </div>
-          <div class="col-span-3" style="grid-column: span 3">
+          <div class="col-span-3">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Profession</mat-label>
               <input matInput formControlName="profession" />
@@ -227,7 +218,7 @@
       </div>
     </div>
 
-    <mat-divider class="!border-gray-200"></mat-divider>
+    <mat-divider class="border-gray-200"></mat-divider>
 
     <!-- Minors Section -->
     <div class="flex flex-col gap-4">
@@ -245,25 +236,22 @@
           class="p-4 rounded-lg border border-gray-200 relative transition-colors"
           [ngClass]="i % 2 === 0 ? 'bg-gray-50/80' : 'bg-white'"
         >
-          <div
-            class="grid grid-cols-12 gap-4"
-            style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px"
-          >
+          <div class="grid grid-cols-12 gap-4">
             <!-- Row 1: Names -->
-            <div class="col-span-4" style="grid-column: span 4">
+            <div class="col-span-4">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>First Name</mat-label>
                 <input matInput formControlName="firstName" />
                 <mat-error *ngIf="minor.get('firstName')?.hasError('required')">Required</mat-error>
               </mat-form-field>
             </div>
-            <div class="col-span-4" style="grid-column: span 4">
+            <div class="col-span-4">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Middle</mat-label>
                 <input matInput formControlName="middleName" />
               </mat-form-field>
             </div>
-            <div class="col-span-4" style="grid-column: span 4">
+            <div class="col-span-4">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Last Name</mat-label>
                 <input matInput formControlName="lastName" />
@@ -271,7 +259,7 @@
             </div>
 
             <!-- Row 2: Details & Actions -->
-            <div class="col-span-4" style="grid-column: span 4">
+            <div class="col-span-4">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>DOB</mat-label>
                 <input matInput [matDatepicker]="minorDob" formControlName="dateOfBirth" />
@@ -279,16 +267,13 @@
                 <mat-datepicker #minorDob></mat-datepicker>
               </mat-form-field>
             </div>
-            <div class="col-span-6" style="grid-column: span 6">
+            <div class="col-span-6">
               <mat-form-field appearance="outline" class="w-full">
                 <mat-label>Email</mat-label>
                 <input matInput formControlName="email" />
               </mat-form-field>
             </div>
-            <div
-              class="col-span-2 flex justify-end items-center"
-              style="grid-column: span 2; align-self: center"
-            >
+            <div class="col-span-2 flex justify-end items-center self-center">
               <button mat-icon-button color="warn" (click)="removeMinor(i)" type="button">
                 <mat-icon>delete</mat-icon>
               </button>

@@ -16,7 +16,7 @@
       <a
         mat-list-item
         routerLink="/directory"
-        routerLinkActive="!bg-blue-50 !border-r-4 !border-blue-600"
+        routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
         class="hover:bg-gray-50"
       >
         <mat-icon matListItemIcon class="text-blue-600">people</mat-icon>
@@ -45,7 +45,7 @@
   <!-- THE MAIN CONTENT -->
   <mat-sidenav-content class="flex flex-col h-full">
     <!-- Optional: Top Toolbar (Mobile Toggle) -->
-    <mat-toolbar class="bg-white border-b border-gray-200 !px-8 flex justify-start md:hidden">
+    <mat-toolbar class="bg-white border-b border-gray-200 px-8 flex justify-start md:hidden">
       <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
