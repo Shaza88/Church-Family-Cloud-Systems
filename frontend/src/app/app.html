@@ -4,7 +4,7 @@
   <mat-sidenav #sidenav mode="side" opened class="w-64 border-r border-gray-200">
     <!-- Header / Logo Area -->
     <div class="p-6 flex items-center gap-3">
-      <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center">
         <mat-icon class="text-white text-sm">church</mat-icon>
       </div>
       <span class="font-bold text-lg text-gray-800 tracking-tight">CFCS</span>
@@ -45,7 +45,7 @@
   <!-- THE MAIN CONTENT -->
   <mat-sidenav-content class="flex flex-col h-full">
     <!-- Optional: Top Toolbar (Mobile Toggle) -->
-    <mat-toolbar class="bg-white border-b border-gray-200 !px-8 flex justify-between md:hidden">
+    <mat-toolbar class="bg-white border-b border-gray-200 !px-8 flex justify-start md:hidden">
       <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
@@ -53,7 +53,7 @@
     </mat-toolbar>
 
     <!-- Main View -->
-    <main class="p-6 md:p-10 flex-1 overflow-y-auto">
+    <main class="p-6 md:p-6 flex-1 overflow-y-auto">
       <router-outlet></router-outlet>
     </main>
   </mat-sidenav-content>
