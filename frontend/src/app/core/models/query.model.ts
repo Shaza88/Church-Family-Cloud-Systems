@@ -13,6 +13,14 @@ export interface PageRequest {
 export interface QueryRequest extends PageRequest {
   sort?: SortOptions;
   search?: string;
+  filters?: {
+    status?: string | null;
+    profession?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    city?: string | null;
+    zip?: string | null;
+  };
 }
 
 export interface PageResponse<T> {

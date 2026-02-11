@@ -5,52 +5,6 @@ import { delay } from 'rxjs/operators';
 
 export const MOCK_HOUSEHOLDS: Household[] = [
   {
-    id: 'h1',
-    name: 'Atieyeh, Rami & Shaza',
-    address: {
-      street1: '123 Maple Lane',
-      city: 'Chesterbrook',
-      state: 'PA',
-      zip: '19087',
-    },
-    status: 'Active',
-    memberCount: 4,
-    members: [
-      {
-        id: 'm1',
-        firstName: 'Rami',
-        lastName: 'Atieyeh',
-        role: 'Head',
-        gender: 'Male',
-        email: 'rami@example.com',
-      },
-      {
-        id: 'm2',
-        firstName: 'Shaza',
-        lastName: 'Atieyeh',
-        role: 'Spouse',
-        gender: 'Female',
-        email: 'shaza@example.com',
-      },
-      {
-        id: 'm3',
-        firstName: 'Ella',
-        lastName: 'Atieyeh',
-        role: 'Child',
-        gender: 'Female',
-        dateOfBirth: new Date('2015-05-10'),
-      },
-      {
-        id: 'm4',
-        firstName: 'Liam',
-        lastName: 'Atieyeh',
-        role: 'Child',
-        gender: 'Male',
-        dateOfBirth: new Date('2018-08-22'),
-      },
-    ],
-  },
-  {
     id: 'h2',
     name: 'Smith, John',
     address: {
@@ -500,6 +454,46 @@ export function getHouseholds(query: QueryRequest): Observable<PageResponse<Hous
         .toLowerCase()
         .includes(searchStr),
     );
+  }
+
+  // Advanced Filters
+  if (query.filters) {
+    const { status, profession, email, phone, city, zip } = query.filters;
+
+    if (status) {
+      filteredHouseholds = filteredHouseholds.filter((h) => h.status === status);
+    }
+
+    if (city) {
+      filteredHouseholds = filteredHouseholds.filter((h) =>
+        h.address.city.toLowerCase().includes(city.toLowerCase()),
+      );
+    }
+
+    if (zip) {
+      filteredHouseholds = filteredHouseholds.filter((h) => h.address.zip.includes(zip));
+    }
+
+    if (profession) {
+      const p = profession.toLowerCase();
+      filteredHouseholds = filteredHouseholds.filter((h) =>
+        h.members.some((m) => m.profession?.toLowerCase().includes(p)),
+      );
+    }
+
+    if (email) {
+      const e = email.toLowerCase();
+      filteredHouseholds = filteredHouseholds.filter((h) =>
+        h.members.some((m) => m.email?.toLowerCase().includes(e)),
+      );
+    }
+
+    if (phone) {
+      const p = phone.toLowerCase();
+      filteredHouseholds = filteredHouseholds.filter((h) =>
+        h.members.some((m) => m.phone?.toLowerCase().includes(p)),
+      );
+    }
   }
 
   // Sort

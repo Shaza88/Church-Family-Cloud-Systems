@@ -12,6 +12,10 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { HouseholdFormDialog } from './household-form.dialog';
 import { Household } from '../../../core/models/household.model';
 import { AddressPipe } from '../../../core/pipes/address.pipe';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import { LookupStore } from '../../../core/store/lookup.store';
 
 @Component({
   selector: 'cfcs-household-directory',
@@ -27,14 +31,27 @@ import { AddressPipe } from '../../../core/pipes/address.pipe';
     MatPaginatorModule,
     MatSortModule,
     AddressPipe,
+    MatExpansionModule,
+    MatSelectModule,
+    FormsModule,
   ],
   templateUrl: './household-directory.html',
   styleUrl: './household-directory.scss',
 })
 export class HouseholdDirectoryComponent implements OnInit {
   readonly store = inject(HouseholdStore);
+  readonly lookupStore = inject(LookupStore);
   readonly dialog = inject(MatDialog);
   displayedColumns: string[] = ['name', 'status', 'members', 'actions'];
+
+  advancedFilters = {
+    status: '',
+    profession: '',
+    email: '',
+    phone: '',
+    city: '',
+    zip: '',
+  };
 
   ngOnInit() {
     this.store.loadHouseholds();
@@ -42,6 +59,22 @@ export class HouseholdDirectoryComponent implements OnInit {
 
   applyFilter(event: Event) {
     this.store.updateFilter((event.target as HTMLInputElement).value);
+  }
+
+  applyAdvancedFilter() {
+    this.store.updateAdvancedFilter(this.advancedFilters);
+  }
+
+  clearAdvancedFilter() {
+    this.advancedFilters = {
+      status: '',
+      profession: '',
+      email: '',
+      phone: '',
+      city: '',
+      zip: '',
+    };
+    this.store.updateAdvancedFilter(null);
   }
 
   onPageChange(event: PageEvent) {

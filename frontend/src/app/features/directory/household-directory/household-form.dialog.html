@@ -28,9 +28,9 @@
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Status</mat-label>
           <mat-select formControlName="status">
-            <mat-option value="Active">Active</mat-option>
-            <mat-option value="Visitor">Visitor</mat-option>
-            <mat-option value="Inactive">Inactive</mat-option>
+            <mat-option *ngFor="let s of lookupStore.statuses()" [value]="s.value">{{
+              s.value
+            }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -113,7 +113,9 @@
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Gender</mat-label>
             <mat-select formControlName="gender">
-              <mat-option *ngFor="let g of genders" [value]="g.id">{{ g.value }}</mat-option>
+              <mat-option *ngFor="let g of lookupStore.genders()" [value]="g.value">{{
+                g.value
+              }}</mat-option>
             </mat-select>
             <mat-error *ngIf="form.get('primary.gender')?.hasError('required')">Required</mat-error>
           </mat-form-field>
@@ -141,10 +143,20 @@
             <input matInput formControlName="phone" />
           </mat-form-field>
         </div>
-        <div class="col-span-3" style="grid-column: span 3">
+        <div class="col-span-3">
           <mat-form-field appearance="outline" class="w-full">
             <mat-label>Profession</mat-label>
-            <input matInput formControlName="profession" />
+            <input
+              type="text"
+              matInput
+              formControlName="profession"
+              [matAutocomplete]="autoPrimary"
+            />
+            <mat-autocomplete #autoPrimary="matAutocomplete">
+              <mat-option *ngFor="let p of lookupStore.professions()" [value]="p.value">
+                {{ p.value }}
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
       </div>
@@ -193,7 +205,9 @@
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Gender</mat-label>
               <mat-select formControlName="gender">
-                <mat-option *ngFor="let g of genders" [value]="g.id">{{ g.value }}</mat-option>
+                <mat-option *ngFor="let g of lookupStore.genders()" [value]="g.value">{{
+                  g.value
+                }}</mat-option>
               </mat-select>
               <mat-error *ngIf="form.get('spouse.gender')?.hasError('required')"
                 >Required</mat-error
@@ -211,7 +225,17 @@
           <div class="col-span-3">
             <mat-form-field appearance="outline" class="w-full">
               <mat-label>Profession</mat-label>
-              <input matInput formControlName="profession" />
+              <input
+                type="text"
+                matInput
+                formControlName="profession"
+                [matAutocomplete]="autoSpouse"
+              />
+              <mat-autocomplete #autoSpouse="matAutocomplete">
+                <mat-option *ngFor="let p of lookupStore.professions()" [value]="p.value">
+                  {{ p.value }}
+                </mat-option>
+              </mat-autocomplete>
             </mat-form-field>
           </div>
         </div>
