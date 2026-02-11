@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -11,8 +11,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { Household, Individual } from '../../../core/models/household.model';
-import { GENDERS } from '../../../core/models/lookup.model';
+import { LookupStore } from '../../../core/store/lookup.store';
 import { merge } from 'rxjs';
 import { startWith } from 'rxjs/operators';
 
@@ -24,6 +25,7 @@ import { startWith } from 'rxjs/operators';
     ReactiveFormsModule,
     MatDialogModule,
     MatFormFieldModule,
+    MatAutocompleteModule,
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
@@ -38,10 +40,10 @@ import { startWith } from 'rxjs/operators';
 export class HouseholdFormDialog implements OnInit {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<HouseholdFormDialog>);
+  lookupStore = inject(LookupStore);
 
   form!: FormGroup;
   isEditMode = false;
-  genders = GENDERS;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: Household | null) {
     this.isEditMode = !!data;
@@ -229,6 +231,19 @@ export class HouseholdFormDialog implements OnInit {
         members: members,
         memberCount: members.length,
       };
+      // Auto-add professions if they are new
+      const primaryProfession = formValue.primary.profession;
+      if (primaryProfession) {
+        this.lookupStore.addLookup('Profession', primaryProfession);
+      }
+
+      if (formValue.hasSpouse) {
+        const spouseProfession = formValue.spouse.profession;
+        if (spouseProfession) {
+          this.lookupStore.addLookup('Profession', spouseProfession);
+        }
+      }
+
       this.dialogRef.close(household);
     }
   }

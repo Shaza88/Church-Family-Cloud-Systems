@@ -38,6 +38,7 @@ body {
   margin: 0;
   height: 100%;
 }
+
 // /* You can add global styles to this file, and also import other style files */
 
 html,
@@ -48,4 +49,11 @@ body {
 body {
   margin: 0;
   font-family: 'Inter', sans-serif;
+}
+
+/* Global Table Styles */
+.mat-mdc-header-cell {
+  font-size: 1.125rem !important; /* text-lg */
+  font-weight: 700 !important; /* font-bold */
+  color: #1f2937 !important; /* text-gray-800 */
 }

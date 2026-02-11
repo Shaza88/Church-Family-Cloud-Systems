@@ -2,6 +2,66 @@
   <div class="mb-6">
     <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Directory</h1>
 
+    <!-- Advanced Search Panel -->
+    <mat-expansion-panel class="!mb-8 shadow-sm border border-gray-200 !rounded-lg overflow-hidden">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="text-gray-600 font-medium flex items-center">
+          <mat-icon class="mr-2 text-gray-400">filter_list</mat-icon>
+          Advanced Search
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
+        <!-- Status -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Status</mat-label>
+          <mat-select [(ngModel)]="advancedFilters.status">
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let s of lookupStore.statuses()" [value]="s.value">
+              {{ s.value }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Profession -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Profession</mat-label>
+          <input matInput [(ngModel)]="advancedFilters.profession" placeholder="Ex. Engineer" />
+        </mat-form-field>
+
+        <!-- City -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>City</mat-label>
+          <input matInput [(ngModel)]="advancedFilters.city" placeholder="Ex. Wayne" />
+        </mat-form-field>
+
+        <!-- Zip -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Zip Code</mat-label>
+          <input matInput [(ngModel)]="advancedFilters.zip" placeholder="Ex. 19087" />
+        </mat-form-field>
+
+        <!-- Email -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Email</mat-label>
+          <input matInput [(ngModel)]="advancedFilters.email" placeholder="Ex. john@example.com" />
+        </mat-form-field>
+
+        <!-- Phone -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Phone</mat-label>
+          <input matInput [(ngModel)]="advancedFilters.phone" placeholder="Ex. 555-0123" />
+        </mat-form-field>
+      </div>
+
+      <div class="flex justify-end gap-3 pb-2 mt-2">
+        <button mat-button (click)="clearAdvancedFilter()">Clear Filters</button>
+        <button mat-flat-button color="primary" (click)="applyAdvancedFilter()">
+          Apply Filters
+        </button>
+      </div>
+    </mat-expansion-panel>
+
     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 w-full">
       <!-- Add Household Button (Left) -->
       <button
@@ -14,7 +74,11 @@
       </button>
 
       <!-- Search Field (Right) -->
-      <mat-form-field appearance="outline" class="w-full sm:w-[400px] !m-0">
+      <mat-form-field
+        appearance="outline"
+        class="w-full sm:w-[400px] !m-0"
+        subscriptSizing="dynamic"
+      >
         <mat-label>Search households...</mat-label>
         <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Smith" />
         <mat-icon matSuffix>search</mat-icon>
@@ -44,7 +108,7 @@
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header="status">Status</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header="status" class="">Status</th>
           <td mat-cell *matCellDef="let element">
             <span
               class="px-2 py-1 rounded-full text-xs font-medium"
@@ -70,7 +134,7 @@
         </ng-container>
 
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <th mat-header-cell *matHeaderCellDef class="">Actions</th>
           <td mat-cell *matCellDef="let element">
             <button mat-icon-button color="primary" (click)="openEditDialog(element)">
               <mat-icon>edit</mat-icon>

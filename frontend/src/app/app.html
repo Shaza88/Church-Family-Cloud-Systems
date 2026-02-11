@@ -35,7 +35,12 @@
 
       <mat-divider class="!my-4"></mat-divider>
 
-      <a mat-list-item href="#">
+      <a
+        mat-list-item
+        routerLink="/settings"
+        routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
+        class="hover:bg-gray-50"
+      >
         <mat-icon matListItemIcon class="text-gray-400">settings</mat-icon>
         <span class="text-gray-600">Settings</span>
       </a>
@@ -49,7 +54,7 @@
       <button mat-icon-button (click)="sidenav.toggle()">
         <mat-icon>menu</mat-icon>
       </button>
-      <span>CFCS</span>
+      <span class="font-bold text-gray-800 tracking-tight">CFCS</span>
     </mat-toolbar>
 
     <!-- Main View -->

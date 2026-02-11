@@ -11,6 +11,14 @@ type HouseholdState = {
   total: number;
   loading: boolean;
   filter: string;
+  advancedFilter: {
+    status?: string | null;
+    profession?: string | null;
+    email?: string | null;
+    phone?: string | null;
+    city?: string | null;
+    zip?: string | null;
+  } | null;
   pageIndex: number;
   pageSize: number;
   sortColumn: string;
@@ -22,6 +30,7 @@ const initialState: HouseholdState = {
   total: 0,
   loading: false,
   filter: '',
+  advancedFilter: null,
   pageIndex: 0,
   pageSize: 10,
   sortColumn: '',
@@ -41,6 +50,7 @@ export const HouseholdStore = signalStore(
           pageIndex: store.pageIndex(),
           pageSize: store.pageSize(),
           search: store.filter(),
+          filters: store.advancedFilter() || undefined,
           sort: {
             active: store.sortColumn(),
             direction: store.sortDirection(),
@@ -61,6 +71,10 @@ export const HouseholdStore = signalStore(
       },
       updateFilter(query: string) {
         patchState(store, { filter: query, pageIndex: 0 });
+        this.loadHouseholds();
+      },
+      updateAdvancedFilter(filters: any) {
+        patchState(store, { advancedFilter: filters, pageIndex: 0 });
         this.loadHouseholds();
       },
       updatePage(pageIndex: number, pageSize: number) {
