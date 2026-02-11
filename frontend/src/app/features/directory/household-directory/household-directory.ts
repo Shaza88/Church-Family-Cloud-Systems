@@ -14,6 +14,7 @@ import { Household } from '../../../core/models/household.model';
 import { AddressPipe } from '../../../core/pipes/address.pipe';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { LookupStore } from '../../../core/store/lookup.store';
 
@@ -33,6 +34,7 @@ import { LookupStore } from '../../../core/store/lookup.store';
     AddressPipe,
     MatExpansionModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
     FormsModule,
   ],
   templateUrl: './household-directory.html',

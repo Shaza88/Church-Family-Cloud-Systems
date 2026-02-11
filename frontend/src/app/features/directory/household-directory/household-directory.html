@@ -17,9 +17,11 @@
           <mat-label>Status</mat-label>
           <mat-select [(ngModel)]="advancedFilters.status">
             <mat-option value="">All</mat-option>
-            <mat-option *ngFor="let s of lookupStore.statuses()" [value]="s.value">
-              {{ s.value }}
-            </mat-option>
+            @for (s of lookupStore.statuses(); track s.value) {
+              <mat-option [value]="s.value">
+                {{ s.value }}
+              </mat-option>
+            }
           </mat-select>
         </mat-form-field>
 
@@ -86,8 +88,36 @@
     </div>
   </div>
 
-  <div class="mat-elevation-z8 rounded-lg overflow-hidden flex flex-col">
-    <div class="overflow-x-auto">
+  <div class="mat-elevation-z8 rounded-lg overflow-hidden flex flex-col relative min-h-[300px]">
+    <!-- Loading Overlay -->
+    @if (store.loading()) {
+      <div
+        class="absolute inset-0 z-50 flex items-center justify-center bg-transparent backdrop-blur-sm"
+      >
+        <mat-progress-spinner mode="indeterminate" diameter="48"></mat-progress-spinner>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @if (!store.loading() && store.total() === 0) {
+      <div class="flex flex-col items-center justify-center p-12 text-center text-gray-500">
+        <mat-icon
+          class="text-6xl text-gray-300 w-16 h-16 !leading-none mb-4 !width-auto !height-auto !font-size-6xl"
+          >search_off</mat-icon
+        >
+        <h3 class="text-xl font-medium text-gray-700">No households found</h3>
+        <p class="max-w-xs mx-auto mt-2">
+          Try adjusting your search or filters to find what you're looking for.
+        </p>
+        @if (store.filter() || store.advancedFilter()) {
+          <button mat-button color="primary" class="mt-4" (click)="clearAdvancedFilter()">
+            Clear all filters
+          </button>
+        }
+      </div>
+    }
+
+    <div class="overflow-x-auto" [class.opacity-50]="store.loading()">
       <table
         mat-table
         [dataSource]="store.households()"
@@ -157,6 +187,7 @@
       [pageSizeOptions]="[5, 10, 25, 100]"
       (page)="onPageChange($event)"
       showFirstLastButtons
+      [hidden]="store.total() === 0 && !store.loading()"
     ></mat-paginator>
   </div>
 </div>

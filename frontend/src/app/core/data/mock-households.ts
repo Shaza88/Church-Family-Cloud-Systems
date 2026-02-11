@@ -438,6 +438,111 @@ export const MOCK_HOUSEHOLDS: Household[] = [
   },
 ];
 
+// Generate additional mock data to reach ~160 records
+const firstNames = [
+  'James',
+  'Mary',
+  'Robert',
+  'Patricia',
+  'John',
+  'Jennifer',
+  'Michael',
+  'Linda',
+  'David',
+  'Elizabeth',
+  'William',
+  'Barbara',
+  'Richard',
+  'Susan',
+  'Joseph',
+  'Jessica',
+  'Thomas',
+  'Sarah',
+  'Charles',
+  'Karen',
+];
+const lastNames = [
+  'Smith',
+  'Johnson',
+  'Williams',
+  'Brown',
+  'Jones',
+  'Garcia',
+  'Miller',
+  'Davis',
+  'Rodriguez',
+  'Martinez',
+  'Hernandez',
+  'Lopez',
+  'Gonzalez',
+  'Wilson',
+  'Anderson',
+  'Thomas',
+  'Taylor',
+  'Moore',
+  'Jackson',
+  'Martin',
+];
+const cities = [
+  'Wayne',
+  'Paoli',
+  'Malvern',
+  'Berwyn',
+  'Devon',
+  'Exton',
+  'Media',
+  'Chester',
+  'King of Prussia',
+  'Norristown',
+];
+const statuses = ['Active', 'Inactive', 'Visitor'];
+
+for (let i = 18; i <= 160; i++) {
+  const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+  const headName = firstNames[Math.floor(Math.random() * firstNames.length)];
+  const spouseName = firstNames[Math.floor(Math.random() * firstNames.length)];
+  const hasSpouse = Math.random() > 0.4;
+  const status = statuses[Math.floor(Math.random() * statuses.length)] as any;
+
+  const members = [
+    {
+      id: `m${i}_1`,
+      firstName: headName,
+      lastName: lastName,
+      role: 'Head',
+      gender: Math.random() > 0.5 ? 'Male' : 'Female',
+      email: `${headName.toLowerCase()}.${lastName.toLowerCase()}@example.com`,
+      phone: `555-${Math.floor(1000 + Math.random() * 9000).toString()}`,
+    },
+  ];
+
+  if (hasSpouse) {
+    members.push({
+      id: `m${i}_2`,
+      firstName: spouseName,
+      lastName: lastName,
+      role: 'Spouse',
+      gender: Math.random() > 0.5 ? 'Male' : 'Female',
+      email: `${spouseName.toLowerCase()}.${lastName.toLowerCase()}@example.com`,
+      phone: `555-${Math.floor(1000 + Math.random() * 9000).toString()}`,
+    });
+  }
+
+  MOCK_HOUSEHOLDS.push({
+    id: `h${i}`,
+    name: hasSpouse ? `${lastName}, ${headName} & ${spouseName}` : `${lastName}, ${headName}`,
+    address: {
+      street1: `${Math.floor(Math.random() * 999) + 1} Maple Stick Rd`,
+      city: cities[Math.floor(Math.random() * cities.length)],
+      state: 'PA',
+      zip: `19${Math.floor(300 + Math.random() * 99)}`,
+    },
+    status: status,
+    memberCount: members.length + (Math.random() > 0.7 ? Math.floor(Math.random() * 3) : 0),
+    members: members as any[],
+  });
+}
+
 export function getHouseholds(query: QueryRequest): Observable<PageResponse<Household>> {
   let filteredHouseholds = MOCK_HOUSEHOLDS;
 

@@ -26,43 +26,43 @@
 
             <!-- List -->
             <div class="flex flex-col gap-2">
-              <div
-                *ngFor="let item of lookupStore.professions()"
-                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
-              >
-                <ng-container *ngIf="editingId === item.id; else viewProfession">
-                  <div class="flex items-center gap-2 flex-1">
-                    <input
-                      class="flex-1 p-2 border border-blue-500 rounded outline-none"
-                      [(ngModel)]="editingValue"
-                      (keyup.enter)="saveEdit(item.id)"
-                    />
-                    <button mat-icon-button color="primary" (click)="saveEdit(item.id)">
-                      <mat-icon>check</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="cancelEdit()">
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  </div>
-                </ng-container>
-                <ng-template #viewProfession>
-                  <span class="font-medium text-gray-700">{{ item.value }}</span>
-                  <div
-                    class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <button mat-icon-button color="primary" (click)="startEdit(item)">
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button
-                      mat-icon-button
-                      color="warn"
-                      (click)="lookupStore.deleteLookup(item.id)"
+              @for (item of lookupStore.professions(); track item.id) {
+                <div
+                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                >
+                  @if (editingId === item.id) {
+                    <div class="flex items-center gap-2 flex-1">
+                      <input
+                        class="flex-1 p-2 border border-blue-500 rounded outline-none"
+                        [(ngModel)]="editingValue"
+                        (keyup.enter)="saveEdit(item.id)"
+                      />
+                      <button mat-icon-button color="primary" (click)="saveEdit(item.id)">
+                        <mat-icon>check</mat-icon>
+                      </button>
+                      <button mat-icon-button (click)="cancelEdit()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="font-medium text-gray-700">{{ item.value }}</span>
+                    <div
+                      class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </ng-template>
-              </div>
+                      <button mat-icon-button color="primary" (click)="startEdit(item)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="lookupStore.deleteLookup(item.id)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </ng-template>
@@ -89,43 +89,43 @@
             </div>
 
             <div class="flex flex-col gap-2">
-              <div
-                *ngFor="let item of lookupStore.statuses()"
-                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
-              >
-                <ng-container *ngIf="editingId === item.id; else viewStatus">
-                  <div class="flex items-center gap-2 flex-1">
-                    <input
-                      class="flex-1 p-2 border border-blue-500 rounded outline-none"
-                      [(ngModel)]="editingValue"
-                      (keyup.enter)="saveEdit(item.id)"
-                    />
-                    <button mat-icon-button color="primary" (click)="saveEdit(item.id)">
-                      <mat-icon>check</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="cancelEdit()">
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  </div>
-                </ng-container>
-                <ng-template #viewStatus>
-                  <span class="font-medium text-gray-700">{{ item.value }}</span>
-                  <div
-                    class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <button mat-icon-button color="primary" (click)="startEdit(item)">
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button
-                      mat-icon-button
-                      color="warn"
-                      (click)="lookupStore.deleteLookup(item.id)"
+              @for (item of lookupStore.statuses(); track item.id) {
+                <div
+                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                >
+                  @if (editingId === item.id) {
+                    <div class="flex items-center gap-2 flex-1">
+                      <input
+                        class="flex-1 p-2 border border-blue-500 rounded outline-none"
+                        [(ngModel)]="editingValue"
+                        (keyup.enter)="saveEdit(item.id)"
+                      />
+                      <button mat-icon-button color="primary" (click)="saveEdit(item.id)">
+                        <mat-icon>check</mat-icon>
+                      </button>
+                      <button mat-icon-button (click)="cancelEdit()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="font-medium text-gray-700">{{ item.value }}</span>
+                    <div
+                      class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </ng-template>
-              </div>
+                      <button mat-icon-button color="primary" (click)="startEdit(item)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="lookupStore.deleteLookup(item.id)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </ng-template>
@@ -152,43 +152,43 @@
             </div>
 
             <div class="flex flex-col gap-2">
-              <div
-                *ngFor="let item of lookupStore.genders()"
-                class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
-              >
-                <ng-container *ngIf="editingId === item.id; else viewGender">
-                  <div class="flex items-center gap-2 flex-1">
-                    <input
-                      class="flex-1 p-2 border border-blue-500 rounded outline-none"
-                      [(ngModel)]="editingValue"
-                      (keyup.enter)="saveEdit(item.id)"
-                    />
-                    <button mat-icon-button color="primary" (click)="saveEdit(item.id)">
-                      <mat-icon>check</mat-icon>
-                    </button>
-                    <button mat-icon-button (click)="cancelEdit()">
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  </div>
-                </ng-container>
-                <ng-template #viewGender>
-                  <span class="font-medium text-gray-700">{{ item.value }}</span>
-                  <div
-                    class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <button mat-icon-button color="primary" (click)="startEdit(item)">
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button
-                      mat-icon-button
-                      color="warn"
-                      (click)="lookupStore.deleteLookup(item.id)"
+              @for (item of lookupStore.genders(); track item.id) {
+                <div
+                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors group"
+                >
+                  @if (editingId === item.id) {
+                    <div class="flex items-center gap-2 flex-1">
+                      <input
+                        class="flex-1 p-2 border border-blue-500 rounded outline-none"
+                        [(ngModel)]="editingValue"
+                        (keyup.enter)="saveEdit(item.id)"
+                      />
+                      <button mat-icon-button color="primary" (click)="saveEdit(item.id)">
+                        <mat-icon>check</mat-icon>
+                      </button>
+                      <button mat-icon-button (click)="cancelEdit()">
+                        <mat-icon>close</mat-icon>
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="font-medium text-gray-700">{{ item.value }}</span>
+                    <div
+                      class="flex items-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </div>
-                </ng-template>
-              </div>
+                      <button mat-icon-button color="primary" (click)="startEdit(item)">
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button
+                        mat-icon-button
+                        color="warn"
+                        (click)="lookupStore.deleteLookup(item.id)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </ng-template>
