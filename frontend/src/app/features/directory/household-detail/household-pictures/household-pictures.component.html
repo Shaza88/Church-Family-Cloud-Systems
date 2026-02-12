@@ -1,0 +1,59 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-gray-800 m-0">Pictures</h2>
+    <input #fileInput type="file" hidden (change)="onFileSelected($event)" accept="image/*" />
+    <button mat-flat-button color="primary" (click)="uploadPicture(fileInput)">
+      <mat-icon>add_a_photo</mat-icon> Upload Picture
+    </button>
+  </div>
+
+  @if (pictures().length > 0) {
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      @for (pic of pictures(); track pic.name) {
+        <div
+          class="group relative rounded-lg overflow-hidden shadow-sm border border-gray-200 aspect-[3/2] bg-gray-100"
+        >
+          <img
+            [src]="pic.url"
+            [alt]="pic.name"
+            class="w-full h-full object-cover transition-transform group-hover:scale-105"
+          />
+
+          <div
+            class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
+          >
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="deletePicture(pic)"
+              class="bg-white/90 hover:bg-white"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+
+          <div
+            class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent text-white text-xs truncate"
+          >
+            {{ pic.name }}
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div
+      class="flex flex-col items-center justify-center p-12 bg-gray-50 border border-dashed border-gray-300 rounded-lg text-center"
+    >
+      <mat-icon class="text-gray-400 text-5xl w-12 h-12 mb-4 !leading-none !font-size-5xl"
+        >photo_library</mat-icon
+      >
+      <h3 class="text-lg font-medium text-gray-700">No photos yet</h3>
+      <p class="text-gray-500 max-w-sm mt-1">
+        Upload family photos or generic household images here.
+      </p>
+      <button mat-stroked-button class="mt-4" (click)="uploadPicture(fileInput)">
+        Upload Picture
+      </button>
+    </div>
+  }
+</div>

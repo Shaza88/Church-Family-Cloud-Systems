@@ -1,4 +1,9 @@
-export type LookupType = 'Gender' | 'HouseholdStatus' | 'Profession';
+export type LookupType =
+  | 'Gender'
+  | 'HouseholdStatus'
+  | 'Profession'
+  | 'Relationship'
+  | 'HouseholdRelationshipType';
 
 export interface LookupValue {
   id: string;

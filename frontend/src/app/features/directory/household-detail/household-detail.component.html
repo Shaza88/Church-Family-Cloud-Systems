@@ -1,0 +1,46 @@
+<div class="p-6 max-w-6xl mx-auto">
+  <!-- Header -->
+  <div class="flex items-center gap-4 mb-6">
+    <button mat-icon-button (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1 class="text-2xl font-bold text-gray-800 m-0">
+      @if (isEditMode) {
+        {{ store.selectedHousehold()?.name || 'Loading...' }}
+      } @else {
+        New Household
+      }
+    </h1>
+  </div>
+
+  <!-- Content -->
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden min-h-[600px]">
+    <mat-tab-group animationDuration="0ms">
+      <mat-tab label="General">
+        <ng-template matTabContent>
+          <app-household-general></app-household-general>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Members">
+        <ng-template matTabContent>
+          <app-household-members></app-household-members>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Relationships">
+        <ng-template matTabContent>
+          <app-household-relationships></app-household-relationships>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Documents">
+        <ng-template matTabContent>
+          <app-household-documents></app-household-documents>
+        </ng-template>
+      </mat-tab>
+      <mat-tab label="Pictures">
+        <ng-template matTabContent>
+          <app-household-pictures></app-household-pictures>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

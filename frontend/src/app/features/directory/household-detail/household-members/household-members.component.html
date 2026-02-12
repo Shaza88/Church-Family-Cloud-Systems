@@ -1,0 +1,355 @@
+<div class="p-6">
+  <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-8 max-w-5xl">
+    <!-- Primary Contact -->
+    <section formGroupName="primary" class="animate-fade-in">
+      <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+        <mat-icon class="text-primary-600">person</mat-icon> Primary Contact
+      </h3>
+      <div
+        class="grid grid-cols-1 md:grid-cols-3 gap-4 border border-gray-200 rounded-lg p-5 bg-white shadow-sm"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" />
+          @if (form.get('primary.firstName')?.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" />
+          @if (form.get('primary.lastName')?.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Gender</mat-label>
+          <mat-select formControlName="gender">
+            @for (g of lookupStore.genders(); track g.value) {
+              <mat-option [value]="g.value">{{ g.value }}</mat-option>
+            }
+          </mat-select>
+          @if (form.get('primary.gender')?.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Date of Birth</mat-label>
+          <input matInput [matDatepicker]="primaryDob" formControlName="dateOfBirth" />
+          <mat-datepicker-toggle matIconSuffix [for]="primaryDob"></mat-datepicker-toggle>
+          <mat-datepicker #primaryDob></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" />
+          @if (form.get('primary.email')?.hasError('email')) {
+            <mat-error>Invalid email</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Mobile Phone</mat-label>
+          <input matInput formControlName="phone" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Profession</mat-label>
+          <input
+            type="text"
+            matInput
+            formControlName="profession"
+            [matAutocomplete]="autoPrimary"
+          />
+          <mat-autocomplete #autoPrimary="matAutocomplete">
+            @for (p of lookupStore.professions(); track p.value) {
+              <mat-option [value]="p.value">{{ p.value }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+    </section>
+
+    <!-- Spouse -->
+    <section class="animate-fade-in">
+      <div class="flex items-center gap-4 mb-4">
+        <h3 class="text-xl font-bold text-gray-800 m-0 flex items-center gap-2">
+          <mat-icon class="text-pink-500">favorite</mat-icon> Spouse
+        </h3>
+        <mat-checkbox formControlName="hasSpouse" color="primary">Add Spouse</mat-checkbox>
+      </div>
+
+      @if (form.get('hasSpouse')?.value) {
+        <div
+          formGroupName="spouse"
+          class="grid grid-cols-1 md:grid-cols-3 gap-4 border border-gray-200 rounded-lg p-5 bg-white shadow-sm animate-slide-down"
+        >
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstName" />
+            @if (form.get('spouse.firstName')?.hasError('required')) {
+              <mat-error>Required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastName" />
+            @if (form.get('spouse.lastName')?.hasError('required')) {
+              <mat-error>Required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender">
+              @for (g of lookupStore.genders(); track g.value) {
+                <mat-option [value]="g.value">{{ g.value }}</mat-option>
+              }
+            </mat-select>
+            @if (form.get('spouse.gender')?.hasError('required')) {
+              <mat-error>Required</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Date of Birth</mat-label>
+            <input matInput [matDatepicker]="spouseDob" formControlName="dateOfBirth" />
+            <mat-datepicker-toggle matIconSuffix [for]="spouseDob"></mat-datepicker-toggle>
+            <mat-datepicker #spouseDob></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Mobile Phone</mat-label>
+            <input matInput formControlName="phone" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Profession</mat-label>
+            <input
+              type="text"
+              matInput
+              formControlName="profession"
+              [matAutocomplete]="autoSpouse"
+            />
+            <mat-autocomplete #autoSpouse="matAutocomplete">
+              @for (p of lookupStore.professions(); track p.value) {
+                <mat-option [value]="p.value">{{ p.value }}</mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+      }
+    </section>
+
+    <!-- Minors -->
+    <section class="animate-fade-in">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-gray-800 m-0 flex items-center gap-2">
+          <mat-icon class="text-blue-500">child_care</mat-icon> Minors
+        </h3>
+        <button mat-button color="primary" type="button" (click)="addMinor()">
+          <mat-icon>add</mat-icon> Add Minor
+        </button>
+      </div>
+
+      <div formArrayName="minors" class="flex flex-col gap-4">
+        @for (minor of minorsArray.controls; track minor; let i = $index) {
+          <div
+            [formGroupName]="i"
+            class="grid grid-cols-1 md:grid-cols-4 gap-4 border border-gray-200 rounded-lg p-5 bg-gray-50 relative group"
+          >
+            <!-- Fields first -->
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" />
+              @if (minor.get('firstName')?.hasError('required')) {
+                <mat-error>Required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                @for (g of lookupStore.genders(); track g.value) {
+                  <mat-option [value]="g.value">{{ g.value }}</mat-option>
+                }
+              </mat-select>
+              @if (minor.get('gender')?.hasError('required')) {
+                <mat-error>Required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput [matDatepicker]="minorDob" formControlName="dateOfBirth" />
+              <mat-datepicker-toggle matIconSuffix [for]="minorDob"></mat-datepicker-toggle>
+              <mat-datepicker #minorDob></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" />
+            </mat-form-field>
+
+            <!-- Delete button last element in grid/DOM -->
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              (click)="removeMinor(i)"
+              class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+        @if (minorsArray.length === 0) {
+          <div
+            class="text-gray-500 italic text-center p-8 border border-dashed border-gray-300 rounded-lg bg-gray-50"
+          >
+            No minors added. Click "Add Minor" to start.
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Other Members -->
+    <section class="animate-fade-in">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-gray-800 m-0 flex items-center gap-2">
+          <mat-icon class="text-purple-500">group_add</mat-icon> Additional Members
+        </h3>
+        <button mat-button color="primary" type="button" (click)="addOther()">
+          <mat-icon>add</mat-icon> Add Member
+        </button>
+      </div>
+      <p class="text-gray-500 text-sm mb-4 -mt-2">
+        Use this for grandparents, relatives, or others living in the household.
+      </p>
+
+      <div formArrayName="others" class="flex flex-col gap-4">
+        @for (other of othersArray.controls; track other; let i = $index) {
+          <div
+            [formGroupName]="i"
+            class="grid grid-cols-1 md:grid-cols-3 gap-4 border border-gray-200 rounded-lg p-5 bg-white shadow-sm relative group"
+          >
+            <!-- Fields first -->
+            <mat-form-field appearance="outline">
+              <mat-label>First Name</mat-label>
+              <input matInput formControlName="firstName" />
+              @if (other.get('firstName')?.hasError('required')) {
+                <mat-error>Required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Last Name</mat-label>
+              <input matInput formControlName="lastName" />
+              @if (other.get('lastName')?.hasError('required')) {
+                <mat-error>Required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Relationship</mat-label>
+              <input
+                type="text"
+                matInput
+                formControlName="relationship"
+                [matAutocomplete]="autoRel"
+              />
+              <mat-autocomplete #autoRel="matAutocomplete">
+                @for (r of lookupStore.relationships(); track r.value) {
+                  <mat-option [value]="r.value">{{ r.value }}</mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                @for (g of lookupStore.genders(); track g.value) {
+                  <mat-option [value]="g.value">{{ g.value }}</mat-option>
+                }
+              </mat-select>
+              @if (other.get('gender')?.hasError('required')) {
+                <mat-error>Required</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput [matDatepicker]="otherDob" formControlName="dateOfBirth" />
+              <mat-datepicker-toggle matIconSuffix [for]="otherDob"></mat-datepicker-toggle>
+              <mat-datepicker #otherDob></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput formControlName="email" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Phone</mat-label>
+              <input matInput formControlName="phone" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Profession</mat-label>
+              <input
+                type="text"
+                matInput
+                formControlName="profession"
+                [matAutocomplete]="autoOther"
+              />
+              <mat-autocomplete #autoOther="matAutocomplete">
+                @for (p of lookupStore.professions(); track p.value) {
+                  <mat-option [value]="p.value">{{ p.value }}</mat-option>
+                }
+              </mat-autocomplete>
+            </mat-form-field>
+
+            <!-- Delete button last element in grid/DOM -->
+            <button
+              mat-icon-button
+              color="warn"
+              type="button"
+              (click)="removeOther(i)"
+              class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+        @if (othersArray.length === 0) {
+          <div
+            class="text-gray-500 italic text-center p-8 border border-dashed border-gray-300 rounded-lg bg-gray-50"
+          >
+            No additional members added.
+          </div>
+        }
+      </div>
+    </section>
+
+    <div class="flex justify-end pt-4">
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="form.invalid"
+        class="h-12 px-8"
+      >
+        <mat-icon>save</mat-icon> Save Changes
+      </button>
+    </div>
+  </form>
+</div>

@@ -19,6 +19,7 @@ type HouseholdState = {
     city?: string | null;
     zip?: string | null;
   } | null;
+  selectedHousehold: Household | null;
   pageIndex: number;
   pageSize: number;
   sortColumn: string;
@@ -31,6 +32,7 @@ const initialState: HouseholdState = {
   loading: false,
   filter: '',
   advancedFilter: null,
+  selectedHousehold: null,
   pageIndex: 0,
   pageSize: 10,
   sortColumn: '',
@@ -69,6 +71,21 @@ export const HouseholdStore = signalStore(
           )
           .subscribe();
       },
+      loadHousehold(id: string) {
+        patchState(store, { loading: true });
+        import('../data/mock-households').then((mod) => {
+          const household = mod.MOCK_HOUSEHOLDS.find((h) => h.id === id);
+          if (household) {
+            patchState(store, { selectedHousehold: household, loading: false });
+          } else {
+            patchState(store, { selectedHousehold: null, loading: false });
+            notificationService.error('Household not found');
+          }
+        });
+      },
+      setSelectedHousehold(household: Household | null) {
+        patchState(store, { selectedHousehold: household });
+      },
       updateFilter(query: string) {
         patchState(store, { filter: query, pageIndex: 0 });
         this.loadHouseholds();
@@ -97,6 +114,10 @@ export const HouseholdStore = signalStore(
           const index = mod.MOCK_HOUSEHOLDS.findIndex((h) => h.id === updatedHousehold.id);
           if (index !== -1) {
             mod.MOCK_HOUSEHOLDS[index] = updatedHousehold;
+            // Update selected household if it's the one being edited
+            if (store.selectedHousehold()?.id === updatedHousehold.id) {
+              patchState(store, { selectedHousehold: updatedHousehold });
+            }
             this.loadHouseholds();
             notificationService.success('Household updated successfully');
           }

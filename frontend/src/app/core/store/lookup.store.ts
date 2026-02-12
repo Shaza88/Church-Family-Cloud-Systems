@@ -23,6 +23,17 @@ const initialState: LookupState = {
     { id: '9', type: 'Profession', value: 'Nurse' },
     { id: '10', type: 'Profession', value: 'Student' },
     { id: '11', type: 'Profession', value: 'Retired' },
+    { id: '12', type: 'Relationship', value: 'Father' },
+    { id: '13', type: 'Relationship', value: 'Mother' },
+    { id: '14', type: 'Relationship', value: 'Son' },
+    { id: '15', type: 'Relationship', value: 'Daughter' },
+    { id: '16', type: 'Relationship', value: 'Grandfather' },
+    { id: '17', type: 'Relationship', value: 'Grandmother' },
+    { id: '18', type: 'Relationship', value: 'Aunt' },
+    { id: '19', type: 'Relationship', value: 'Uncle' },
+    { id: '20', type: 'Relationship', value: 'Cousin' },
+    { id: '21', type: 'HouseholdRelationshipType', value: 'Godparent' },
+    { id: '22', type: 'HouseholdRelationshipType', value: 'Spiritual Kinship' },
   ],
   loading: false,
   error: null,
@@ -35,6 +46,10 @@ export const LookupStore = signalStore(
     genders: computed(() => items().filter((i) => i.type === 'Gender')),
     statuses: computed(() => items().filter((i) => i.type === 'HouseholdStatus')),
     professions: computed(() => items().filter((i) => i.type === 'Profession')),
+    relationships: computed(() => items().filter((i) => i.type === 'Relationship')),
+    householdRelationshipTypes: computed(() =>
+      items().filter((i) => i.type === 'HouseholdRelationshipType'),
+    ),
   })),
   withMethods((store, notificationService = inject(NotificationService)) => ({
     addLookup(type: LookupType, value: string) {

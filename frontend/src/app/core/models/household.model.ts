@@ -12,6 +12,7 @@ export interface Individual {
   email?: string;
   phone?: string;
   profession?: string;
+  relationship?: string; // e.g. Father, Mother, etc.
 }
 
 export interface Address {
@@ -27,6 +28,11 @@ export interface Household {
   name: string;
   address: Address;
   status: HouseholdStatus;
+  phone?: string;
+  phone2?: string;
   memberCount: number;
   members: Individual[];
+  documents?: { name: string; type: string; url: string; date: Date }[];
+  pictures?: { name: string; url: string; date: Date }[];
+  relatedHouseholds?: { householdId: string; relationshipType: string; notes?: string }[];
 }

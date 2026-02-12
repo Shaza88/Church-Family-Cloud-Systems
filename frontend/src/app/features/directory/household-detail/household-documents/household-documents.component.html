@@ -1,0 +1,75 @@
+<div class="p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-bold text-gray-800 m-0">Documents</h2>
+    <input
+      #fileInput
+      type="file"
+      hidden
+      (change)="onFileSelected($event)"
+      accept=".pdf,.doc,.docx,.jpg,.png"
+    />
+    <button mat-flat-button color="primary" (click)="uploadDocument(fileInput)">
+      <mat-icon>upload_file</mat-icon> Upload Document
+    </button>
+  </div>
+
+  @if (documents().length > 0) {
+    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <table mat-table [dataSource]="documents()" class="w-full">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let doc">
+            <div class="flex items-center gap-2">
+              <mat-icon class="text-red-500">picture_as_pdf</mat-icon>
+              <span class="font-medium text-gray-700">{{ doc.name }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let doc">{{ doc.type }}</td>
+        </ng-container>
+
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date Added</th>
+          <td mat-cell *matCellDef="let doc">{{ doc.date | date }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let doc">
+            <button mat-icon-button color="primary">
+              <mat-icon>download</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteDocument(doc)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  } @else {
+    <div
+      class="flex flex-col items-center justify-center p-12 bg-gray-50 border border-dashed border-gray-300 rounded-lg text-center"
+    >
+      <mat-icon class="text-gray-400 text-5xl w-12 h-12 mb-4 !leading-none !font-size-5xl"
+        >description</mat-icon
+      >
+      <h3 class="text-lg font-medium text-gray-700">No documents yet</h3>
+      <p class="text-gray-500 max-w-sm mt-1">
+        Upload birth certificates, marriage licenses, or other related documents here.
+      </p>
+      <button mat-stroked-button class="mt-4" (click)="uploadDocument(fileInput)">
+        Upload Document
+      </button>
+    </div>
+  }
+</div>

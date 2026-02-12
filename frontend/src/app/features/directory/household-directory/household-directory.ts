@@ -1,4 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
@@ -87,32 +88,14 @@ export class HouseholdDirectoryComponent implements OnInit {
     this.store.updateSort(sort.active, sort.direction);
   }
 
-  openAddDialog() {
-    const dialogRef = this.dialog.open(HouseholdFormDialog, {
-      width: '1100px',
-      maxWidth: '95vw',
-      maxHeight: '90vh',
-    });
+  router = inject(Router);
 
-    dialogRef.afterClosed().subscribe((result: Household | undefined) => {
-      if (result) {
-        this.store.addHousehold(result);
-      }
-    });
+  openAddDialog() {
+    this.router.navigate(['/directory/new']);
   }
 
   openEditDialog(household: Household) {
-    const dialogRef = this.dialog.open(HouseholdFormDialog, {
-      width: '1100px',
-      maxWidth: '95vw',
-      maxHeight: '90vh',
-      data: household,
-    });
-
-    dialogRef.afterClosed().subscribe((result: Household | undefined) => {
-      if (result) {
-        this.store.updateHousehold(result);
-      }
-    });
+    this.store.loadHousehold(household.id); // Pre-load selected household
+    this.router.navigate(['/directory', household.id]);
   }
 }

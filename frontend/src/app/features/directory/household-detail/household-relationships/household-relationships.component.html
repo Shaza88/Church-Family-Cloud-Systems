@@ -1,0 +1,126 @@
+<div class="p-6">
+  <!-- Add Relationship Form -->
+  <form
+    [formGroup]="form"
+    (ngSubmit)="addRelationship()"
+    class="flex flex-col md:flex-row gap-4 items-start mb-8 bg-gray-50 p-4 rounded-lg border border-gray-200"
+  >
+    <!-- Search Household -->
+    <mat-form-field appearance="outline" class="flex-1 w-full">
+      <mat-label>Search Household</mat-label>
+      <input
+        type="text"
+        matInput
+        [formControl]="searchControl"
+        [matAutocomplete]="auto"
+        (input)="onSearchInput($event)"
+      />
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
+        @for (h of filteredHouseholds(); track h.id) {
+          <mat-option [value]="h">
+            {{ h.name }} <span class="text-xs text-gray-500">({{ h.address.city }})</span>
+          </mat-option>
+        }
+      </mat-autocomplete>
+      <mat-hint>Find the related household</mat-hint>
+    </mat-form-field>
+
+    <!-- Relationship Type -->
+    <mat-form-field appearance="outline" class="flex-1 w-full">
+      <mat-label>Relationship Type</mat-label>
+      <mat-select formControlName="type">
+        @for (t of lookupStore.householdRelationshipTypes(); track t.value) {
+          <mat-option [value]="t.value">{{ t.value }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('type')?.hasError('required') && form.get('type')?.touched) {
+        <mat-error>Required</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Notes -->
+    <mat-form-field appearance="outline" class="flex-1 w-full">
+      <mat-label>Notes (Optional)</mat-label>
+      <input matInput formControlName="notes" placeholder="e.g. John held Mary" />
+    </mat-form-field>
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid || !selectedHouseholdId"
+      class="mt-1 h-12"
+    >
+      <mat-icon>add_link</mat-icon> Add
+    </button>
+  </form>
+
+  <!-- Relationships List -->
+  @if (relationships().length > 0) {
+    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <table mat-table [dataSource]="relationships()" class="w-full">
+        <!-- Household Column -->
+        <ng-container matColumnDef="household">
+          <th mat-header-cell *matHeaderCellDef>Household</th>
+          <td mat-cell *matCellDef="let rel">
+            <div class="flex items-center gap-2">
+              <mat-icon class="text-indigo-500">home</mat-icon>
+              <span class="font-medium">{{ rel.householdName }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef>Type</th>
+          <td mat-cell *matCellDef="let rel">
+            <span
+              class="px-2 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium border border-blue-100"
+            >
+              {{ rel.relationshipType }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Notes Column -->
+        <ng-container matColumnDef="notes">
+          <th mat-header-cell *matHeaderCellDef>Notes</th>
+          <td mat-cell *matCellDef="let rel" class="text-gray-500 italic">
+            {{ rel.notes || '-' }}
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let rel">
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeRelationship(rel)"
+              matTooltip="Remove Relationship"
+            >
+              <mat-icon>delete_forever</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  } @else {
+    <div
+      class="flex flex-col items-center justify-center p-12 bg-gray-50 border border-dashed border-gray-300 rounded-lg text-center"
+    >
+      <mat-icon class="text-gray-400 text-5xl w-12 h-12 mb-4 !leading-none !font-size-5xl"
+        >link_off</mat-icon
+      >
+      <h3 class="text-lg font-medium text-gray-700">No relationships defined</h3>
+      <p class="text-gray-500 max-w-sm mt-1">
+        Link this household to others (e.g. Godparents, Spiritual Kinship) to track important
+        connections.
+      </p>
+    </div>
+  }
+</div>
