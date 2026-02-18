@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, effect } from '@angular/core';
+import { Component, inject, input, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,7 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { HouseholdStore } from '../../../../core/store/household.store';
 import { LookupStore } from '../../../../core/store/lookup.store';
+import { AuthStore } from '../../../../core/store/auth.store';
 import { Household } from '../../../../core/models/household.model';
+import { HasPermissionDirective } from '../../../../core/directives/has-permission.directive';
 
 @Component({
   selector: 'app-household-general',
@@ -21,12 +23,14 @@ import { Household } from '../../../../core/models/household.model';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
+    HasPermissionDirective,
   ],
   templateUrl: './household-general.component.html',
 })
 export class HouseholdGeneralComponent implements OnInit {
   store = inject(HouseholdStore);
   lookupStore = inject(LookupStore);
+  authStore = inject(AuthStore);
   fb = inject(FormBuilder);
 
   form: FormGroup;
@@ -76,6 +80,11 @@ export class HouseholdGeneralComponent implements OnInit {
 
   save() {
     if (this.form.invalid) return;
+
+    // Check permission again in code for safety
+    if (!this.authStore.hasPermission('household.edit')) {
+      return;
+    }
 
     const formValue = this.form.getRawValue();
     const household = this.store.selectedHousehold();

@@ -22,5 +22,26 @@
         </mat-card-content>
       </mat-card>
     </a>
+
+    <!-- Roles & Permissions Card (Admin Only) -->
+    <a routerLink="/admin" class="block no-underline group h-full" *appHasPermission="'roles.view'">
+      <mat-card
+        class="h-full hover:shadow-lg transition-shadow cursor-pointer border border-gray-200 !rounded-xl"
+      >
+        <mat-card-content class="flex flex-col items-center justify-center p-8 text-center gap-4">
+          <div
+            class="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 transition-colors"
+          >
+            <mat-icon class="text-indigo-600 text-3xl w-8 h-8 !leading-8">security</mat-icon>
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">Administration</h3>
+            <p class="text-gray-500 text-sm">
+              Manage system roles, permissions, and security settings.
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </a>
   </div>
 </div>

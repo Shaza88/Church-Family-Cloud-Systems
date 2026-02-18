@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>{{ data.role ? 'Edit Role' : 'New Role' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-4">
+    <!-- Basic Info -->
+    <mat-form-field appearance="outline">
+      <mat-label>Role Name</mat-label>
+      <input matInput formControlName="name" placeholder="e.g. Editor" />
+      @if (form.get('name')?.hasError('required')) {
+        <mat-error>Name is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        rows="2"
+        placeholder="Describe what this role can do..."
+      ></textarea>
+      @if (form.get('description')?.hasError('required')) {
+        <mat-error>Description is required</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Permissions -->
+    <h3 class="text-sm font-medium text-gray-700 mt-2">Permissions</h3>
+    <div class="border rounded-lg overflow-hidden">
+      <mat-tab-group animationDuration="0ms">
+        @for (group of groupKeys; track group) {
+          <mat-tab [label]="group">
+            <div class="p-4 grid grid-cols-1 gap-4 max-h-60 overflow-y-auto">
+              @for (perm of permissionGroups[group]; track perm.id) {
+                <div class="flex items-center">
+                  <mat-checkbox
+                    [checked]="isPermissionSelected(perm.id)"
+                    (change)="togglePermission(perm.id)"
+                    color="primary"
+                    class="mr-4"
+                  >
+                    <span class="font-medium text-gray-900">{{ perm.name }}</span>
+                  </mat-checkbox>
+                  <span class="text-sm text-gray-500">{{ perm.description }}</span>
+                </div>
+              }
+            </div>
+          </mat-tab>
+        }
+      </mat-tab-group>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="save()"
+    [disabled]="form.invalid || form.pristine"
+  >
+    Save Role
+  </button>
+</mat-dialog-actions>

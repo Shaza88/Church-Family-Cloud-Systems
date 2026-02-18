@@ -1,0 +1,104 @@
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <!-- Logo or Icon -->
+    <div class="mx-auto h-12 w-12 rounded-full bg-indigo-600 flex items-center justify-center">
+      <mat-icon class="text-white">church</mat-icon>
+    </div>
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
+    <p class="mt-2 text-center text-sm text-gray-600">Church Family Cloud Systems</p>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border border-gray-200">
+      <form [formGroup]="form" (ngSubmit)="login()" class="space-y-6">
+        <!-- Username -->
+        <div>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username" type="text" autocomplete="username" />
+            <mat-icon matPrefix class="mr-2 text-gray-400">person</mat-icon>
+            @if (form.get('username')?.hasError('required')) {
+              <mat-error>Username is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              formControlName="password"
+              [type]="hidePassword ? 'password' : 'text'"
+              autocomplete="current-password"
+            />
+            <mat-icon matPrefix class="mr-2 text-gray-400">lock</mat-icon>
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            @if (form.get('password')?.hasError('required')) {
+              <mat-error>Password is required</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            class="w-full h-12 text-base"
+            [disabled]="form.invalid || authStore.loading()"
+          >
+            <span class="flex items-center justify-center gap-2">
+              @if (authStore.loading()) {
+                <mat-spinner diameter="20" class="custom-spinner"></mat-spinner>
+                <span>Signing in...</span>
+              } @else {
+                Sign in
+              }
+            </span>
+          </button>
+        </div>
+      </form>
+
+      <!-- Demo Credentials -->
+      <div class="mt-6">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-300"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500"> Demo Credentials </span>
+          </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-3 gap-3">
+          <button
+            type="button"
+            (click)="fillCreds('admin')"
+            class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-500 hover:bg-gray-50"
+          >
+            Admin/admin
+          </button>
+          <button
+            type="button"
+            (click)="fillCreds('user')"
+            class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-500 hover:bg-gray-50"
+          >
+            User/user
+          </button>
+          <button
+            type="button"
+            (click)="fillCreds('viewer')"
+            class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-500 hover:bg-gray-50"
+          >
+            Viewer/viewer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,7 +1,12 @@
 <!-- app.html -->
 <mat-sidenav-container class="h-screen w-full bg-gray-50">
   <!-- THE SIDEBAR -->
-  <mat-sidenav #sidenav mode="side" opened class="w-64 border-r border-gray-200">
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    [opened]="authStore.isAuthenticated()"
+    class="w-64 border-r border-gray-200"
+  >
     <!-- Header / Logo Area -->
     <div class="p-6 flex items-center gap-3">
       <div class="w-8 h-8 rounded-lg flex items-center justify-center">
@@ -37,6 +42,17 @@
 
       <a
         mat-list-item
+        routerLink="/admin"
+        routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
+        class="hover:bg-gray-50"
+        *appHasPermission="'roles.view'"
+      >
+        <mat-icon matListItemIcon class="text-gray-400">security</mat-icon>
+        <span class="text-gray-600">Administration</span>
+      </a>
+
+      <a
+        mat-list-item
         routerLink="/settings"
         routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
         class="hover:bg-gray-50"
@@ -48,13 +64,49 @@
   </mat-sidenav>
 
   <!-- THE MAIN CONTENT -->
-  <mat-sidenav-content class="flex flex-col h-full">
-    <!-- Optional: Top Toolbar (Mobile Toggle) -->
-    <mat-toolbar class="bg-white border-b border-gray-200 px-8 flex justify-start md:hidden">
-      <button mat-icon-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span class="font-bold text-gray-800 tracking-tight">CFCS</span>
+  <mat-sidenav-content class="flex flex-col h-full bg-gray-50">
+    <!-- Top Toolbar (Always Visible) -->
+    <mat-toolbar
+      class="bg-white border-b border-gray-200 px-6 flex justify-between items-center shadow-sm z-10"
+    >
+      <div class="flex items-center gap-4">
+        <button mat-icon-button (click)="sidenav.toggle()" class="md:hidden">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <!-- Breadcrumb or Title Placeholder -->
+        <span class="text-sm font-medium text-gray-500 hidden md:block"
+          >Church Family Cloud Systems</span
+        >
+        <span class="font-bold text-gray-800 tracking-tight md:hidden">CFCS</span>
+      </div>
+
+      <!-- User Profile & Actions -->
+      <div class="flex items-center gap-4" *ngIf="authStore.isAuthenticated()">
+        <span class="text-sm text-gray-600 hidden sm:block"
+          >Welcome, <strong>{{ authStore.username() }}</strong></span
+        >
+
+        <button mat-icon-button [matMenuTriggerFor]="userMenu" class="!overflow-visible">
+          <img
+            [src]="
+              authStore.userAvatar() || 'https://ui-avatars.com/api/?name=' + authStore.username()
+            "
+            class="w-9 h-9 rounded-full border border-gray-200 shadow-sm"
+            alt="User Avatar"
+          />
+        </button>
+        <mat-menu #userMenu="matMenu" class="mt-2">
+          <button mat-menu-item disabled>
+            <mat-icon>account_circle</mat-icon>
+            <span>Profile</span>
+          </button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
     </mat-toolbar>
 
     <!-- Main View -->
