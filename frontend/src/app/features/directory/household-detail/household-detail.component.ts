@@ -11,6 +11,7 @@ import { HouseholdDocumentsComponent } from './household-documents/household-doc
 import { HouseholdPicturesComponent } from './household-pictures/household-pictures.component';
 import { HouseholdRelationshipsComponent } from './household-relationships/household-relationships.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { HasPermissionDirective } from '../../../core/directives/has-permission.directive';
 
 @Component({
   selector: 'app-household-detail',
@@ -28,6 +29,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
     HouseholdPicturesComponent,
     HouseholdRelationshipsComponent,
     PageHeaderComponent,
+    HasPermissionDirective,
   ],
   templateUrl: './household-detail.component.html',
 })

@@ -127,6 +127,11 @@ export class AuthService {
     const stored = localStorage.getItem('mock_users');
     if (stored) {
       this.mockUsers = JSON.parse(stored);
+      console.log(
+        '[AuthService] Loaded mock users from LS:',
+        this.mockUsers.length,
+        this.mockUsers,
+      );
     } else {
       // Initial seeds
       this.mockUsers = [
@@ -135,6 +140,7 @@ export class AuthService {
         this.createMockUser('u3', 'viewer', ['r3']),
       ];
       this.saveMockUsers();
+      console.log('[AuthService] Seeded mock users');
     }
   }
 
@@ -191,6 +197,7 @@ export class AuthService {
           console.log(
             `[Mock Email] Invite Link: http://localhost:4200/auth/setup-password?token=${token}`,
           );
+          console.log('[AuthService] Saved user with token:', this.mockUsers[index]);
           observer.next(token);
         } else {
           observer.error('User not found');
@@ -203,13 +210,20 @@ export class AuthService {
   setupPassword(token: string, password: string): Observable<void> {
     return new Observable((observer) => {
       setTimeout(() => {
+        console.log('[AuthService] Attempting to setup password with token:', token);
+        console.log('[AuthService] Current mock users:', this.mockUsers);
         const userIndex = this.mockUsers.findIndex((u) => u.inviteToken === token);
         if (userIndex !== -1) {
           this.mockUsers[userIndex].passwordMock = password;
           this.mockUsers[userIndex].inviteToken = undefined; // Clear token
           this.saveMockUsers();
+          console.log('[AuthService] Password set for user:', this.mockUsers[userIndex].email);
           observer.next();
         } else {
+          console.error(
+            '[AuthService] Invalid or expired token. Available tokens:',
+            this.mockUsers.map((u) => u.inviteToken),
+          );
           observer.error('Invalid or expired token');
         }
         observer.complete();

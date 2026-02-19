@@ -21,19 +21,31 @@
       </mat-tab>
       <mat-tab label="Relationships">
         <ng-template matTabContent>
-          <app-household-relationships></app-household-relationships>
+          <div *appHasPermission="'relationships.view'; else noAccess">
+            <app-household-relationships></app-household-relationships>
+          </div>
         </ng-template>
       </mat-tab>
       <mat-tab label="Documents">
         <ng-template matTabContent>
-          <app-household-documents></app-household-documents>
+          <div *appHasPermission="'documents.view'; else noAccess">
+            <app-household-documents></app-household-documents>
+          </div>
         </ng-template>
       </mat-tab>
       <mat-tab label="Pictures">
         <ng-template matTabContent>
-          <app-household-pictures></app-household-pictures>
+          <div *appHasPermission="'pictures.view'; else noAccess">
+            <app-household-pictures></app-household-pictures>
+          </div>
         </ng-template>
       </mat-tab>
+      <ng-template #noAccess>
+        <div class="p-8 text-center text-gray-500">
+          <mat-icon class="text-4xl mb-2">lock</mat-icon>
+          <p>You do not have permission to view this content.</p>
+        </div>
+      </ng-template>
     </mat-tab-group>
   </div>
 </div>

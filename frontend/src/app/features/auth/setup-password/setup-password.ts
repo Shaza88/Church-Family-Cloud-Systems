@@ -133,6 +133,7 @@ export class SetupPasswordComponent implements OnInit {
   ngOnInit() {
     this.authService.logout(); // Ensure we are fresh
     this.token = this.route.snapshot.queryParamMap.get('token');
+    console.log('[SetupPassword] Token from URL:', this.token);
     if (!this.token) {
       this.notificationService.error('Invalid link. Please request a new one.');
       this.router.navigate(['/login']);

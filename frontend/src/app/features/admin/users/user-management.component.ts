@@ -16,6 +16,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { UserDialogComponent } from './user-dialog.component';
 import { MOCK_ROLES } from '../../../core/data/mock-auth';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { HasPermissionDirective } from '../../../core/directives/has-permission.directive';
 
 @Component({
   selector: 'app-user-management',
@@ -33,6 +34,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
     MatInputModule,
     MatFormFieldModule,
     PageHeaderComponent,
+    HasPermissionDirective,
   ],
   templateUrl: './user-management.component.html',
 })

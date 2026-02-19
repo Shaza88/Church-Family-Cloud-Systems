@@ -32,12 +32,11 @@
           <mat-tab [label]="group">
             <div class="p-4 grid grid-cols-1 gap-4 max-h-60 overflow-y-auto">
               @for (perm of permissionGroups[group]; track perm.id) {
-                <div class="flex items-center">
+                <div class="grid grid-cols-[200px_1fr] items-center gap-4">
                   <mat-checkbox
                     [checked]="isPermissionSelected(perm.id)"
                     (change)="togglePermission(perm.id)"
                     color="primary"
-                    class="mr-4"
                   >
                     <span class="font-medium text-gray-900">{{ perm.name }}</span>
                   </mat-checkbox>
