@@ -7,8 +7,10 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthStore } from './core/store/auth.store';
 import { HasPermissionDirective } from './core/directives/has-permission.directive';
+import { ChangePasswordDialogComponent } from './features/auth/change-password-dialog/change-password-dialog.component';
 
 @Component({
   selector: 'cfcs-root',
@@ -23,6 +25,7 @@ import { HasPermissionDirective } from './core/directives/has-permission.directi
     MatToolbarModule,
     MatButtonModule,
     MatMenuModule,
+    MatDialogModule,
     HasPermissionDirective,
   ],
   templateUrl: './app.html',
@@ -30,6 +33,7 @@ import { HasPermissionDirective } from './core/directives/has-permission.directi
 })
 export class App implements OnInit {
   authStore = inject(AuthStore);
+  dialog = inject(MatDialog);
   title = 'church-family-cloud-systems';
 
   constructor() {}
@@ -40,5 +44,12 @@ export class App implements OnInit {
 
   logout() {
     this.authStore.logout();
+  }
+
+  openChangePasswordDialog() {
+    this.dialog.open(ChangePasswordDialogComponent, {
+      width: '400px',
+      disableClose: true,
+    });
   }
 }

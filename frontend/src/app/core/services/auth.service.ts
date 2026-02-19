@@ -10,53 +10,44 @@ export class AuthService {
   private readonly TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'auth_user';
 
-  constructor() {}
-
   login(credentials: LoginRequest): Observable<AuthResponse> {
     // Mock authentication logic
     // In a real app, this would hit the API
     return new Observable((observer) => {
       console.log('Login attempt with:', credentials);
-      const username = credentials.username?.trim().toLowerCase();
+      const email = credentials.email?.trim().toLowerCase();
       const password = credentials.password;
 
       setTimeout(() => {
-        if (username === 'admin' && password === 'admin') {
-          const user = this.createMockUser('u1', 'admin', ['r1']); // Admin Role
-          const permissions = this.resolvePermissions(user.roles);
-          const response: AuthResponse = {
-            user,
-            token: 'mock-jwt-token-admin',
-            permissions,
-          };
-          this.saveSession(response);
-          observer.next(response);
-          observer.complete();
-        } else if (username === 'user' && password === 'user') {
-          const user = this.createMockUser('u2', 'user', ['r2']); // Secretary Role
-          const permissions = this.resolvePermissions(user.roles);
-          const response: AuthResponse = {
-            user,
-            token: 'mock-jwt-token-user',
-            permissions,
-          };
-          this.saveSession(response);
-          observer.next(response);
-          observer.complete();
-        } else if (username === 'viewer' && password === 'viewer') {
-          const user = this.createMockUser('u3', 'viewer', ['r3']); // Viewer Role
-          const permissions = this.resolvePermissions(user.roles);
-          const response: AuthResponse = {
-            user,
-            token: 'mock-jwt-token-viewer',
-            permissions,
-          };
-          this.saveSession(response);
-          observer.next(response);
-          observer.complete();
-        } else {
-          observer.error({ message: 'Invalid username or password' });
+        // Find user by email
+        const user = this.mockUsers.find((u) => u.email.toLowerCase() === email);
+
+        if (user) {
+          // Check if user has a set password (mock)
+          if (user.passwordMock) {
+            if (user.passwordMock === password) {
+              this.handleLoginSuccess(observer, user);
+              return;
+            } else {
+              observer.error({ message: 'Invalid email or password' });
+              return;
+            }
+          }
+
+          // Fallback to legacy hardcoded passwords for initial mock users
+          // Using email prefix as password for data compatibility
+          const emailPrefix = user.email.split('@')[0];
+          if (
+            (emailPrefix === 'admin' && password === 'admin') ||
+            (emailPrefix === 'user' && password === 'user') ||
+            (emailPrefix === 'viewer' && password === 'viewer')
+          ) {
+            this.handleLoginSuccess(observer, user);
+            return;
+          }
         }
+
+        observer.error({ message: 'Invalid email or password' });
       }, 1000); // Simulate network delay
     });
   }
@@ -85,14 +76,27 @@ export class AuthService {
     localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
   }
 
-  private createMockUser(id: string, username: string, roles: string[]): User {
+  private createMockUser(id: string, emailPrefix: string, roles: string[]): User {
     return {
       id,
-      username,
-      email: `${username}@example.com`,
+      email: `${emailPrefix}@example.com`,
+      firstName: emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1),
+      lastName: 'User',
       roles,
-      avatarUrl: `https://ui-avatars.com/api/?name=${username}&background=random`,
+      avatarUrl: `https://ui-avatars.com/api/?name=${emailPrefix}&background=random`,
     };
+  }
+
+  private handleLoginSuccess(observer: any, user: User) {
+    const permissions = this.resolvePermissions(user.roles);
+    const response: AuthResponse = {
+      user,
+      token: `mock-jwt-token-${user.id}`,
+      permissions,
+    };
+    this.saveSession(response);
+    observer.next(response);
+    observer.complete();
   }
 
   private resolvePermissions(roleIds: string[]): string[] {
@@ -111,5 +115,171 @@ export class AuthService {
     });
 
     return Array.from(permissions);
+  }
+  // Mock Users State
+  private mockUsers: User[] = [];
+
+  constructor() {
+    this.loadMockUsers();
+  }
+
+  private loadMockUsers() {
+    const stored = localStorage.getItem('mock_users');
+    if (stored) {
+      this.mockUsers = JSON.parse(stored);
+    } else {
+      // Initial seeds
+      this.mockUsers = [
+        this.createMockUser('u1', 'admin', ['r1']),
+        this.createMockUser('u2', 'user', ['r2']),
+        this.createMockUser('u3', 'viewer', ['r3']),
+      ];
+      this.saveMockUsers();
+    }
+  }
+
+  private saveMockUsers() {
+    localStorage.setItem('mock_users', JSON.stringify(this.mockUsers));
+  }
+
+  getUsers(): Observable<User[]> {
+    return of(this.mockUsers).pipe(delay(500));
+  }
+
+  saveUser(user: User): Observable<User> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const index = this.mockUsers.findIndex((u) => u.id === user.id);
+        if (index !== -1) {
+          // Update
+          this.mockUsers[index] = user;
+          observer.next(user);
+        } else {
+          // Create
+          const newUser = { ...user, id: crypto.randomUUID() };
+          this.mockUsers.push(newUser);
+          this.saveMockUsers();
+          observer.next(newUser);
+        }
+        this.saveMockUsers(); // Save updates
+        observer.complete();
+      }, 500);
+    });
+  }
+
+  deleteUser(id: string): Observable<void> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        this.mockUsers = this.mockUsers.filter((u) => u.id !== id);
+        this.saveMockUsers();
+        observer.next();
+        observer.complete();
+      }, 500);
+    });
+  }
+
+  // --- Password Management ---
+
+  inviteUser(user: User): Observable<string> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const token = this.generateToken();
+        const index = this.mockUsers.findIndex((u) => u.id === user.id);
+        if (index !== -1) {
+          this.mockUsers[index].inviteToken = token;
+          this.saveMockUsers();
+          console.log(
+            `[Mock Email] Invite Link: http://localhost:4200/auth/setup-password?token=${token}`,
+          );
+          observer.next(token);
+        } else {
+          observer.error('User not found');
+        }
+        observer.complete();
+      }, 500);
+    });
+  }
+
+  setupPassword(token: string, password: string): Observable<void> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const userIndex = this.mockUsers.findIndex((u) => u.inviteToken === token);
+        if (userIndex !== -1) {
+          this.mockUsers[userIndex].passwordMock = password;
+          this.mockUsers[userIndex].inviteToken = undefined; // Clear token
+          this.saveMockUsers();
+          observer.next();
+        } else {
+          observer.error('Invalid or expired token');
+        }
+        observer.complete();
+      }, 500);
+    });
+  }
+
+  forgotPassword(email: string): Observable<void> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const userIndex = this.mockUsers.findIndex((u) => u.email === email);
+        if (userIndex !== -1) {
+          const token = this.generateToken();
+          this.mockUsers[userIndex].inviteToken = token; // Reuse inviteToken for reset
+          this.saveMockUsers();
+          console.log(
+            `[Mock Email] Reset Link: http://localhost:4200/auth/reset-password?token=${token}`,
+          );
+          observer.next();
+        } else {
+          // Internal security practice: Don't reveal if email exists, but for mock we can just succeed
+          observer.next();
+        }
+        observer.complete();
+      }, 500);
+    });
+  }
+
+  resetPassword(token: string, password: string): Observable<void> {
+    return this.setupPassword(token, password); // Reuse setup logic
+  }
+
+  changePassword(oldPassword: string, newPassword: string): Observable<void> {
+    return new Observable((observer) => {
+      setTimeout(() => {
+        const userStr = localStorage.getItem(this.USER_KEY);
+        if (userStr) {
+          const user = JSON.parse(userStr);
+          const mockUserIndex = this.mockUsers.findIndex((u) => u.id === user.id);
+
+          if (mockUserIndex !== -1) {
+            const mockUser = this.mockUsers[mockUserIndex];
+            // Verify old password (mock check)
+            // In a real app the backend handles this.
+            // For mock, we assume success if oldPassword is not empty.
+            if (!oldPassword) {
+              observer.error({ message: 'Current password is required' });
+              return;
+            }
+
+            // Update password
+            this.mockUsers[mockUserIndex].passwordMock = newPassword;
+            this.saveMockUsers();
+            observer.next();
+            observer.complete();
+          } else {
+            observer.error({ message: 'User not found' });
+            observer.complete();
+          }
+        } else {
+          observer.error({ message: 'No active session' });
+          observer.complete();
+        }
+      }, 500);
+    });
+  }
+
+  private generateToken(): string {
+    return (
+      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    );
   }
 }

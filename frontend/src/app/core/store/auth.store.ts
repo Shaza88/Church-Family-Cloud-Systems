@@ -26,8 +26,8 @@ export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withComputed(({ user }) => ({
-    isAdmin: computed(() => user()?.username === 'admin'), // Simple check, ideally check role ID
-    username: computed(() => user()?.username || 'Guest'),
+    isAdmin: computed(() => user()?.email?.startsWith('admin') ?? false), // Simple check
+    username: computed(() => user()?.firstName || 'Guest'),
     userAvatar: computed(() => user()?.avatarUrl),
   })),
   withMethods(
@@ -57,7 +57,7 @@ export const AuthStore = signalStore(
                   isAuthenticated: true,
                   loading: false,
                 });
-                notificationService.success(`Welcome back, ${response.user.username}!`);
+                notificationService.success(`Welcome back, ${response.user.firstName}!`);
                 router.navigate(['/directory']);
               },
               error: (err) => {

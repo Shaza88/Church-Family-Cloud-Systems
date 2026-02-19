@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { LookupStore } from '../../../core/store/lookup.store';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'cfcs-household-directory',
@@ -37,6 +38,7 @@ import { LookupStore } from '../../../core/store/lookup.store';
     MatSelectModule,
     MatProgressSpinnerModule,
     FormsModule,
+    PageHeaderComponent,
   ],
   templateUrl: './household-directory.html',
   styleUrl: './household-directory.scss',

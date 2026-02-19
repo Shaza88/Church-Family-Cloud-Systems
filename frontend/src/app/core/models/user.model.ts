@@ -14,10 +14,20 @@ export interface Role {
 
 export interface User {
   id: string;
-  username: string;
   email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  address?: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+  };
   avatarUrl?: string; // Optional avatar
   roles: string[]; // Role IDs
+  passwordMock?: string; // Mock password storage
+  inviteToken?: string; // Token for setting up password
 }
 
 export interface AuthResponse {
@@ -27,6 +37,6 @@ export interface AuthResponse {
 }
 
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
 }

@@ -1,47 +1,56 @@
-<div class="p-6 max-w-6xl mx-auto">
-  <h1 class="text-2xl font-bold text-gray-800 mb-6">Settings</h1>
+<div class="container mx-auto p-4 md:p-6 max-w-7xl">
+  <app-page-header title="Settings" subtitle="System configuration and tools"></app-page-header>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <!-- Lookups Management Card -->
-    <a routerLink="/settings/lookups" class="block no-underline group h-full">
-      <mat-card
-        class="h-full hover:shadow-lg transition-shadow cursor-pointer border border-gray-200 !rounded-xl"
-      >
-        <mat-card-content class="flex flex-col items-center justify-center p-8 text-center gap-4">
-          <div
-            class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors"
-          >
-            <mat-icon class="text-blue-600 text-3xl w-8 h-8 !leading-8">list_alt</mat-icon>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">Manage Lookups</h3>
-            <p class="text-gray-500 text-sm">
-              Customize drop-down values for Genders, Statuses, and Professions.
-            </p>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </a>
+    <mat-card
+      class="hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col"
+      routerLink="/settings/lookups"
+    >
+      <mat-card-header>
+        <div
+          mat-card-avatar
+          class="bg-blue-100 flex items-center justify-center rounded-full text-blue-600"
+        >
+          <mat-icon>list_alt</mat-icon>
+        </div>
+        <mat-card-title>Manage Lookups</mat-card-title>
+        <mat-card-subtitle>System Dropdowns</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="pt-4 flex-1">
+        <p class="text-gray-600">
+          Customize drop-down values for Genders, Statuses, and Professions used across the system.
+        </p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-button color="primary">Manage Lookups</button>
+      </mat-card-actions>
+    </mat-card>
 
     <!-- Roles & Permissions Card (Admin Only) -->
-    <a routerLink="/admin" class="block no-underline group h-full" *appHasPermission="'roles.view'">
-      <mat-card
-        class="h-full hover:shadow-lg transition-shadow cursor-pointer border border-gray-200 !rounded-xl"
-      >
-        <mat-card-content class="flex flex-col items-center justify-center p-8 text-center gap-4">
-          <div
-            class="w-16 h-16 rounded-full bg-indigo-50 flex items-center justify-center group-hover:bg-indigo-100 transition-colors"
-          >
-            <mat-icon class="text-indigo-600 text-3xl w-8 h-8 !leading-8">security</mat-icon>
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-2">Administration</h3>
-            <p class="text-gray-500 text-sm">
-              Manage system roles, permissions, and security settings.
-            </p>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </a>
+    <mat-card
+      class="hover:shadow-lg transition-shadow cursor-pointer h-full flex flex-col"
+      routerLink="/admin"
+      *appHasPermission="'roles.view'"
+    >
+      <mat-card-header>
+        <div
+          mat-card-avatar
+          class="bg-indigo-100 flex items-center justify-center rounded-full text-indigo-600"
+        >
+          <mat-icon>security</mat-icon>
+        </div>
+        <mat-card-title>Administration</mat-card-title>
+        <mat-card-subtitle>Security & Users</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content class="pt-4 flex-1">
+        <p class="text-gray-600">
+          Manage system roles, permissions, user accounts, and security settings.
+        </p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-button color="primary">Go to Admin</button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 </div>

@@ -1,17 +1,10 @@
-<div class="p-6 max-w-6xl mx-auto">
+<div class="container mx-auto p-4 md:p-6 max-w-7xl">
   <!-- Header -->
-  <div class="flex items-center gap-4 mb-6">
-    <button mat-icon-button (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <h1 class="text-2xl font-bold text-gray-800 m-0">
-      @if (isEditMode) {
-        {{ store.selectedHousehold()?.name || 'Loading...' }}
-      } @else {
-        New Household
-      }
-    </h1>
-  </div>
+  <app-page-header
+    [title]="isEditMode ? store.selectedHousehold()?.name || 'Loading...' : 'New Household'"
+  >
+    <button mat-flat-button (click)="goBack()"><mat-icon>arrow_back</mat-icon> Back</button>
+  </app-page-header>
 
   <!-- Content -->
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden min-h-[600px]">

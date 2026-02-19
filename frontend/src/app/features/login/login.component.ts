@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,6 +20,7 @@ import { AuthStore } from '../../core/store/auth.store';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    RouterLink,
   ],
   templateUrl: './login.component.html',
 })
@@ -31,7 +33,7 @@ export class LoginComponent {
 
   constructor() {
     this.form = this.fb.group({
-      username: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
   }
@@ -45,7 +47,7 @@ export class LoginComponent {
 
   fillCreds(role: string) {
     this.form.patchValue({
-      username: role,
+      email: `${role}@example.com`,
       password: role,
     });
   }

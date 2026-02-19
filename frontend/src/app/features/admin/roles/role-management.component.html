@@ -1,13 +1,9 @@
-<div class="p-6 max-w-7xl mx-auto">
-  <div class="flex justify-between items-center mb-6">
-    <div>
-      <h1 class="text-3xl font-bold text-gray-900">Role Management</h1>
-      <p class="mt-1 text-gray-600">Configure roles and their permissions.</p>
-    </div>
+<div class="container mx-auto p-4 md:p-6 max-w-7xl">
+  <app-page-header title="Role Management" subtitle="Configure roles and their permissions">
     <button mat-flat-button color="primary" (click)="addRole()">
       <mat-icon>add</mat-icon> New Role
     </button>
-  </div>
+  </app-page-header>
 
   <div class="bg-white rounded-lg shadow overflow-hidden">
     <table mat-table [dataSource]="roles()" class="w-full">

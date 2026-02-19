@@ -1,0 +1,102 @@
+<div class="container mx-auto p-4 md:p-6 max-w-7xl h-full flex flex-col">
+  <!-- Header -->
+  <app-page-header title="User Management" subtitle="Manage system users and their roles">
+    <button mat-flat-button color="primary" (click)="openUserDialog()">
+      <mat-icon>add</mat-icon> Add User
+    </button>
+  </app-page-header>
+
+  <!-- Filter -->
+  <mat-form-field appearance="outline" class="w-full md:w-1/3 mb-4">
+    <mat-label>Search Users</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Ex. John Doe" #input />
+    <mat-icon matPrefix class="mr-2 text-gray-400">search</mat-icon>
+  </mat-form-field>
+
+  <!-- Table -->
+  <div class="bg-white rounded-lg shadow overflow-hidden flex-1 flex flex-col">
+    <div class="overflow-auto flex-1">
+      <table mat-table [dataSource]="dataSource" matSort class="w-full">
+        <!-- Name Column -->
+        <mat-ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+          <td mat-cell *matCellDef="let user">
+            <div class="flex items-center">
+              <img
+                [src]="user.avatarUrl"
+                class="w-8 h-8 rounded-full mr-3 border border-gray-200"
+                alt="Avatar"
+              />
+              <div>
+                <div class="font-medium text-gray-900">
+                  {{ user.firstName }} {{ user.lastName }}
+                </div>
+              </div>
+            </div>
+          </td>
+        </mat-ng-container>
+
+        <!-- Email Column -->
+        <mat-ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Email</th>
+          <td mat-cell *matCellDef="let user">{{ user.email }}</td>
+        </mat-ng-container>
+
+        <!-- Role Column -->
+        <mat-ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>Roles</th>
+          <td mat-cell *matCellDef="let user">
+            <div class="flex flex-wrap gap-1">
+              @for (roleId of user.roles; track roleId) {
+                <span
+                  class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800"
+                >
+                  {{ getRoleName(roleId) }}
+                </span>
+              }
+            </div>
+          </td>
+        </mat-ng-container>
+
+        <mat-ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="w-24">Actions</th>
+          <td mat-cell *matCellDef="let user">
+            <div class="flex items-center gap-1">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="openUserDialog(user)"
+                matTooltip="Edit User"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="deleteUser(user)"
+                matTooltip="Delete User"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </mat-ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">
+            <div class="p-8 text-center text-gray-500">No users matching "{{ input.value }}"</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 100]"
+      aria-label="Select page of users"
+    ></mat-paginator>
+  </div>
+</div>

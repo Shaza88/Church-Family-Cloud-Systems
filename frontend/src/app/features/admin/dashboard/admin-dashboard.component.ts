@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { AuthStore } from '../../../core/store/auth.store';
 import { HasPermissionDirective } from '../../../core/directives/has-permission.directive';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -16,7 +17,9 @@ import { HasPermissionDirective } from '../../../core/directives/has-permission.
     MatButtonModule,
     MatIconModule,
     RouterModule,
+    RouterModule,
     HasPermissionDirective,
+    PageHeaderComponent,
   ],
   templateUrl: './admin-dashboard.component.html',
 })

@@ -1,0 +1,93 @@
+<h2 mat-dialog-title>{{ data.user ? 'Edit User' : 'New User' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-4">
+    <!-- Account Info -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" placeholder="john@example.com" />
+        @if (form.get('email')?.hasError('required')) {
+          <mat-error>Email is required</mat-error>
+        } @else if (form.get('email')?.hasError('email')) {
+          <mat-error>Invalid email</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Phone</mat-label>
+        <input matInput formControlName="phone" placeholder="(555) 123-4567" />
+      </mat-form-field>
+    </div>
+
+    <!-- Personal Info -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" />
+        @if (form.get('firstName')?.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" />
+        @if (form.get('lastName')?.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <!-- Role Selection -->
+    <mat-form-field appearance="outline">
+      <mat-label>Roles</mat-label>
+      <mat-select formControlName="roles" multiple>
+        @for (role of roles; track role.id) {
+          <mat-option [value]="role.id">{{ role.name }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('roles')?.hasError('required')) {
+        <mat-error>At least one role is required</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Address Group -->
+    <fieldset formGroupName="address" class="border rounded p-4">
+      <legend class="text-sm font-medium text-gray-700 px-2">Address</legend>
+      <div class="grid grid-cols-1 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Street</mat-label>
+          <input matInput formControlName="street" />
+        </mat-form-field>
+
+        <div class="grid grid-cols-3 gap-4">
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <input matInput formControlName="city" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>State</mat-label>
+            <input matInput formControlName="state" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Zip</mat-label>
+            <input matInput formControlName="zip" />
+          </mat-form-field>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button
+    mat-flat-button
+    color="primary"
+    (click)="save()"
+    [disabled]="form.invalid || form.pristine"
+  >
+    Save User
+  </button>
+</mat-dialog-actions>

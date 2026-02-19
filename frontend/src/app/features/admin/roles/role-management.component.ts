@@ -9,6 +9,7 @@ import { MOCK_ROLES } from '../../../core/data/mock-auth';
 import { Role } from '../../../core/models/user.model';
 import { RoleDialogComponent } from './role-dialog.component';
 import { NotificationService } from '../../../core/services/notification.service';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-role-management',
@@ -19,7 +20,9 @@ import { NotificationService } from '../../../core/services/notification.service
     MatButtonModule,
     MatIconModule,
     MatDialogModule,
+    MatDialogModule,
     MatTooltipModule,
+    PageHeaderComponent,
   ],
   templateUrl: './role-management.component.html',
 })

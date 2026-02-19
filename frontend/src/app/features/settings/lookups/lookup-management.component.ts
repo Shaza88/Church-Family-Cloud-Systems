@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { LookupStore } from '../../../core/store/lookup.store';
 import { LookupValue } from '../../../core/models/lookup.model';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'cfcs-lookup-management',
@@ -21,7 +22,9 @@ import { LookupValue } from '../../../core/models/lookup.model';
     MatIconModule,
     MatButtonModule,
     MatInputModule,
+    MatInputModule,
     MatFormFieldModule,
+    PageHeaderComponent,
   ],
   templateUrl: './lookup-management.component.html',
   styleUrl: './lookup-management.component.scss',

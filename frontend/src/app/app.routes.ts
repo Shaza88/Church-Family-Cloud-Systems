@@ -12,6 +12,23 @@ export const routes: Routes = [
     loadComponent: () => import('./features/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'auth/forgot-password',
+    loadComponent: () =>
+      import('./features/auth/forgot-password/forgot-password').then(
+        (m) => m.ForgotPasswordComponent,
+      ),
+  },
+  {
+    path: 'auth/setup-password',
+    loadComponent: () =>
+      import('./features/auth/setup-password/setup-password').then((m) => m.SetupPasswordComponent),
+  },
+  {
+    path: 'auth/reset-password',
+    loadComponent: () =>
+      import('./features/auth/setup-password/setup-password').then((m) => m.SetupPasswordComponent),
+  },
+  {
     path: 'directory',
     canActivate: [authGuard],
     loadChildren: () =>

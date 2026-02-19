@@ -10,6 +10,7 @@ import { HouseholdMembersComponent } from './household-members/household-members
 import { HouseholdDocumentsComponent } from './household-documents/household-documents.component';
 import { HouseholdPicturesComponent } from './household-pictures/household-pictures.component';
 import { HouseholdRelationshipsComponent } from './household-relationships/household-relationships.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-household-detail',
@@ -26,6 +27,7 @@ import { HouseholdRelationshipsComponent } from './household-relationships/house
     HouseholdDocumentsComponent,
     HouseholdPicturesComponent,
     HouseholdRelationshipsComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './household-detail.component.html',
 })
