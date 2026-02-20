@@ -5,6 +5,7 @@ import { getHouseholds } from '../data/mock-households';
 import { SortDirection } from '../models/query.model';
 import { inject } from '@angular/core';
 import { NotificationService } from '../services/notification.service';
+import { AuthStore } from './auth.store';
 
 type HouseholdState = {
   households: Household[];
@@ -13,6 +14,8 @@ type HouseholdState = {
   filter: string;
   advancedFilter: {
     status?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
     profession?: string | null;
     email?: string | null;
     phone?: string | null;
@@ -45,6 +48,8 @@ export const HouseholdStore = signalStore(
 
   withMethods((store) => {
     const notificationService = inject(NotificationService);
+    const authStore = inject(AuthStore);
+
     return {
       loadHouseholds() {
         patchState(store, { loading: true });
@@ -103,20 +108,42 @@ export const HouseholdStore = signalStore(
         this.loadHouseholds();
       },
       addHousehold(household: Household) {
+        const currentUserEmail = authStore.user()?.email || 'system';
+        const now = new Date().toISOString();
+        const newHousehold = {
+          ...household,
+          createdBy: currentUserEmail,
+          createdAt: now,
+          lastModifiedBy: currentUserEmail,
+          lastModifiedAt: now,
+        };
+
         import('../data/mock-households').then((mod) => {
-          mod.MOCK_HOUSEHOLDS.push(household);
+          mod.MOCK_HOUSEHOLDS.push(newHousehold);
           this.loadHouseholds();
           notificationService.success('Household added successfully');
         });
       },
       updateHousehold(updatedHousehold: Household) {
+        const currentUserEmail = authStore.user()?.email || 'system';
+        const now = new Date().toISOString();
+
         import('../data/mock-households').then((mod) => {
           const index = mod.MOCK_HOUSEHOLDS.findIndex((h) => h.id === updatedHousehold.id);
           if (index !== -1) {
-            mod.MOCK_HOUSEHOLDS[index] = updatedHousehold;
+            const existing = mod.MOCK_HOUSEHOLDS[index];
+            const toSave = {
+              ...updatedHousehold,
+              createdBy: existing.createdBy || currentUserEmail,
+              createdAt: existing.createdAt || now,
+              lastModifiedBy: currentUserEmail,
+              lastModifiedAt: now,
+            };
+
+            mod.MOCK_HOUSEHOLDS[index] = toSave;
             // Update selected household if it's the one being edited
             if (store.selectedHousehold()?.id === updatedHousehold.id) {
-              patchState(store, { selectedHousehold: updatedHousehold });
+              patchState(store, { selectedHousehold: toSave });
             }
             this.loadHouseholds();
             notificationService.success('Household updated successfully');

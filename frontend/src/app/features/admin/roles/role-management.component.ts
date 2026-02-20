@@ -10,6 +10,7 @@ import { Role } from '../../../core/models/user.model';
 import { RoleDialogComponent } from './role-dialog.component';
 import { NotificationService } from '../../../core/services/notification.service';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { AuthStore } from '../../../core/store/auth.store';
 
 @Component({
   selector: 'app-role-management',
@@ -29,6 +30,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 export class RoleManagementComponent {
   dialog = inject(MatDialog);
   notificationService = inject(NotificationService);
+  authStore = inject(AuthStore);
 
   // In a real app, this would be in a store
   roles = signal<Role[]>(MOCK_ROLES);
@@ -43,7 +45,19 @@ export class RoleManagementComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.roles.update((roles) => [...roles, { ...result, id: crypto.randomUUID() }]);
+        const currentUserEmail = this.authStore.user()?.email || 'system';
+        const now = new Date().toISOString();
+        this.roles.update((roles) => [
+          ...roles,
+          {
+            ...result,
+            id: crypto.randomUUID(),
+            createdBy: currentUserEmail,
+            createdAt: now,
+            lastModifiedBy: currentUserEmail,
+            lastModifiedAt: now,
+          },
+        ]);
         this.notificationService.success('Role added successfully');
       }
     });
@@ -57,8 +71,21 @@ export class RoleManagementComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
+        const currentUserEmail = this.authStore.user()?.email || 'system';
+        const now = new Date().toISOString();
         this.roles.update((roles) =>
-          roles.map((r) => (r.id === role.id ? { ...result, id: role.id } : r)),
+          roles.map((r) =>
+            r.id === role.id
+              ? {
+                  ...result,
+                  id: role.id,
+                  createdBy: r.createdBy || currentUserEmail,
+                  createdAt: r.createdAt || now,
+                  lastModifiedBy: currentUserEmail,
+                  lastModifiedAt: now,
+                }
+              : r,
+          ),
         );
         this.notificationService.success('Role updated successfully');
       }

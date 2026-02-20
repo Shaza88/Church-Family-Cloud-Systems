@@ -1,3 +1,5 @@
+import { AuditableEntity } from './base.model';
+
 export type MemberRole = 'Head' | 'Spouse' | 'Child' | 'Other';
 export type HouseholdStatus = 'Active' | 'Visitor' | 'Inactive';
 
@@ -23,7 +25,7 @@ export interface Address {
   zip: string;
 }
 
-export interface Household {
+export interface Household extends AuditableEntity {
   id: string;
   name: string;
   address: Address;

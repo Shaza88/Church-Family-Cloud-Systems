@@ -15,6 +15,8 @@ export interface QueryRequest extends PageRequest {
   search?: string;
   filters?: {
     status?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
     profession?: string | null;
     email?: string | null;
     phone?: string | null;

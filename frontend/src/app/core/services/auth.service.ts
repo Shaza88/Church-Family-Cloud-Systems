@@ -155,14 +155,32 @@ export class AuthService {
   saveUser(user: User): Observable<User> {
     return new Observable((observer) => {
       setTimeout(() => {
+        const currentUserStr = localStorage.getItem(this.USER_KEY);
+        const currentUserEmail = currentUserStr ? JSON.parse(currentUserStr).email : 'system';
+        const now = new Date().toISOString();
+
         const index = this.mockUsers.findIndex((u) => u.id === user.id);
         if (index !== -1) {
           // Update
-          this.mockUsers[index] = user;
-          observer.next(user);
+          const existingUser = this.mockUsers[index];
+          this.mockUsers[index] = {
+            ...user,
+            createdBy: existingUser.createdBy || currentUserEmail,
+            createdAt: existingUser.createdAt || now,
+            lastModifiedBy: currentUserEmail,
+            lastModifiedAt: now,
+          };
+          observer.next(this.mockUsers[index]);
         } else {
           // Create
-          const newUser = { ...user, id: crypto.randomUUID() };
+          const newUser = {
+            ...user,
+            id: crypto.randomUUID(),
+            createdBy: currentUserEmail,
+            createdAt: now,
+            lastModifiedBy: currentUserEmail,
+            lastModifiedAt: now,
+          };
           this.mockUsers.push(newUser);
           this.saveMockUsers();
           observer.next(newUser);

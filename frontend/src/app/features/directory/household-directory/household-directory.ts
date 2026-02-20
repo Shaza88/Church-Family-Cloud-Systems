@@ -51,6 +51,8 @@ export class HouseholdDirectoryComponent implements OnInit {
 
   advancedFilters = {
     status: '',
+    firstName: '',
+    lastName: '',
     profession: '',
     email: '',
     phone: '',
@@ -73,6 +75,8 @@ export class HouseholdDirectoryComponent implements OnInit {
   clearAdvancedFilter() {
     this.advancedFilters = {
       status: '',
+      firstName: '',
+      lastName: '',
       profession: '',
       email: '',
       phone: '',

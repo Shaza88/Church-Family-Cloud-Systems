@@ -12,14 +12,16 @@
   </app-page-header>
 
   <!-- Filter -->
-  <mat-form-field appearance="outline" class="w-full md:w-1/3 mb-4">
-    <mat-label>Search Users</mat-label>
+  <mat-form-field appearance="outline" class="w-full mb-6" subscriptSizing="dynamic">
+    <mat-label>Search users (Name, Email)...</mat-label>
     <input matInput (keyup)="applyFilter($event)" placeholder="Ex. John Doe" #input />
-    <mat-icon matPrefix class="mr-2 text-gray-400">search</mat-icon>
+    <mat-icon matSuffix class="text-gray-400">search</mat-icon>
   </mat-form-field>
 
   <!-- Table -->
-  <div class="bg-white rounded-lg shadow overflow-hidden flex-1 flex flex-col">
+  <div
+    class="mat-elevation-z8 rounded-lg overflow-hidden flex-1 flex flex-col relative min-h-[300px]"
+  >
     <div class="overflow-auto flex-1">
       <table mat-table [dataSource]="dataSource" matSort class="w-full">
         <!-- Name Column -->

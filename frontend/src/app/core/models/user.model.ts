@@ -1,3 +1,5 @@
+import { AuditableEntity } from './base.model';
+
 export interface Permission {
   id: string;
   name: string; // e.g. 'household.view'
@@ -5,14 +7,14 @@ export interface Permission {
   description: string;
 }
 
-export interface Role {
+export interface Role extends AuditableEntity {
   id: string;
   name: string; // e.g. 'Admin', 'Viewer'
   description: string;
   permissionIds: string[];
 }
 
-export interface User {
+export interface User extends AuditableEntity {
   id: string;
   email: string;
   firstName: string;

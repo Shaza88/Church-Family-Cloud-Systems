@@ -563,10 +563,26 @@ export function getHouseholds(query: QueryRequest): Observable<PageResponse<Hous
 
   // Advanced Filters
   if (query.filters) {
-    const { status, profession, email, phone, city, zip } = query.filters;
+    const { status, firstName, lastName, profession, email, phone, city, zip } = query.filters;
 
     if (status) {
       filteredHouseholds = filteredHouseholds.filter((h) => h.status === status);
+    }
+
+    if (firstName) {
+      const fn = firstName.toLowerCase();
+      filteredHouseholds = filteredHouseholds.filter((h) =>
+        h.members.some((m) => m.role === 'Head' && m.firstName?.toLowerCase().includes(fn)),
+      );
+    }
+
+    if (lastName) {
+      const ln = lastName.toLowerCase();
+      filteredHouseholds = filteredHouseholds.filter(
+        (h) =>
+          h.members.some((m) => m.role === 'Head' && m.lastName?.toLowerCase().includes(ln)) ||
+          h.name.toLowerCase().includes(ln),
+      );
     }
 
     if (city) {

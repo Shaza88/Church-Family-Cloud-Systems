@@ -29,6 +29,18 @@
           </mat-select>
         </mat-form-field>
 
+        <!-- First Name -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Primary First Name</mat-label>
+          <input matInput [(ngModel)]="advancedFilters.firstName" placeholder="Ex. John" />
+        </mat-form-field>
+
+        <!-- Last Name -->
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Primary Last Name</mat-label>
+          <input matInput [(ngModel)]="advancedFilters.lastName" placeholder="Ex. Smith" />
+        </mat-form-field>
+
         <!-- Profession -->
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Profession</mat-label>

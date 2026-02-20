@@ -6,6 +6,20 @@
     <button mat-flat-button (click)="goBack()"><mat-icon>arrow_back</mat-icon> Back</button>
   </app-page-header>
 
+  @if (isEditMode && store.selectedHousehold()?.createdAt) {
+    <div class="text-xs text-gray-500 mb-4 px-1 flex flex-wrap gap-x-4">
+      <span
+        >Created by {{ store.selectedHousehold()?.createdBy }} on
+        {{ store.selectedHousehold()?.createdAt | date: 'medium' }}</span
+      >
+      <span class="hidden sm:inline">|</span>
+      <span
+        >Last modified by {{ store.selectedHousehold()?.lastModifiedBy }} on
+        {{ store.selectedHousehold()?.lastModifiedAt | date: 'medium' }}</span
+      >
+    </div>
+  }
+
   <!-- Content -->
   <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden min-h-[600px]">
     <mat-tab-group animationDuration="0ms">

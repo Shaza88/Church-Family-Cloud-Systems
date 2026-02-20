@@ -90,4 +90,16 @@
   >
     Save User
   </button>
+
+  @if (data.user?.createdAt) {
+    <div class="absolute left-6 bottom-4 text-xs text-gray-500 text-left flex flex-col gap-0.5">
+      <span
+        >Created by {{ data.user?.createdBy }} on {{ data.user?.createdAt | date: 'short' }}</span
+      >
+      <span
+        >Last modified by {{ data.user?.lastModifiedBy }} on
+        {{ data.user?.lastModifiedAt | date: 'short' }}</span
+      >
+    </div>
+  }
 </mat-dialog-actions>
