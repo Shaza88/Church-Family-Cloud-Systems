@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
 import { HouseholdStore } from '../../../../core/store/household.store';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Household } from '../../../../core/models/household.model';
@@ -10,7 +11,7 @@ import { Household } from '../../../../core/models/household.model';
 @Component({
   selector: 'app-household-pictures',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule, MatTableModule],
   templateUrl: './household-pictures.component.html',
 })
 export class HouseholdPicturesComponent {
@@ -18,6 +19,7 @@ export class HouseholdPicturesComponent {
   notificationService = inject(NotificationService);
 
   pictures = computed(() => this.store.selectedHousehold()?.pictures || []);
+  displayedColumns = ['name', 'date', 'actions'];
 
   uploadPicture(fileInput: HTMLInputElement) {
     fileInput.click();

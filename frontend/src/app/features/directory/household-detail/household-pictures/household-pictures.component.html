@@ -8,37 +8,41 @@
   </div>
 
   @if (pictures().length > 0) {
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      @for (pic of pictures(); track pic.name) {
-        <div
-          class="group relative rounded-lg overflow-hidden shadow-sm border border-gray-200 aspect-[3/2] bg-gray-100"
-        >
-          <img
-            [src]="pic.url"
-            [alt]="pic.name"
-            class="w-full h-full object-cover transition-transform group-hover:scale-105"
-          />
+    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
+      <table mat-table [dataSource]="pictures()" class="w-full">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let pic">
+            <div class="flex items-center gap-3">
+              <img [src]="pic.url" alt="Thumbnail" class="w-10 h-10 object-cover rounded shadow-sm border border-gray-200">
+              <span class="font-medium text-gray-700">{{ pic.name }}</span>
+            </div>
+          </td>
+        </ng-container>
 
-          <div
-            class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
-          >
-            <button
-              mat-icon-button
-              color="warn"
-              (click)="deletePicture(pic)"
-              class="bg-white/90 hover:bg-white"
-            >
+        <!-- Date Column -->
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date Added</th>
+          <td mat-cell *matCellDef="let pic">{{ pic.date | date }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let pic">
+            <button mat-icon-button color="primary">
+              <mat-icon>download</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deletePicture(pic)">
               <mat-icon>delete</mat-icon>
             </button>
-          </div>
+          </td>
+        </ng-container>
 
-          <div
-            class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent text-white text-xs truncate"
-          >
-            {{ pic.name }}
-          </div>
-        </div>
-      }
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
     </div>
   } @else {
     <div

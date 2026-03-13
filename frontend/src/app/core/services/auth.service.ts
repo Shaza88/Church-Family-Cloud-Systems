@@ -84,6 +84,10 @@ export class AuthService {
       lastName: 'User',
       roles,
       avatarUrl: `https://ui-avatars.com/api/?name=${emailPrefix}&background=random`,
+      createdBy: 'system',
+      createdAt: new Date('2023-01-01T08:00:00Z').toISOString(),
+      lastModifiedBy: 'system',
+      lastModifiedAt: new Date('2023-01-01T08:00:00Z').toISOString(),
     };
   }
 

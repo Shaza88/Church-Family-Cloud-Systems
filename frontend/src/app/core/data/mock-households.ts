@@ -25,6 +25,10 @@ export const MOCK_HOUSEHOLDS: Household[] = [
         email: 'john.smith@example.com',
       },
     ],
+    createdBy: 'system',
+    createdAt: new Date('2023-02-10T09:15:00Z').toISOString(),
+    lastModifiedBy: 'admin@example.com',
+    lastModifiedAt: new Date('2024-01-15T14:30:00Z').toISOString(),
   },
   {
     id: 'h3',
@@ -47,6 +51,10 @@ export const MOCK_HOUSEHOLDS: Household[] = [
         email: 'jane.doe@example.com',
       },
     ],
+    createdBy: 'system',
+    createdAt: new Date('2023-03-05T11:20:00Z').toISOString(),
+    lastModifiedBy: 'system',
+    lastModifiedAt: new Date('2023-03-05T11:20:00Z').toISOString(),
   },
   {
     id: 'h4',
@@ -85,6 +93,10 @@ export const MOCK_HOUSEHOLDS: Household[] = [
         dateOfBirth: new Date('2010-03-15'),
       },
     ],
+    createdBy: 'admin@example.com',
+    createdAt: new Date('2023-11-20T16:45:00Z').toISOString(),
+    lastModifiedBy: 'admin@example.com',
+    lastModifiedAt: new Date('2024-02-01T09:10:00Z').toISOString(),
   },
   {
     id: 'h5',
@@ -107,6 +119,10 @@ export const MOCK_HOUSEHOLDS: Household[] = [
         email: 'david.w@example.com',
       },
     ],
+    createdBy: 'system',
+    createdAt: new Date('2023-05-12T10:05:00Z').toISOString(),
+    lastModifiedBy: 'system',
+    lastModifiedAt: new Date('2023-05-12T10:05:00Z').toISOString(),
   },
   {
     id: 'h6',
@@ -129,6 +145,10 @@ export const MOCK_HOUSEHOLDS: Household[] = [
         email: 'emily.b@example.com',
       },
     ],
+    createdBy: 'system',
+    createdAt: new Date('2023-08-22T13:40:00Z').toISOString(),
+    lastModifiedBy: 'admin@example.com',
+    lastModifiedAt: new Date('2024-05-18T10:15:00Z').toISOString(),
   },
   {
     id: 'h7',
@@ -540,6 +560,10 @@ for (let i = 18; i <= 160; i++) {
     status: status,
     memberCount: members.length + (Math.random() > 0.7 ? Math.floor(Math.random() * 3) : 0),
     members: members as any[],
+    createdBy: 'system',
+    createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
+    lastModifiedBy: 'system',
+    lastModifiedAt: new Date(Date.now() - Math.floor(Math.random() * 5000000000)).toISOString(),
   });
 }
 
