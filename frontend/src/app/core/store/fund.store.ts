@@ -1,8 +1,10 @@
 import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { Fund } from '../models/fund.model';
-import { MOCK_FUNDS } from '../data/mock-funds';
+import { FundService } from '../services/fund.service';
 import { NotificationService } from '../services/notification.service';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { pipe, tap, switchMap } from 'rxjs';
 
 type FundState = {
   funds: Fund[];
@@ -12,7 +14,7 @@ type FundState = {
 };
 
 const initialState: FundState = {
-  funds: MOCK_FUNDS,
+  funds: [],
   loading: false,
   saving: false,
   error: null,
@@ -27,54 +29,54 @@ export const FundStore = signalStore(
     isLoading: computed(() => loading()),
     isSaving: computed(() => saving()),
   })),
-  withMethods((store, notificationService = inject(NotificationService)) => ({
+  withMethods((store, fundService = inject(FundService), notificationService = inject(NotificationService)) => ({
+    loadFunds: rxMethod<void>(
+      pipe(
+        tap(() => patchState(store, { loading: true })),
+        switchMap(() => fundService.getFunds().pipe(
+          tap((funds) => patchState(store, { funds, loading: false }))
+        ))
+      )
+    ),
+
     addFund(fund: Omit<Fund, 'id' | 'createdAt' | 'createdBy'>) {
       patchState(store, { saving: true });
+      const newFund: Fund = {
+        ...fund,
+        id: crypto.randomUUID(),
+        createdAt: new Date().toISOString(),
+        createdBy: 'current_user',
+      };
       
-      // Simulate API call delay
-      setTimeout(() => {
-        const newFund: Fund = {
-          ...fund,
-          id: crypto.randomUUID(),
-          createdAt: new Date().toISOString(),
-          createdBy: 'current_user',
-        };
-        
+      fundService.addFund(newFund).subscribe((addedFund) => {
         patchState(store, {
-          funds: [...store.funds(), newFund],
+          funds: [...store.funds(), addedFund],
           saving: false,
         });
-        
-        notificationService.success(`Fund '${newFund.name}' created successfully.`);
-      }, 500);
+        notificationService.success(`Fund '${addedFund.name}' created successfully.`);
+      });
     },
     
     updateFund(id: string, updates: Partial<Fund>) {
       patchState(store, { saving: true });
+      const updatesToSave = { ...updates, lastModifiedAt: new Date().toISOString() };
       
-      setTimeout(() => {
+      fundService.updateFund(id, updatesToSave).subscribe((updatedFund) => {
         const currentFunds = store.funds();
-        const updatedFunds = currentFunds.map((fund) =>
-          fund.id === id 
-            ? { ...fund, ...updates, lastModifiedAt: new Date().toISOString() } 
-            : fund
-        );
-        
+        const updatedFunds = currentFunds.map((f) => f.id === id ? updatedFund : f);
         patchState(store, { funds: updatedFunds, saving: false });
         notificationService.success('Fund updated successfully.');
-      }, 500);
+      });
     },
     
     deleteFund(id: string) {
       patchState(store, { saving: true });
-      
-      setTimeout(() => {
+      fundService.deleteFund(id).subscribe(() => {
         const currentFunds = store.funds();
         const filteredFunds = currentFunds.filter((fund) => fund.id !== id);
-        
         patchState(store, { funds: filteredFunds, saving: false });
         notificationService.success('Fund deleted successfully.');
-      }, 500);
+      });
     }
   }))
 );

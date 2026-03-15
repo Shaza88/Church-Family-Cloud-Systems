@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { User, Role } from '../../../core/models/user.model';
-import { MOCK_ROLES } from '../../../core/data/mock-auth';
+import { RolePermissionService } from '../../../core/services/role-permission.service';
 
 @Component({
   selector: 'app-user-dialog',
@@ -25,13 +25,16 @@ import { MOCK_ROLES } from '../../../core/data/mock-auth';
 })
 export class UserDialogComponent {
   fb = inject(FormBuilder);
+  rolePermissionService = inject(RolePermissionService);
   form: FormGroup;
-  roles = MOCK_ROLES;
+  roles: Role[] = [];
 
   constructor(
     public dialogRef: MatDialogRef<UserDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { user?: User },
   ) {
+    this.rolePermissionService.getRoles().subscribe(roles => this.roles = roles);
+
     this.form = this.fb.group({
       id: [data.user?.id || null],
       email: [data.user?.email || '', [Validators.required, Validators.email]],

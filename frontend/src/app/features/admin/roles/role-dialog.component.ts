@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
-import { MOCK_PERMISSIONS } from '../../../core/data/mock-auth';
+import { RolePermissionService } from '../../../core/services/role-permission.service';
 import { Permission, Role } from '../../../core/models/user.model';
 
 @Component({
@@ -25,17 +25,16 @@ import { Permission, Role } from '../../../core/models/user.model';
   ],
   templateUrl: './role-dialog.component.html',
 })
-export class RoleDialogComponent {
+export class RoleDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
   dialogRef = inject(MatDialogRef<RoleDialogComponent>);
   data = inject(MAT_DIALOG_DATA);
+  rolePermissionService = inject(RolePermissionService);
 
   form: FormGroup;
-  permissions = MOCK_PERMISSIONS;
-
-  // Group permissions by 'group' property
-  permissionGroups = this.groupPermissions(this.permissions);
-  groupKeys = Object.keys(this.permissionGroups);
+  permissions: Permission[] = [];
+  permissionGroups: Record<string, Permission[]> = {};
+  groupKeys: string[] = [];
 
   constructor() {
     const role: Role | null = this.data.role;
@@ -44,6 +43,14 @@ export class RoleDialogComponent {
       name: [role?.name || '', Validators.required],
       description: [role?.description || '', Validators.required],
       permissionIds: [role?.permissionIds || []],
+    });
+  }
+
+  ngOnInit() {
+    this.rolePermissionService.getPermissions().subscribe(permissions => {
+      this.permissions = permissions;
+      this.permissionGroups = this.groupPermissions(this.permissions);
+      this.groupKeys = Object.keys(this.permissionGroups);
     });
   }
 

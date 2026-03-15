@@ -1,11 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MOCK_ROLES } from '../../../core/data/mock-auth';
+import { RolePermissionService } from '../../../core/services/role-permission.service';
 import { Role } from '../../../core/models/user.model';
 import { RoleDialogComponent } from './role-dialog.component';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -27,13 +27,19 @@ import { AuthStore } from '../../../core/store/auth.store';
   ],
   templateUrl: './role-management.component.html',
 })
-export class RoleManagementComponent {
+export class RoleManagementComponent implements OnInit {
   dialog = inject(MatDialog);
   notificationService = inject(NotificationService);
   authStore = inject(AuthStore);
+  rolePermissionService = inject(RolePermissionService);
 
-  // In a real app, this would be in a store
-  roles = signal<Role[]>(MOCK_ROLES);
+  roles = signal<Role[]>([]);
+
+  ngOnInit() {
+    this.rolePermissionService.getRoles().subscribe(roles => {
+      this.roles.set(roles);
+    });
+  }
 
   displayedColumns = ['name', 'description', 'permissions', 'actions'];
 

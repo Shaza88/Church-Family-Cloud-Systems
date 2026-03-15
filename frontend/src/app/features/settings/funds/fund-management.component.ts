@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,11 +26,15 @@ import { Fund } from '../../../core/models/fund.model';
   ],
   templateUrl: './fund-management.component.html',
 })
-export class FundManagementComponent {
+export class FundManagementComponent implements OnInit {
   store = inject(FundStore);
   private dialog = inject(MatDialog);
 
   displayedColumns: string[] = ['name', 'description', 'status', 'taxDeductible', 'actions'];
+
+  ngOnInit() {
+    this.store.loadFunds();
+  }
 
   openAddFundDialog() {
     this.dialog.open(FundFormDialogComponent, {

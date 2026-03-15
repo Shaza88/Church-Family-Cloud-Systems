@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -29,12 +29,16 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
   templateUrl: './lookup-management.component.html',
   styleUrl: './lookup-management.component.scss',
 })
-export class LookupManagementComponent {
+export class LookupManagementComponent implements OnInit {
   lookupStore = inject(LookupStore);
 
   newProfession = '';
   newStatus = '';
   newGender = '';
+
+  ngOnInit() {
+    this.lookupStore.loadLookups();
+  }
 
   editingId: string | null = null;
   editingValue = '';

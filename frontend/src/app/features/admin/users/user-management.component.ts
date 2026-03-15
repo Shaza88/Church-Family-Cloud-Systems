@@ -14,7 +14,7 @@ import { User } from '../../../core/models/user.model';
 import { AuthService } from '../../../core/services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { UserDialogComponent } from './user-dialog.component';
-import { MOCK_ROLES } from '../../../core/data/mock-auth';
+import { RolePermissionService } from '../../../core/services/role-permission.service';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { HasPermissionDirective } from '../../../core/directives/has-permission.directive';
 
@@ -42,15 +42,21 @@ export class UserManagementComponent implements OnInit {
   authService = inject(AuthService);
   notificationService = inject(NotificationService);
   dialog = inject(MatDialog);
+  rolePermissionService = inject(RolePermissionService);
 
   displayedColumns: string[] = ['name', 'email', 'role', 'actions'];
   dataSource = new MatTableDataSource<User>();
   loading = signal(false);
+  
+  roles: import('../../../core/models/user.model').Role[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit() {
+    this.rolePermissionService.getRoles().subscribe(roles => {
+      this.roles = roles;
+    });
     this.loadUsers();
   }
 
@@ -135,7 +141,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   getRoleName(roleId: string): string {
-    const role = MOCK_ROLES.find((r) => r.id === roleId);
+    const role = this.roles.find((r) => r.id === roleId);
     return role ? role.name : roleId;
   }
 }
