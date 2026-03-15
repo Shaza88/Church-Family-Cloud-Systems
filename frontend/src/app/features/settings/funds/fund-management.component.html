@@ -1,0 +1,83 @@
+<div class="container mx-auto p-4 md:p-6 max-w-7xl">
+  <app-page-header
+    title="Manage Funds"
+    subtitle="Configure system-wide funds for donations and accounting"
+  >
+    <button mat-flat-button color="primary" (click)="openAddFundDialog()">
+      <mat-icon>add</mat-icon> Add Fund
+    </button>
+  </app-page-header>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden mt-6">
+    <table mat-table [dataSource]="store.allFunds()" class="w-full">
+      
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Fund Name </th>
+        <td mat-cell *matCellDef="let fund" class="font-medium text-gray-900">
+          {{ fund.name }}
+        </td>
+      </ng-container>
+
+      <!-- Description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef> Description </th>
+        <td mat-cell *matCellDef="let fund" class="text-gray-600">
+          {{ fund.description }}
+        </td>
+      </ng-container>
+
+      <!-- Status Column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let fund">
+          <mat-chip-set>
+            <mat-chip [color]="fund.active ? 'primary' : 'warn'" highlighted>
+              {{ fund.active ? 'Active' : 'Inactive' }}
+            </mat-chip>
+          </mat-chip-set>
+        </td>
+      </ng-container>
+
+      <!-- Tax Deductible Column -->
+      <ng-container matColumnDef="taxDeductible">
+        <th mat-header-cell *matHeaderCellDef> Tax Deductible </th>
+        <td mat-cell *matCellDef="let fund">
+          <mat-icon [style.color]="fund.taxDeductible ? 'var(--mat-sys-primary)' : 'var(--mat-sys-outline)'">
+            {{ fund.taxDeductible ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+        </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
+        <td mat-cell *matCellDef="let fund">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="openEditFundDialog(fund)">
+              <mat-icon>edit</mat-icon>
+              <span>Edit Fund</span>
+            </button>
+            <button mat-menu-item (click)="deleteFund(fund)" class="text-red-600">
+              <mat-icon class="text-red-600">delete</mat-icon>
+              <span>Delete Fund</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors"></tr>
+      
+      <!-- No Data Row -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell text-center py-8 text-gray-500" [colSpan]="displayedColumns.length">
+          No funds configured. Click "Add Fund" to create one.
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

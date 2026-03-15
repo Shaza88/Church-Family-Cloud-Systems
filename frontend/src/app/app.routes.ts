@@ -51,6 +51,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'settings/funds',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/settings/funds/fund-management.component').then(
+        (m) => m.FundManagementComponent,
+      ),
+  },
+  {
     path: 'admin',
     canActivate: [authGuard],
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),

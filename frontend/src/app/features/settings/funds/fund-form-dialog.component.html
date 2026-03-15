@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Edit Fund' : 'Add New Fund' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="fundForm" class="flex flex-col gap-4 py-4 min-w-[400px]">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Fund Name</mat-label>
+      <input matInput formControlName="name" placeholder="E.g., General Fund" />
+      <mat-error *ngIf="fundForm.get('name')?.hasError('required')">Name is required</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Describe the purpose of this fund..."></textarea>
+      <mat-error *ngIf="fundForm.get('description')?.hasError('required')">Description is required</mat-error>
+    </mat-form-field>
+
+    <div class="flex flex-col gap-2">
+      <mat-checkbox formControlName="taxDeductible">Tax Deductible</mat-checkbox>
+      <mat-checkbox formControlName="active">Active Fund</mat-checkbox>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="fundForm.invalid">
+    {{ isEditMode ? 'Save Changes' : 'Create Fund' }}
+  </button>
+</mat-dialog-actions>
