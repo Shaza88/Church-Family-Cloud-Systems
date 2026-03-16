@@ -1,15 +1,32 @@
-import { Component, Inject, inject, OnInit } from '@angular/core';
+import { Component, Inject, inject, ChangeDetectionStrategy, computed, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-import { Stewardship, StewardshipFrequency } from '../../../../core/models/stewardship.model';
-import { StewardshipStore } from '../../../../core/store/stewardship.store';
 import { MatIconModule } from '@angular/material/icon';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
+
+import { Stewardship, StewardshipFrequency, StewardshipStatus } from '../../../../core/models/stewardship.model';
+import { StewardshipStore } from '../../../../core/store/stewardship.store';
+
+export interface StewardshipDialogData {
+  householdId: string;
+  stewardship?: Stewardship;
+}
+
+interface StewardshipForm {
+  id: FormControl<string | null>;
+  householdId: FormControl<string>;
+  fiscalYear: FormControl<string | null>;
+  amount: FormControl<number | null>;
+  frequency: FormControl<StewardshipFrequency | null>;
+  totalYearlyAmount: FormControl<number | null>;
+  status: FormControl<StewardshipStatus | null>;
+}
 
 @Component({
   selector: 'app-stewardship-form-dialog',
@@ -25,82 +42,69 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
     MatIconModule,
   ],
   templateUrl: './stewardship-form-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StewardshipFormDialogComponent implements OnInit {
-  fb = inject(FormBuilder);
-  stewardshipStore = inject(StewardshipStore);
-  
-  form: FormGroup;
-  isEditMode = false;
+export class StewardshipFormDialogComponent {
+  private readonly fb = inject(FormBuilder);
+  public readonly stewardshipStore = inject(StewardshipStore);
+  private readonly dialogRef = inject(MatDialogRef<StewardshipFormDialogComponent>);
+  public readonly data = inject<StewardshipDialogData>(MAT_DIALOG_DATA);
 
-  frequencies: StewardshipFrequency[] = [
+  public readonly isEditMode = !!this.data.stewardship;
+  public readonly frequencies: StewardshipFrequency[] = [
     'Weekly', 'Bi-weekly', 'Monthly', 'Quarterly', 'Semi-Annual', 'Annual'
   ];
 
-  // Logic to determine available fiscal years for a new stewardship
-  availableFiscalYears: string[] = [];
-  
-  constructor(
-    public dialogRef: MatDialogRef<StewardshipFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { householdId: string; stewardship?: Stewardship },
-  ) {
-    this.isEditMode = !!data.stewardship;
+  public readonly form: FormGroup<StewardshipForm> = this.fb.group<StewardshipForm>({
+    id: new FormControl(this.data.stewardship?.id ?? null),
+    householdId: new FormControl(this.data.householdId, { nonNullable: true, validators: Validators.required }),
+    fiscalYear: new FormControl(
+      { value: this.data.stewardship?.fiscalYear ? String(this.data.stewardship.fiscalYear) : '', disabled: this.isEditMode },
+      Validators.required
+    ),
+    amount: new FormControl(this.data.stewardship?.amount ?? null, [Validators.required, Validators.min(0.01)]),
+    frequency: new FormControl(this.data.stewardship?.frequency ?? null, Validators.required),
+    totalYearlyAmount: new FormControl({ value: this.data.stewardship?.totalYearlyAmount ?? 0, disabled: true }),
+    status: new FormControl(this.data.stewardship?.status ?? 'Active', Validators.required),
+  });
 
-    this.form = this.fb.group({
-      id: [data.stewardship?.id || null],
-      householdId: [data.householdId],
-      fiscalYear: [
-        { value: data.stewardship?.fiscalYear || '', disabled: this.isEditMode }, 
-        Validators.required
-      ],
-      amount: [data.stewardship?.amount || '', [Validators.required, Validators.min(0.01)]],
-      frequency: [data.stewardship?.frequency || '', Validators.required],
-      totalYearlyAmount: [{ value: data.stewardship?.totalYearlyAmount || 0, disabled: true }],
-      status: [data.stewardship?.status || 'Active', Validators.required],
-    });
-  }
-
-  ngOnInit(): void {
-    this.calculateAvailableFiscalYears();
-
-    // Auto-calculate Total Yearly Amount
-    this.form.valueChanges.pipe(
-      debounceTime(100),
-      distinctUntilChanged((a, b) => a.amount === b.amount && a.frequency === b.frequency)
-    ).subscribe(() => {
-      this.updateTotalYearlyAmount();
-    });
-  }
-
-  calculateAvailableFiscalYears() {
-    const currentYear = new Date().getFullYear();
-    const possibleYears = [
-      String(currentYear - 1), 
-      String(currentYear), 
-      String(currentYear + 1), 
-      String(currentYear + 2)
-    ];
-
+  // Derived state directly from the centralized store computation
+  public readonly availableFiscalYears: Signal<string[]> = computed(() => {
     if (this.isEditMode && this.data.stewardship) {
-      // In edit mode, they can only keep the current one (it's disabled anyway)
-      this.availableFiscalYears = [String(this.data.stewardship.fiscalYear)];
-    } else {
-      // For new records, filter out years that already exist for this household
-      const existingYears = this.stewardshipStore.stewardships()
-        .filter(s => s.householdId === this.data.householdId)
-        .map(s => String(s.fiscalYear));
-      
-      this.availableFiscalYears = possibleYears.filter(year => !existingYears.includes(year));
-      
-      if (this.availableFiscalYears.length > 0 && !this.form.get('fiscalYear')?.value) {
-        this.form.patchValue({ fiscalYear: this.availableFiscalYears[1] || this.availableFiscalYears[0] });
+      return [String(this.data.stewardship.fiscalYear)];
+    }
+    return this.stewardshipStore.availableFiscalYears();
+  });
+
+  constructor() {
+    this.initializeFiscalYear();
+    this.setupTotalAmountCalculation();
+  }
+
+  private initializeFiscalYear(): void {
+    if (!this.isEditMode) {
+      const years = this.availableFiscalYears();
+      if (years.length > 0 && !this.form.controls.fiscalYear.value) {
+        this.form.patchValue({ fiscalYear: years[1] || years[0] });
       }
     }
   }
 
-  updateTotalYearlyAmount() {
-    const amount = Number(this.form.get('amount')?.value) || 0;
-    const frequency = this.form.get('frequency')?.value as StewardshipFrequency;
+  private setupTotalAmountCalculation(): void {
+    this.form.valueChanges.pipe(
+      takeUntilDestroyed(), // Prevents memory leaks automatically bound to component lifecycle
+      debounceTime(100),
+      distinctUntilChanged((a, b) => a.amount === b.amount && a.frequency === b.frequency)
+    ).subscribe((value) => {
+      this.updateTotalYearlyAmount(value.amount, value.frequency);
+    });
+  }
+
+  private updateTotalYearlyAmount(
+    amount: number | null | undefined, 
+    frequency: StewardshipFrequency | null | undefined
+  ): void {
+    const amt = Number(amount) || 0;
     let multiplier = 0;
 
     switch (frequency) {
@@ -112,25 +116,28 @@ export class StewardshipFormDialogComponent implements OnInit {
       case 'Annual': multiplier = 1; break;
     }
 
-    const total = amount * multiplier;
-    this.form.patchValue({ totalYearlyAmount: total }, { emitEvent: false });
+    const total = amt * multiplier;
+    this.form.controls.totalYearlyAmount.setValue(total, { emitEvent: false });
   }
 
-  save() {
+  public save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
 
-    const formValue = this.form.getRawValue(); // gets disabled fields too
-    const payload = {
-      ...formValue,
+    const formValue = this.form.getRawValue();
+    const payload: Omit<Stewardship, 'id' | 'createdAt' | 'createdBy'> = {
+      householdId: formValue.householdId,
+      fiscalYear: Number(formValue.fiscalYear),
       amount: Number(formValue.amount),
-      totalYearlyAmount: Number(formValue.totalYearlyAmount)
+      frequency: formValue.frequency as StewardshipFrequency,
+      totalYearlyAmount: Number(formValue.totalYearlyAmount),
+      status: formValue.status as StewardshipStatus,
     };
 
-    if (this.isEditMode && payload.id) {
-      this.stewardshipStore.updateStewardship(payload.id, payload);
+    if (this.isEditMode && formValue.id) {
+      this.stewardshipStore.updateStewardship({ id: formValue.id, updates: payload });
     } else {
       this.stewardshipStore.addStewardship(payload);
     }

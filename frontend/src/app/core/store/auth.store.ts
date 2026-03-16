@@ -1,8 +1,9 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { User, LoginRequest } from '../models/user.model';
 import { AuthService } from '../services/auth.service';
-import { tap, finalize } from 'rxjs';
+import { tap, finalize, switchMap, pipe } from 'rxjs';
 import { Router } from '@angular/router';
 import { NotificationService } from '../services/notification.service';
 
@@ -43,35 +44,35 @@ export const AuthStore = signalStore(
       hasAnyPermission(permissionNames: string[]): boolean {
         return permissionNames.some((p) => store.permissions().includes(p));
       },
-      login(credentials: LoginRequest) {
-        patchState(store, { loading: true, error: null });
-
-        authService
-          .login(credentials)
-          .pipe(
-            tap({
-              next: (response) => {
-                patchState(store, {
-                  user: response.user,
-                  permissions: response.permissions,
-                  isAuthenticated: true,
-                  loading: false,
-                });
-                notificationService.success(`Welcome back, ${response.user.firstName}!`);
-                router.navigate(['/directory']);
-              },
-              error: (err) => {
-                patchState(store, {
-                  loading: false,
-                  error: err.message || 'Login failed',
-                  isAuthenticated: false,
-                });
-                notificationService.error(err.message || 'Login failed');
-              },
-            }),
+      login: rxMethod<LoginRequest>(
+        pipe(
+          tap(() => patchState(store, { loading: true, error: null })),
+          switchMap((credentials) =>
+            authService.login(credentials).pipe(
+              tap({
+                next: (response) => {
+                  patchState(store, {
+                    user: response.user,
+                    permissions: response.permissions,
+                    isAuthenticated: true,
+                    loading: false,
+                  });
+                  notificationService.success(`Welcome back, ${response.user.firstName}!`);
+                  router.navigate(['/directory']);
+                },
+                error: (err) => {
+                  patchState(store, {
+                    loading: false,
+                    error: err.message || 'Login failed',
+                    isAuthenticated: false,
+                  });
+                  notificationService.error(err.message || 'Login failed');
+                },
+              })
+            )
           )
-          .subscribe();
-      },
+        )
+      ),
 
       logout() {
         authService.logout();
@@ -81,27 +82,28 @@ export const AuthStore = signalStore(
       },
 
       // Method to check session on app load
-      checkSession() {
-        patchState(store, { loading: true });
-        authService
-          .checkSession()
-          .pipe(
-            tap((response) => {
-              if (response) {
-                patchState(store, {
-                  user: response.user,
-                  permissions: response.permissions,
-                  isAuthenticated: true,
-                  loading: false,
-                });
-              } else {
-                patchState(store, { loading: false, isAuthenticated: false });
-              }
-            }),
-            finalize(() => patchState(store, { loading: false })),
+      checkSession: rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, { loading: true })),
+          switchMap(() =>
+            authService.checkSession().pipe(
+              tap((response) => {
+                if (response) {
+                  patchState(store, {
+                    user: response.user,
+                    permissions: response.permissions,
+                    isAuthenticated: true,
+                    loading: false,
+                  });
+                } else {
+                  patchState(store, { loading: false, isAuthenticated: false });
+                }
+              }),
+              finalize(() => patchState(store, { loading: false }))
+            )
           )
-          .subscribe();
-      },
+        )
+      ),
     }),
   ),
 );

@@ -1,4 +1,4 @@
-import { Component, inject, Inject, OnInit, signal } from '@angular/core';
+import { Component, inject, Inject, OnInit, signal, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -16,10 +16,12 @@ import { Household, Individual } from '../../../core/models/household.model';
 import { LookupStore } from '../../../core/store/lookup.store';
 import { merge } from 'rxjs';
 import { startWith } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'cfcs-household-form-dialog',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -40,6 +42,7 @@ import { startWith } from 'rxjs/operators';
 export class HouseholdFormDialog implements OnInit {
   private fb = inject(FormBuilder);
   private dialogRef = inject(MatDialogRef<HouseholdFormDialog>);
+  private destroyRef = inject(DestroyRef);
   lookupStore = inject(LookupStore);
 
   form!: FormGroup;
@@ -107,13 +110,13 @@ export class HouseholdFormDialog implements OnInit {
       this.form.get('spouse.firstName')!.valueChanges,
       this.minorsArray.valueChanges,
     )
-      .pipe(startWith(null))
+      .pipe(startWith(null), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.updateHouseholdName();
       });
 
     // Handle Spouse Validation Logic
-    this.form.get('hasSpouse')?.valueChanges.subscribe((hasSpouse) => {
+    this.form.get('hasSpouse')?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((hasSpouse) => {
       const spouseGroup = this.form.get('spouse') as FormGroup;
       if (hasSpouse) {
         spouseGroup.enable();

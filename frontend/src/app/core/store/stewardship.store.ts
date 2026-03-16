@@ -1,5 +1,5 @@
-import { inject } from '@angular/core';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { computed, inject } from '@angular/core';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
 import { Stewardship } from '../models/stewardship.model';
@@ -8,19 +8,37 @@ import { NotificationService } from '../services/notification.service';
 
 type StewardshipState = {
   stewardships: Stewardship[];
-  loading: boolean;
-  saving: boolean;
+  isLoading: boolean;
+  isSaving: boolean;
 };
 
 const initialState: StewardshipState = {
   stewardships: [],
-  loading: false,
-  saving: false,
+  isLoading: false,
+  isSaving: false,
 };
 
 export const StewardshipStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
+  withComputed(({ stewardships }) => ({
+    availableFiscalYears: computed(() => {
+      const currentYear = new Date().getFullYear();
+      const possibleYears = [
+        String(currentYear - 1),
+        String(currentYear),
+        String(currentYear + 1),
+        String(currentYear + 2),
+      ];
+      const existingYears = stewardships().map((s) => String(s.fiscalYear));
+      return possibleYears.filter((year) => !existingYears.includes(year));
+    }),
+    totalPledgedAmount: computed(() => 
+      stewardships()
+        .filter(s => s.status === 'Active')
+        .reduce((sum, s) => sum + s.totalYearlyAmount, 0)
+    )
+  })),
   withMethods(
     (
       store,
@@ -29,13 +47,13 @@ export const StewardshipStore = signalStore(
     ) => ({
       loadStewardshipsForHousehold: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { loading: true })),
+          tap(() => patchState(store, { isLoading: true })),
           switchMap((householdId) =>
             stewardshipService.getStewardshipsByHousehold(householdId).pipe(
               tap({
-                next: (stewardships) => patchState(store, { stewardships, loading: false }),
+                next: (stewardships) => patchState(store, { stewardships, isLoading: false }),
                 error: () => {
-                  patchState(store, { loading: false });
+                  patchState(store, { isLoading: false });
                   notificationService.error('Failed to load stewardships.');
                 },
               })
@@ -44,61 +62,76 @@ export const StewardshipStore = signalStore(
         ),
       ),
 
-      addStewardship(stewardship: Omit<Stewardship, 'id' | 'createdAt' | 'createdBy'>) {
-        patchState(store, { saving: true });
-        const newStewardship: Stewardship = {
-          ...stewardship,
-          id: crypto.randomUUID(),
-          createdAt: new Date().toISOString(),
-          createdBy: 'current_user',
-        };
+      addStewardship: rxMethod<Omit<Stewardship, 'id' | 'createdAt' | 'createdBy'>>(
+        pipe(
+          tap(() => patchState(store, { isSaving: true })),
+          switchMap((stewardship) => {
+            const newStewardship: Stewardship = {
+              ...stewardship,
+              id: crypto.randomUUID(),
+              createdAt: new Date().toISOString(),
+              createdBy: 'current_user',
+            };
+            return stewardshipService.addStewardship(newStewardship).pipe(
+              tap({
+                next: (addedStewardship) => {
+                  patchState(store, {
+                    stewardships: [...store.stewardships(), addedStewardship],
+                    isSaving: false,
+                  });
+                  notificationService.success('Stewardship successfully added.');
+                },
+                error: (err) => {
+                  patchState(store, { isSaving: false });
+                  notificationService.error(err.message || 'Failed to add stewardship.');
+                },
+              })
+            );
+          })
+        )
+      ),
 
-        stewardshipService.addStewardship(newStewardship).subscribe({
-          next: (addedStewardship) => {
-            patchState(store, {
-              stewardships: [...store.stewardships(), addedStewardship],
-              saving: false,
-            });
-            notificationService.success('Stewardship successfully added.');
-          },
-          error: (err) => {
-            patchState(store, { saving: false });
-            notificationService.error(err.message || 'Failed to add stewardship.');
-          },
-        });
-      },
+      updateStewardship: rxMethod<{ id: string; updates: Partial<Stewardship> }>(
+        pipe(
+          tap(() => patchState(store, { isSaving: true })),
+          switchMap(({ id, updates }) =>
+            stewardshipService.updateStewardship(id, updates).pipe(
+              tap({
+                next: (updatedStewardship) => {
+                  const updatedStewardships = store.stewardships().map((s) => (s.id === id ? updatedStewardship : s));
+                  patchState(store, { stewardships: updatedStewardships, isSaving: false });
+                  notificationService.success('Stewardship updated successfully.');
+                },
+                error: (err) => {
+                  patchState(store, { isSaving: false });
+                  notificationService.error(err.message || 'Failed to update stewardship.');
+                },
+              })
+            )
+          )
+        )
+      ),
 
-      updateStewardship(id: string, updates: Partial<Stewardship>) {
-        patchState(store, { saving: true });
-
-        stewardshipService.updateStewardship(id, updates).subscribe({
-          next: (updatedStewardship) => {
-            const updatedStewardships = store.stewardships().map((s) => (s.id === id ? updatedStewardship : s));
-            patchState(store, { stewardships: updatedStewardships, saving: false });
-            notificationService.success('Stewardship updated successfully.');
-          },
-          error: (err) => {
-            patchState(store, { saving: false });
-            notificationService.error(err.message || 'Failed to update stewardship.');
-          },
-        });
-      },
-
-      deleteStewardship(id: string) {
-        patchState(store, { saving: true });
-
-        stewardshipService.deleteStewardship(id).subscribe({
-          next: () => {
-            const filteredStewardships = store.stewardships().filter((s) => s.id !== id);
-            patchState(store, { stewardships: filteredStewardships, saving: false });
-            notificationService.success('Stewardship deleted successfully.');
-          },
-          error: () => {
-            patchState(store, { saving: false });
-            notificationService.error('Failed to delete stewardship.');
-          },
-        });
-      },
+      deleteStewardship: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, { isSaving: true })),
+          switchMap((id) =>
+            stewardshipService.deleteStewardship(id).pipe(
+              tap({
+                next: () => {
+                  const filteredStewardships = store.stewardships().filter((s) => s.id !== id);
+                  patchState(store, { stewardships: filteredStewardships, isSaving: false });
+                  notificationService.success('Stewardship deleted successfully.');
+                },
+                error: () => {
+                  patchState(store, { isSaving: false });
+                  notificationService.error('Failed to delete stewardship.');
+                },
+              })
+            )
+          )
+        )
+      ),
     }),
   ),
 );

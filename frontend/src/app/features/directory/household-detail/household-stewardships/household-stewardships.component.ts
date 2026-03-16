@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,6 +11,7 @@ import { StewardshipStore } from '../../../../core/store/stewardship.store';
 import { Stewardship } from '../../../../core/models/stewardship.model';
 import { StewardshipFormDialogComponent } from './stewardship-form-dialog.component';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-household-stewardships',
@@ -24,8 +25,10 @@ import { EmptyStateComponent } from '../../../../shared/components/empty-state/e
     MatTooltipModule,
     MatDialogModule,
     EmptyStateComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './household-stewardships.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HouseholdStewardshipsComponent implements OnInit {
   householdStore = inject(HouseholdStore);

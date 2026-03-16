@@ -1,7 +1,7 @@
 <div class="p-6">
   <div class="flex justify-between items-center mb-6">
     <h2 class="text-xl font-bold text-gray-800 m-0">Stewardship Records</h2>
-    <button mat-flat-button color="primary" (click)="openAddStewardshipDialog()" [disabled]="stewardshipStore.saving()">
+    <button mat-flat-button color="primary" (click)="openAddStewardshipDialog()" [disabled]="stewardshipStore.isSaving()">
       <mat-icon>add</mat-icon> Add Stewardship
     </button>
   </div>
@@ -55,14 +55,13 @@
         </td>
       </ng-container>
 
-      <!-- Actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef class="text-right"></th>
         <td mat-cell *matCellDef="let stewardship" class="text-right">
-          <button mat-icon-button color="primary" matTooltip="Edit Stewardship" (click)="openEditStewardshipDialog(stewardship)">
+          <button mat-icon-button color="primary" matTooltip="Edit Stewardship" aria-label="Edit Stewardship" (click)="openEditStewardshipDialog(stewardship)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" matTooltip="Delete Stewardship" (click)="deleteStewardship(stewardship)">
+          <button mat-icon-button color="warn" matTooltip="Delete Stewardship" aria-label="Delete Stewardship" (click)="deleteStewardship(stewardship)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
@@ -71,6 +70,10 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns" class="bg-gray-50/50"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50/50 transition-colors"></tr>
       </table>
+    </div>
+  } @else if (stewardshipStore.isLoading()) {
+    <div class="flex justify-center items-center py-12">
+      <mat-spinner diameter="40"></mat-spinner>
     </div>
   } @else {
     <app-empty-state
