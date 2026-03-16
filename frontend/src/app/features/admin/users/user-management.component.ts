@@ -17,6 +17,7 @@ import { UserDialogComponent } from './user-dialog.component';
 import { RolePermissionService } from '../../../core/services/role-permission.service';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { HasPermissionDirective } from '../../../core/directives/has-permission.directive';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-user-management',
@@ -35,6 +36,7 @@ import { HasPermissionDirective } from '../../../core/directives/has-permission.
     MatFormFieldModule,
     PageHeaderComponent,
     HasPermissionDirective,
+    EmptyStateComponent,
   ],
   templateUrl: './user-management.component.html',
 })

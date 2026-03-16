@@ -7,11 +7,12 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { HouseholdStore } from '../../../../core/store/household.store';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Household } from '../../../../core/models/household.model';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-household-documents',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTableModule, MatDialogModule],
+  imports: [CommonModule, MatButtonModule, MatIconModule, MatTableModule, MatDialogModule, EmptyStateComponent],
   templateUrl: './household-documents.component.html',
 })
 export class HouseholdDocumentsComponent {

@@ -45,19 +45,14 @@
       </table>
     </div>
   } @else {
-    <div
-      class="flex flex-col items-center justify-center p-12 bg-gray-50 border border-dashed border-gray-300 rounded-lg text-center"
-    >
-      <mat-icon class="text-gray-400 text-5xl w-12 h-12 mb-4 !leading-none !font-size-5xl"
-        >photo_library</mat-icon
-      >
-      <h3 class="text-lg font-medium text-gray-700">No photos yet</h3>
-      <p class="text-gray-500 max-w-sm mt-1">
-        Upload family photos or generic household images here.
-      </p>
-      <button mat-stroked-button class="mt-4" (click)="uploadPicture(fileInput)">
-        Upload Picture
-      </button>
-    </div>
+    <app-empty-state
+      [bordered]="true"
+      icon="photo_library"
+      title="No photos yet"
+      message="Upload family photos or generic household images here."
+      actionText="Upload Picture"
+      actionIcon="add_a_photo"
+      (actionClick)="uploadPicture(fileInput)">
+    </app-empty-state>
   }
 </div>

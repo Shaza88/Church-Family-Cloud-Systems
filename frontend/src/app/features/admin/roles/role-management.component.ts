@@ -11,6 +11,7 @@ import { RoleDialogComponent } from './role-dialog.component';
 import { NotificationService } from '../../../core/services/notification.service';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { AuthStore } from '../../../core/store/auth.store';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-role-management',
@@ -24,6 +25,7 @@ import { AuthStore } from '../../../core/store/auth.store';
     MatDialogModule,
     MatTooltipModule,
     PageHeaderComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './role-management.component.html',
 })

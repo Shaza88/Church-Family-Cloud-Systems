@@ -10,6 +10,7 @@ import { FundStore } from '../../../core/store/fund.store';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { FundFormDialogComponent } from './fund-form-dialog.component';
 import { Fund } from '../../../core/models/fund.model';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'cfcs-fund-management',
@@ -23,6 +24,7 @@ import { Fund } from '../../../core/models/fund.model';
     MatChipsModule,
     MatMenuModule,
     PageHeaderComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './fund-management.component.html',
 })

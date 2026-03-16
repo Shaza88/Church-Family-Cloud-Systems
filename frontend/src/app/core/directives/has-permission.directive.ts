@@ -11,10 +11,16 @@ export class HasPermissionDirective {
   private authStore = inject(AuthStore);
 
   private permission = '';
-  private isVisible = false;
+  private elseTemplateRef: TemplateRef<any> | null = null;
+  private hasView = false;
 
   @Input() set appHasPermission(permission: string) {
     this.permission = permission;
+    this.updateView();
+  }
+
+  @Input() set appHasPermissionElse(templateRef: TemplateRef<any> | null) {
+    this.elseTemplateRef = templateRef;
     this.updateView();
   }
 
@@ -28,15 +34,18 @@ export class HasPermissionDirective {
   }
 
   private updateView() {
-    // We need to re-check whenever inputs or store permissions change
     const hasPermission = this.authStore.hasPermission(this.permission);
 
-    if (hasPermission && !this.isVisible) {
-      this.viewContainer.createEmbeddedView(this.templateRef);
-      this.isVisible = true;
-    } else if (!hasPermission && this.isVisible) {
+    if (hasPermission && !this.hasView) {
       this.viewContainer.clear();
-      this.isVisible = false;
+      this.viewContainer.createEmbeddedView(this.templateRef);
+      this.hasView = true;
+    } else if (!hasPermission) {
+      this.viewContainer.clear();
+      this.hasView = false;
+      if (this.elseTemplateRef) {
+        this.viewContainer.createEmbeddedView(this.elseTemplateRef);
+      }
     }
   }
 }

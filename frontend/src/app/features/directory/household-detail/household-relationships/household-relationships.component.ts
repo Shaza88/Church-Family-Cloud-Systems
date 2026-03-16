@@ -13,6 +13,7 @@ import { HouseholdStore } from '../../../../core/store/household.store';
 import { LookupStore } from '../../../../core/store/lookup.store';
 import { Household } from '../../../../core/models/household.model';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-household-relationships',
@@ -28,6 +29,7 @@ import { NotificationService } from '../../../../core/services/notification.serv
     MatAutocompleteModule,
     MatTableModule,
     MatTooltipModule,
+    EmptyStateComponent,
   ],
   templateUrl: './household-relationships.component.html',
 })

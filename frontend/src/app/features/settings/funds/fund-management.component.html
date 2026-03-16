@@ -73,9 +73,16 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50 transition-colors"></tr>
       
       <!-- No Data Row -->
-      <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell text-center py-8 text-gray-500" [colSpan]="displayedColumns.length">
-          No funds configured. Click "Add Fund" to create one.
+      <tr class="mat-row bg-white hover:bg-white" *matNoDataRow>
+        <td class="mat-cell p-0 border-b-0" [colSpan]="displayedColumns.length">
+          <app-empty-state
+            icon="account_balance_wallet"
+            title="No funds configured"
+            message="Donations and accounting require setting up funds first."
+            actionText="Add Fund"
+            actionIcon="add"
+            (actionClick)="openAddFundDialog()">
+          </app-empty-state>
         </td>
       </tr>
     </table>

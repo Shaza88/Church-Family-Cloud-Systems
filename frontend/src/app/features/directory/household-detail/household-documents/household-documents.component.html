@@ -57,19 +57,14 @@
       </table>
     </div>
   } @else {
-    <div
-      class="flex flex-col items-center justify-center p-12 bg-gray-50 border border-dashed border-gray-300 rounded-lg text-center"
-    >
-      <mat-icon class="text-gray-400 text-5xl w-12 h-12 mb-4 !leading-none !font-size-5xl"
-        >description</mat-icon
-      >
-      <h3 class="text-lg font-medium text-gray-700">No documents yet</h3>
-      <p class="text-gray-500 max-w-sm mt-1">
-        Upload birth certificates, marriage licenses, or other related documents here.
-      </p>
-      <button mat-stroked-button class="mt-4" (click)="uploadDocument(fileInput)">
-        Upload Document
-      </button>
-    </div>
+    <app-empty-state
+      [bordered]="true"
+      icon="description"
+      title="No documents yet"
+      message="Upload birth certificates, marriage licenses, or other related documents here."
+      actionText="Upload Document"
+      actionIcon="upload_file"
+      (actionClick)="uploadDocument(fileInput)">
+    </app-empty-state>
   }
 </div>
