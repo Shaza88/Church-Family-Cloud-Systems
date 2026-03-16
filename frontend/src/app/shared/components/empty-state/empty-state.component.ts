@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
            'bg-gray-50 border border-dashed border-gray-300 rounded-lg': bordered,
            'w-full': true
          }">
-      <mat-icon class="text-gray-400 text-5xl w-12 h-12 mb-4 !leading-none !font-size-5xl" style="font-size: 48px;">{{ icon }}</mat-icon>
+      <mat-icon class="text-gray-400 mb-4 text-[48px] h-[48px] w-[48px] leading-none">{{ icon }}</mat-icon>
       <h3 class="text-lg font-medium text-gray-700">{{ title }}</h3>
       <p class="text-gray-500 max-w-sm mt-1 mb-6">{{ message }}</p>
       
