@@ -11,6 +11,7 @@ import { HouseholdDocumentsComponent } from './household-documents/household-doc
 import { HouseholdPicturesComponent } from './household-pictures/household-pictures.component';
 import { HouseholdRelationshipsComponent } from './household-relationships/household-relationships.component';
 import { HouseholdStewardshipsComponent } from './household-stewardships/household-stewardships.component';
+import { HouseholdDonationsComponent } from './household-donations/household-donations.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { HasPermissionDirective } from '../../../core/directives/has-permission.directive';
 
@@ -30,6 +31,7 @@ import { HasPermissionDirective } from '../../../core/directives/has-permission.
     HouseholdPicturesComponent,
     HouseholdRelationshipsComponent,
     HouseholdStewardshipsComponent,
+    HouseholdDonationsComponent,
     PageHeaderComponent,
     HasPermissionDirective,
   ],

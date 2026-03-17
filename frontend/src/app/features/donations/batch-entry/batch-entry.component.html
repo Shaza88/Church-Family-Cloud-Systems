@@ -1,0 +1,149 @@
+<div class="container mx-auto p-4 md:p-6 max-w-7xl">
+  <!-- Header -->
+  <app-page-header title="Sunday Batch Entry">
+    <button mat-flat-button color="primary" (click)="submitBatch()" [disabled]="batchForm.invalid || !isBalanced() || donationStore.isLoading()">
+      <mat-icon>save</mat-icon> Post Batch
+    </button>
+  </app-page-header>
+
+  <form [formGroup]="batchForm" class="space-y-6">
+    <!-- Batch Header Information -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <h3 class="text-lg font-medium text-gray-800 mb-4">Batch Information</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Batch Date</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="batchDate">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="batchForm.get('batchDate')?.hasError('required')">Batch Date is required.</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Expected Total Deposit</mat-label>
+          <span matTextPrefix>$&nbsp;</span>
+          <input matInput type="number" formControlName="expectedTotal" placeholder="0.00" min="0" step="0.01">
+          <mat-error *ngIf="batchForm.get('expectedTotal')?.hasError('required')">Expected Total is required.</mat-error>
+          <mat-error *ngIf="batchForm.get('expectedTotal')?.hasError('min')">Total must be greater than zero.</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Donations Grid -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div class="bg-gray-50 px-6 py-4 flex justify-between items-center border-b border-gray-200">
+        <h3 class="text-lg font-medium text-gray-800 m-0">Donations</h3>
+        
+        <!-- Running Total Display -->
+        <div class="flex items-center gap-4 text-sm">
+          <span class="text-gray-600 uppercase tracking-wide font-medium">Running Total:</span>
+          <span class="text-2xl font-bold" 
+                [ngClass]="{'text-green-600': isBalanced(), 'text-red-500': !isBalanced() && runningTotal() > 0, 'text-gray-800': runningTotal() === 0}">
+            {{ runningTotal() | currency }}
+          </span>
+          <span class="text-gray-500 font-medium whitespace-nowrap">
+            / {{ batchForm.get('expectedTotal')?.value || 0 | currency }}
+          </span>
+        </div>
+      </div>
+
+      <div class="p-6 overflow-x-auto">
+        <div formArrayName="donations" class="min-w-[800px]">
+          <!-- Table Header -->
+          <div class="grid grid-cols-12 gap-4 mb-2 px-2 text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <div class="col-span-3">Household</div>
+            <div class="col-span-2">Amount</div>
+            <div class="col-span-3">Fund</div>
+            <div class="col-span-2">Payment</div>
+            <div class="col-span-1">Ref/Check #</div>
+            <div class="col-span-1 text-center">Act</div>
+          </div>
+
+          <!-- Table Rows -->
+          <div *ngFor="let row of donationsParam.controls; let i=index" [formGroupName]="i" 
+               class="grid grid-cols-12 gap-4 items-start px-2 py-1 hover:bg-gray-50 rounded transition-colors group">
+            
+            <!-- Household Autocomplete -->
+            <div class="col-span-3 pt-1">
+              <mat-form-field appearance="outline" class="w-full dense-form-field">
+                <input type="text"
+                       placeholder="Select Household..."
+                       matInput
+                       formControlName="householdSearch"
+                       [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete" 
+                                  [displayWith]="displayHousehold"
+                                  (optionSelected)="onHouseholdSelected($event, i)">
+                  <mat-option *ngFor="let household of filteredHouseholdsOptions[i] | async" [value]="household">
+                    {{ household.name }}
+                  </mat-option>
+                </mat-autocomplete>
+              </mat-form-field>
+              <!-- Hidden ID Field -->
+              <input type="hidden" formControlName="householdId">
+            </div>
+
+            <!-- Amount Input -->
+            <div class="col-span-2 pt-1">
+              <mat-form-field appearance="outline" class="w-full dense-form-field">
+                <span matTextPrefix>$&nbsp;</span>
+                <input matInput type="number" formControlName="amount" placeholder="0.00" min="0" step="0.01">
+              </mat-form-field>
+            </div>
+
+            <!-- Fund Dropdown -->
+            <div class="col-span-3 pt-1">
+              <mat-form-field appearance="outline" class="w-full dense-form-field">
+                <mat-select formControlName="fundId" placeholder="Select Fund">
+                  <mat-option *ngFor="let fund of fundStore.activeFunds()" [value]="fund.id">
+                    {{ fund.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Payment Method Dropdown -->
+            <div class="col-span-2 pt-1">
+              <mat-form-field appearance="outline" class="w-full dense-form-field">
+                <mat-select formControlName="paymentMethod" placeholder="Method">
+                  <mat-option *ngFor="let method of paymentMethods" [value]="method">
+                    {{ method }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Reference Input -->
+            <div class="col-span-1 pt-1">
+              <mat-form-field appearance="outline" class="w-full dense-form-field">
+                <input matInput type="text" formControlName="reference" [placeholder]="getReferencePlaceholder(i)">
+              </mat-form-field>
+            </div>
+
+            <!-- Actions -->
+            <div class="col-span-1 pt-1 flex justify-center gap-1">
+              <button type="button" mat-icon-button color="primary" 
+                      matTooltip="Add Row" 
+                      class="opacity-0 group-hover:opacity-100 transition-opacity"
+                      (click)="addDonationRow(i)">
+                <mat-icon>add_circle_outline</mat-icon>
+              </button>
+              <button type="button" mat-icon-button color="warn" 
+                      matTooltip="Remove Row" 
+                      class="opacity-0 group-hover:opacity-100 transition-opacity"
+                      (click)="removeDonationRow(i)">
+                <mat-icon>remove_circle_outline</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 px-2">
+          <button type="button" mat-stroked-button color="primary" (click)="addDonationRow()">
+            <mat-icon>add</mat-icon> Add Another Row
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

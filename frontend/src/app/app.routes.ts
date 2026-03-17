@@ -63,4 +63,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES),
   },
+  {
+    path: 'donations/batch-entry',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/donations/batch-entry.routes').then((m) => m.BATCH_ENTRY_ROUTES),
+  },
 ];
