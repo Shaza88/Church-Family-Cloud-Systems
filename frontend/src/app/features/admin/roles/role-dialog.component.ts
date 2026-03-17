@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
@@ -30,6 +30,7 @@ export class RoleDialogComponent implements OnInit {
   dialogRef = inject(MatDialogRef<RoleDialogComponent>);
   data = inject(MAT_DIALOG_DATA);
   rolePermissionService = inject(RolePermissionService);
+  private cdr = inject(ChangeDetectorRef);
 
   form: FormGroup;
   permissions: Permission[] = [];
@@ -51,6 +52,7 @@ export class RoleDialogComponent implements OnInit {
       this.permissions = permissions;
       this.permissionGroups = this.groupPermissions(this.permissions);
       this.groupKeys = Object.keys(this.permissionGroups);
+      this.cdr.markForCheck();
     });
   }
 
