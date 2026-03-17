@@ -15,4 +15,8 @@ export const DIRECTORY_ROUTES: Routes = [
     path: ':id',
     component: HouseholdDetailComponent,
   },
+  {
+    path: ':id/tax-statement',
+    loadChildren: () => import('./household-detail/tax-statement/tax-statement.routes').then((m) => m.TAX_STATEMENT_ROUTES),
+  },
 ];
