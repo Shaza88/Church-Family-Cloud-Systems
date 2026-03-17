@@ -9,6 +9,10 @@ import { MOCK_DONATIONS } from '../data/mock-donations';
 export class DonationService {
   private donations = [...MOCK_DONATIONS];
 
+  getAllDonations(): Observable<Donation[]> {
+    return of([...this.donations]).pipe(delay(500));
+  }
+
   getDonationsByHousehold(householdId: string): Observable<Donation[]> {
     const householdDonations = this.donations.filter(d => d.householdId === householdId);
     return of(householdDonations).pipe(delay(500));

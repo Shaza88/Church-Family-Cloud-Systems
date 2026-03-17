@@ -1,0 +1,92 @@
+<div class="container mx-auto p-4 md:p-6 max-w-7xl">
+  <app-page-header title="Dashboard" subtitle="Overview of your church's health and activity">
+  </app-page-header>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+    
+    <!-- Active Households Metric -->
+    <mat-card class="rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+      <div class="h-2 w-full bg-indigo-500"></div>
+      <mat-card-content class="p-6">
+        <div class="flex items-center relative min-h-[80px]">
+          <div class="w-full text-center">
+            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider m-0">Active Households</p>
+            <div class="flex items-center justify-center gap-2 mt-2">
+              <h2 class="text-4xl font-extrabold text-gray-900 m-0">
+                @if (householdStore.loading()) {
+                  <mat-spinner diameter="24" class="inline-block"></mat-spinner>
+                } @else {
+                  {{ activeHouseholdsCount() }}
+                }
+              </h2>
+            </div>
+          </div>
+          <div class="absolute right-0 p-3 bg-indigo-50 rounded-full flex-shrink-0">
+            <mat-icon class="text-indigo-500 text-3xl h-[36px] w-[36px] flex items-center justify-center">family_restroom</mat-icon>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-4 m-0 flex items-center gap-1">
+          <mat-icon class="text-[14px] w-[14px] h-[14px] text-green-500">trending_up</mat-icon> 
+          Based on directory status
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- YTD Donations Metric -->
+    <mat-card class="rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+      <div class="h-2 w-full bg-emerald-500"></div>
+      <mat-card-content class="p-6">
+        <div class="flex items-center relative min-h-[80px]">
+          <div class="w-full text-center">
+            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider m-0">YTD Donations</p>
+            <div class="flex items-center justify-center gap-2 mt-2">
+              <h2 class="text-4xl font-extrabold text-gray-900 m-0">
+                @if (loadingDonations()) {
+                  <mat-spinner diameter="24" class="inline-block"></mat-spinner>
+                } @else {
+                  {{ ytdDonationsSum() | currency }}
+                }
+              </h2>
+            </div>
+          </div>
+          <div class="absolute right-0 p-3 bg-emerald-50 rounded-full flex-shrink-0">
+            <mat-icon class="text-emerald-500 text-3xl h-[36px] w-[36px] flex items-center justify-center">volunteer_activism</mat-icon>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-4 m-0 flex items-center gap-1">
+          <mat-icon class="text-[14px] w-[14px] h-[14px] text-emerald-500">calendar_today</mat-icon> 
+          Current Calendar Year
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Total System Users Metric -->
+    <mat-card class="rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+      <div class="h-2 w-full bg-amber-500"></div>
+      <mat-card-content class="p-6">
+        <div class="flex items-center relative min-h-[80px]">
+          <div class="w-full text-center">
+            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider m-0">System Users</p>
+            <div class="flex items-center justify-center gap-2 mt-2">
+              <h2 class="text-4xl font-extrabold text-gray-900 m-0">
+                @if (loadingUsers()) {
+                  <mat-spinner diameter="24" class="inline-block"></mat-spinner>
+                } @else {
+                  {{ totalUsers() }}
+                }
+              </h2>
+            </div>
+          </div>
+          <div class="absolute right-0 p-3 bg-amber-50 rounded-full flex-shrink-0">
+            <mat-icon class="text-amber-500 text-3xl h-[36px] w-[36px] flex items-center justify-center">admin_panel_settings</mat-icon>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-4 m-0 flex items-center gap-1">
+          <mat-icon class="text-[14px] w-[14px] h-[14px] text-gray-400">group</mat-icon> 
+          Total Admin/Staff Accounts
+        </p>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+</div>
