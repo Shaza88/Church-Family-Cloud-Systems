@@ -48,6 +48,23 @@ export const DonationStore = signalStore(
         ),
       ),
 
+      loadDonationsForBatch: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, { isLoading: true })),
+          switchMap((batchId) =>
+            donationService.getDonationsByBatchId(batchId).pipe(
+              tap({
+                next: (donations) => patchState(store, { donations, isLoading: false }),
+                error: () => {
+                  patchState(store, { isLoading: false });
+                  notificationService.error('Failed to load batch donations.');
+                },
+              })
+            ),
+          ),
+        ),
+      ),
+
       addDonationsBatch: rxMethod<Omit<Donation, 'id' | 'createdAt' | 'createdBy'>[]>(
         pipe(
           tap(() => patchState(store, { isLoading: true })),

@@ -18,6 +18,11 @@ export class DonationService {
     return of(householdDonations).pipe(delay(500));
   }
 
+  getDonationsByBatchId(batchId: string): Observable<Donation[]> {
+    const batchDonations = this.donations.filter(d => d.batchId === batchId);
+    return of(batchDonations).pipe(delay(500));
+  }
+
   addDonation(donation: Donation): Observable<Donation> {
     this.donations.push(donation);
     return of(donation).pipe(delay(500));
