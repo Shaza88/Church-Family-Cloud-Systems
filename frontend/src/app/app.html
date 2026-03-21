@@ -1,5 +1,5 @@
 <!-- app.html -->
-<ng-container *ngIf="authStore.isAuthenticated(); else publicLayout">
+@if (authStore.isAuthenticated()) {
   <mat-sidenav-container class="h-screen w-full bg-gray-50">
     <!-- THE SIDEBAR -->
     <mat-sidenav #sidenav mode="side" [opened]="true" class="w-64 border-r border-gray-200">
@@ -105,7 +105,7 @@
           <button mat-icon-button [matMenuTriggerFor]="userMenu" class="!overflow-visible">
             <img
               [src]="
-                authStore.userAvatar() || 'https://ui-avatars.com/api/?name=' + authStore.username()
+                authStore.userAvatar() || 'https://ui-avatars.com/api/?name=' + authStore.username() + '&rounded=true&format=svg&bold=true'
               "
               class="w-9 h-9 rounded-full border border-gray-200 shadow-sm"
               alt="User Avatar"
@@ -135,8 +135,6 @@
       </main>
     </mat-sidenav-content>
   </mat-sidenav-container>
-</ng-container>
-
-<ng-template #publicLayout>
+} @else {
   <router-outlet></router-outlet>
-</ng-template>
+}

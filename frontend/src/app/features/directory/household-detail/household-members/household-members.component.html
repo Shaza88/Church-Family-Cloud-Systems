@@ -162,7 +162,7 @@
       </div>
 
       <div formArrayName="minors" class="flex flex-col gap-4">
-        @for (minor of minorsArray.controls; track minor; let i = $index) {
+        @for (minor of minorsArray.controls; track $index; let i = $index) {
           <div
             [formGroupName]="i"
             class="grid grid-cols-1 md:grid-cols-4 gap-4 border border-gray-200 rounded-lg p-5 bg-gray-50 relative group"
@@ -237,7 +237,7 @@
       </p>
 
       <div formArrayName="others" class="flex flex-col gap-4">
-        @for (other of othersArray.controls; track other; let i = $index) {
+        @for (other of othersArray.controls; track $index; let i = $index) {
           <div
             [formGroupName]="i"
             class="grid grid-cols-1 md:grid-cols-3 gap-4 border border-gray-200 rounded-lg p-5 bg-white shadow-sm relative group"

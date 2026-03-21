@@ -40,7 +40,7 @@ export class HouseholdDocumentsComponent {
         name: file.name,
         type: file.name.split('.').pop()?.toUpperCase() || 'FILE',
         url: '#', // In real app, this would be the uploaded URL
-        date: new Date(),
+        date: new Date().toISOString(),
       };
 
       const updatedHousehold: Household = {

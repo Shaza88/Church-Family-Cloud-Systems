@@ -6,7 +6,9 @@
       <mat-form-field appearance="outline" class="dense-form-field w-32 pb-0 mb-[-1.25em]">
         <mat-label>Fiscal Year</mat-label>
         <mat-select [value]="selectedYear()" (selectionChange)="selectedYear.set($event.value)">
-          <mat-option *ngFor="let year of availableYears" [value]="year">{{ year }}</mat-option>
+          @for (year of availableYears; track year) {
+            <mat-option [value]="year">{{ year }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
 

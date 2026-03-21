@@ -33,9 +33,15 @@ export const LookupStore = signalStore(
   withMethods((store, lookupService = inject(LookupService), notificationService = inject(NotificationService)) => ({
     loadLookups: rxMethod<void>(
       pipe(
-        tap(() => patchState(store, { loading: true })),
+        tap(() => patchState(store, { loading: true, error: null })),
         switchMap(() => lookupService.getLookups().pipe(
-          tap((items) => patchState(store, { items, loading: false }))
+          tap({
+            next: (items) => patchState(store, { items, loading: false }),
+            error: (err) => {
+              patchState(store, { loading: false, error: err.message || 'Failed to load lookups.' });
+              notificationService.error('Failed to load lookups.');
+            }
+          })
         ))
       )
     ),
@@ -53,34 +59,52 @@ export const LookupStore = signalStore(
         return;
       }
 
-      patchState(store, { loading: true });
+      patchState(store, { loading: true, error: null });
       const newItem: LookupValue = {
         id: crypto.randomUUID(),
         type,
         value: normalizedValue,
       };
 
-      lookupService.addLookup(newItem).subscribe((added) => {
-        patchState(store, { items: [...store.items(), added], loading: false });
-        notificationService.success(`${type} '${normalizedValue}' added.`);
+      lookupService.addLookup(newItem).subscribe({
+        next: (added) => {
+          patchState(store, { items: [...store.items(), added], loading: false });
+          notificationService.success(`${type} '${normalizedValue}' added.`);
+        },
+        error: (err) => {
+          patchState(store, { loading: false, error: err.message || `Failed to add ${type}.` });
+          notificationService.error(`Failed to add ${type}.`);
+        }
       });
     },
 
     updateLookup(id: string, newValue: string) {
-      patchState(store, { loading: true });
-      lookupService.updateLookup(id, { value: newValue.trim() }).subscribe((updated) => {
-        const updatedItems = store.items().map((item) => item.id === id ? updated : item);
-        patchState(store, { items: updatedItems, loading: false });
-        notificationService.success('Lookup updated successfully.');
+      patchState(store, { loading: true, error: null });
+      lookupService.updateLookup(id, { value: newValue.trim() }).subscribe({
+        next: (updated) => {
+          const updatedItems = store.items().map((item) => item.id === id ? updated : item);
+          patchState(store, { items: updatedItems, loading: false });
+          notificationService.success('Lookup updated successfully.');
+        },
+        error: (err) => {
+          patchState(store, { loading: false, error: err.message || 'Failed to update lookup.' });
+          notificationService.error('Failed to update lookup.');
+        }
       });
     },
 
     deleteLookup(id: string) {
-      patchState(store, { loading: true });
-      lookupService.deleteLookup(id).subscribe(() => {
-        const filteredItems = store.items().filter((item) => item.id !== id);
-        patchState(store, { items: filteredItems, loading: false });
-        notificationService.success('Lookup deleted successfully.');
+      patchState(store, { loading: true, error: null });
+      lookupService.deleteLookup(id).subscribe({
+        next: () => {
+          const filteredItems = store.items().filter((item) => item.id !== id);
+          patchState(store, { items: filteredItems, loading: false });
+          notificationService.success('Lookup deleted successfully.');
+        },
+        error: (err) => {
+          patchState(store, { loading: false, error: err.message || 'Failed to delete lookup.' });
+          notificationService.error('Failed to delete lookup.');
+        }
       });
     },
   })),

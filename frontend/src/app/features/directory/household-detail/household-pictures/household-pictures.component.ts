@@ -39,7 +39,7 @@ export class HouseholdPicturesComponent {
       const newPic = {
         name: file.name,
         url: URL.createObjectURL(file), // Use object URL for preview
-        date: new Date(),
+        date: new Date().toISOString(),
       };
 
       const updatedHousehold: Household = {

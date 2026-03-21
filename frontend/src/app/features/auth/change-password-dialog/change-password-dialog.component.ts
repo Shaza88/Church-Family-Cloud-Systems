@@ -42,7 +42,9 @@ import { NotificationService } from '../../../core/services/notification.service
           >
             <mat-icon>{{ hideOld ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
-          <mat-error *ngIf="form.get('oldPassword')?.hasError('required')">Required</mat-error>
+          @if (form.get('oldPassword')?.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -56,10 +58,12 @@ import { NotificationService } from '../../../core/services/notification.service
           >
             <mat-icon>{{ hideNew ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
-          <mat-error *ngIf="form.get('newPassword')?.hasError('required')">Required</mat-error>
-          <mat-error *ngIf="form.get('newPassword')?.hasError('minlength')"
-            >Minimum 6 characters</mat-error
-          >
+          @if (form.get('newPassword')?.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
+          @if (form.get('newPassword')?.hasError('minlength')) {
+            <mat-error>Minimum 6 characters</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -77,7 +81,9 @@ import { NotificationService } from '../../../core/services/notification.service
           >
             <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
-          <mat-error *ngIf="form.hasError('mismatch')">Passwords do not match</mat-error>
+          @if (form.hasError('mismatch')) {
+            <mat-error>Passwords do not match</mat-error>
+          }
         </mat-form-field>
       </form>
     </mat-dialog-content>
@@ -89,8 +95,11 @@ import { NotificationService } from '../../../core/services/notification.service
         (click)="submit()"
         [disabled]="form.invalid || loading()"
       >
-        <span *ngIf="!loading()">Change Password</span>
-        <span *ngIf="loading()">Saving...</span>
+        @if (!loading()) {
+          <span>Change Password</span>
+        } @else {
+          <span>Saving...</span>
+        }
       </button>
     </mat-dialog-actions>
   `,

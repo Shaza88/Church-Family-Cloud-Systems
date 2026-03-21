@@ -10,12 +10,14 @@ type StewardshipState = {
   stewardships: Stewardship[];
   isLoading: boolean;
   isSaving: boolean;
+  error: string | null;
 };
 
 const initialState: StewardshipState = {
   stewardships: [],
   isLoading: false,
   isSaving: false,
+  error: null,
 };
 
 export const StewardshipStore = signalStore(
@@ -47,13 +49,13 @@ export const StewardshipStore = signalStore(
     ) => ({
       loadStewardshipsForHousehold: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { isLoading: true })),
+          tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap((householdId) =>
             stewardshipService.getStewardshipsByHousehold(householdId).pipe(
               tap({
                 next: (stewardships) => patchState(store, { stewardships, isLoading: false }),
-                error: () => {
-                  patchState(store, { isLoading: false });
+                error: (err) => {
+                  patchState(store, { isLoading: false, error: err.message || 'Failed to load stewardships.' });
                   notificationService.error('Failed to load stewardships.');
                 },
               })
@@ -64,7 +66,7 @@ export const StewardshipStore = signalStore(
 
       addStewardship: rxMethod<Omit<Stewardship, 'id' | 'createdAt' | 'createdBy'>>(
         pipe(
-          tap(() => patchState(store, { isSaving: true })),
+          tap(() => patchState(store, { isSaving: true, error: null })),
           switchMap((stewardship) => {
             const newStewardship: Stewardship = {
               ...stewardship,
@@ -82,7 +84,7 @@ export const StewardshipStore = signalStore(
                   notificationService.success('Stewardship successfully added.');
                 },
                 error: (err) => {
-                  patchState(store, { isSaving: false });
+                  patchState(store, { isSaving: false, error: err.message || 'Failed to add stewardship.' });
                   notificationService.error(err.message || 'Failed to add stewardship.');
                 },
               })
@@ -93,7 +95,7 @@ export const StewardshipStore = signalStore(
 
       updateStewardship: rxMethod<{ id: string; updates: Partial<Stewardship> }>(
         pipe(
-          tap(() => patchState(store, { isSaving: true })),
+          tap(() => patchState(store, { isSaving: true, error: null })),
           switchMap(({ id, updates }) =>
             stewardshipService.updateStewardship(id, updates).pipe(
               tap({
@@ -103,7 +105,7 @@ export const StewardshipStore = signalStore(
                   notificationService.success('Stewardship updated successfully.');
                 },
                 error: (err) => {
-                  patchState(store, { isSaving: false });
+                  patchState(store, { isSaving: false, error: err.message || 'Failed to update stewardship.' });
                   notificationService.error(err.message || 'Failed to update stewardship.');
                 },
               })
@@ -114,7 +116,7 @@ export const StewardshipStore = signalStore(
 
       deleteStewardship: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { isSaving: true })),
+          tap(() => patchState(store, { isSaving: true, error: null })),
           switchMap((id) =>
             stewardshipService.deleteStewardship(id).pipe(
               tap({
@@ -123,8 +125,8 @@ export const StewardshipStore = signalStore(
                   patchState(store, { stewardships: filteredStewardships, isSaving: false });
                   notificationService.success('Stewardship deleted successfully.');
                 },
-                error: () => {
-                  patchState(store, { isSaving: false });
+                error: (err) => {
+                  patchState(store, { isSaving: false, error: err.message || 'Failed to delete stewardship.' });
                   notificationService.error('Failed to delete stewardship.');
                 },
               })

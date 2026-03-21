@@ -67,7 +67,11 @@ export class HouseholdGeneralComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if (this.lookupStore.items().length === 0) {
+      this.lookupStore.loadLookups();
+    }
+  }
 
   patchForm(household: Household) {
     this.form.patchValue({

@@ -83,7 +83,7 @@ export class AuthService {
       firstName: emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1),
       lastName: 'User',
       roles,
-      avatarUrl: `https://ui-avatars.com/api/?name=${emailPrefix}&background=random`,
+      avatarUrl: `https://ui-avatars.com/api/?name=${emailPrefix}&rounded=true&format=svg&bold=true&background=random`,
       createdBy: 'system',
       createdAt: new Date('2023-01-01T08:00:00Z').toISOString(),
       lastModifiedBy: 'system',

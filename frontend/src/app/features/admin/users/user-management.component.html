@@ -30,7 +30,14 @@
           <td mat-cell *matCellDef="let user">
             <div class="flex items-center">
               <img
-                [src]="user.avatarUrl"
+                [src]="
+                  user.avatarUrl ||
+                  'https://ui-avatars.com/api/?name=' +
+                    user.firstName +
+                    '+' +
+                    user.lastName +
+                    '&rounded=true&format=svg&bold=true'
+                "
                 class="w-8 h-8 rounded-full mr-3 border border-gray-200"
                 alt="Avatar"
               />
@@ -100,7 +107,12 @@
             <app-empty-state
               icon="search_off"
               title="No users found"
-              [message]="input.value ? 'No users matching \'' + input.value + '\'' : 'No users have been added to the system yet.'">
+              [message]="
+                input.value
+                  ? 'No users matching \'' + input.value + '\''
+                  : 'No users have been added to the system yet.'
+              "
+            >
             </app-empty-state>
           </td>
         </tr>

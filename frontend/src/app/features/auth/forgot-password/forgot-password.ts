@@ -48,8 +48,12 @@ import { NotificationService } from '../../../core/services/notification.service
                 placeholder="user@example.com"
                 (keyup.enter)="submit()"
               />
-              <mat-error *ngIf="emailControl.hasError('required')">Email is required</mat-error>
-              <mat-error *ngIf="emailControl.hasError('email')">Invalid email address</mat-error>
+              @if (emailControl.hasError('required')) {
+                <mat-error>Email is required</mat-error>
+              }
+              @if (emailControl.hasError('email')) {
+                <mat-error>Invalid email address</mat-error>
+              }
             </mat-form-field>
           </div>
         </mat-card-content>
@@ -63,8 +67,11 @@ import { NotificationService } from '../../../core/services/notification.service
             [disabled]="loading() || emailControl.invalid"
             class="w-full sm:w-auto"
           >
-            <span *ngIf="!loading()">Send Reset Link</span>
-            <span *ngIf="loading()">Sending...</span>
+            @if (!loading()) {
+              <span>Send Reset Link</span>
+            } @else {
+              <span>Sending...</span>
+            }
           </button>
         </mat-card-actions>
       </mat-card>

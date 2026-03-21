@@ -28,6 +28,7 @@ type HouseholdState = {
   pageSize: number;
   sortColumn: string;
   sortDirection: SortDirection;
+  error: string | null;
 };
 
 const initialState: HouseholdState = {
@@ -41,6 +42,7 @@ const initialState: HouseholdState = {
   pageSize: 10,
   sortColumn: '',
   sortDirection: '',
+  error: null,
 };
 
 export const HouseholdStore = signalStore(
@@ -54,7 +56,7 @@ export const HouseholdStore = signalStore(
     return {
       loadHouseholds: rxMethod<void>(
         pipe(
-          tap(() => patchState(store, { loading: true })),
+          tap(() => patchState(store, { loading: true, error: null })),
           switchMap(() => {
             const query = {
               pageIndex: store.pageIndex(),
@@ -67,28 +69,39 @@ export const HouseholdStore = signalStore(
               },
             };
             return householdService.getHouseholds(query).pipe(
-              tap((response) =>
-                patchState(store, {
-                  households: response.items,
-                  total: response.total,
-                  loading: false,
-                })
-              )
+              tap({
+                next: (response) =>
+                  patchState(store, {
+                    households: response.items,
+                    total: response.total,
+                    loading: false,
+                  }),
+                error: (err) => {
+                  patchState(store, { loading: false, error: err.message || 'Failed to load households' });
+                  notificationService.error('Failed to load households');
+                }
+              })
             );
           })
         )
       ),
       loadHousehold: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { loading: true })),
+          tap(() => patchState(store, { loading: true, error: null })),
           switchMap((id) =>
             householdService.getHouseholdById(id).pipe(
-              tap((household) => {
-                if (household) {
-                  patchState(store, { selectedHousehold: household, loading: false });
-                } else {
-                  patchState(store, { selectedHousehold: null, loading: false });
-                  notificationService.error('Household not found');
+              tap({
+                next: (household) => {
+                  if (household) {
+                    patchState(store, { selectedHousehold: household, loading: false });
+                  } else {
+                    patchState(store, { selectedHousehold: null, loading: false, error: 'Household not found' });
+                    notificationService.error('Household not found');
+                  }
+                },
+                error: (err) => {
+                  patchState(store, { loading: false, error: err.message || 'Failed to load household' });
+                  notificationService.error('Failed to load household');
                 }
               })
             )
@@ -137,9 +150,15 @@ export const HouseholdStore = signalStore(
             };
 
             return householdService.addHousehold(newHousehold).pipe(
-              tap(() => {
-                store.loadHouseholds();
-                notificationService.success('Household added successfully');
+              tap({
+                next: () => {
+                  store.loadHouseholds();
+                  notificationService.success('Household added successfully');
+                },
+                error: (err) => {
+                  patchState(store, { error: err.message || 'Failed to add household' });
+                  notificationService.error('Failed to add household');
+                }
               })
             );
           })
@@ -157,7 +176,10 @@ export const HouseholdStore = signalStore(
                   store.loadHouseholds();
                   notificationService.success('Household updated successfully');
                 },
-                error: () => notificationService.error('Failed to update household')
+                error: (err) => {
+                  patchState(store, { error: err.message || 'Failed to update household' });
+                  notificationService.error('Failed to update household');
+                }
               })
             );
           })

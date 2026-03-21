@@ -84,6 +84,10 @@ export class HouseholdMembersComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (this.lookupStore.items().length === 0) {
+      this.lookupStore.loadLookups();
+    }
+
     // Ensure spouse is disabled initially if unchecked
     if (!this.form.get('hasSpouse')?.value) {
       this.form.get('spouse')?.disable();

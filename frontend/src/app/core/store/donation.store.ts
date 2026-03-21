@@ -9,11 +9,13 @@ import { NotificationService } from '../services/notification.service';
 type DonationState = {
   donations: Donation[];
   isLoading: boolean;
+  error: string | null;
 };
 
 const initialState: DonationState = {
   donations: [],
   isLoading: false,
+  error: null,
 };
 
 export const DonationStore = signalStore(
@@ -33,13 +35,13 @@ export const DonationStore = signalStore(
     ) => ({
       loadDonationsForHousehold: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { isLoading: true })),
+          tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap((householdId) =>
             donationService.getDonationsByHousehold(householdId).pipe(
               tap({
                 next: (donations) => patchState(store, { donations, isLoading: false }),
-                error: () => {
-                  patchState(store, { isLoading: false });
+                error: (err) => {
+                  patchState(store, { isLoading: false, error: err.message || 'Failed to load donations.' });
                   notificationService.error('Failed to load donations.');
                 },
               })
@@ -50,13 +52,13 @@ export const DonationStore = signalStore(
 
       loadDonationsForBatch: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { isLoading: true })),
+          tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap((batchId) =>
             donationService.getDonationsByBatchId(batchId).pipe(
               tap({
                 next: (donations) => patchState(store, { donations, isLoading: false }),
-                error: () => {
-                  patchState(store, { isLoading: false });
+                error: (err) => {
+                  patchState(store, { isLoading: false, error: err.message || 'Failed to load batch donations.' });
                   notificationService.error('Failed to load batch donations.');
                 },
               })
@@ -67,7 +69,7 @@ export const DonationStore = signalStore(
 
       addDonationsBatch: rxMethod<Omit<Donation, 'id' | 'createdAt' | 'createdBy'>[]>(
         pipe(
-          tap(() => patchState(store, { isLoading: true })),
+          tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap((donations) => {
             const newDonations: Donation[] = donations.map(d => ({
               ...d,
@@ -86,7 +88,7 @@ export const DonationStore = signalStore(
                   notificationService.success(`${addedDonations.length} donations saved strictly.`);
                 },
                 error: (err) => {
-                  patchState(store, { isLoading: false });
+                  patchState(store, { isLoading: false, error: err.message || 'Failed to save batch donations.' });
                   notificationService.error(err.message || 'Failed to save batch donations.');
                 },
               })

@@ -66,7 +66,7 @@ export class TaxStatementComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['../../'], { relativeTo: this.route });
+    this.router.navigate(['../'], { relativeTo: this.route });
   }
 
   printStatement() {

@@ -5,13 +5,17 @@
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Fund Name</mat-label>
       <input matInput formControlName="name" placeholder="E.g., General Fund" />
-      <mat-error *ngIf="fundForm.get('name')?.hasError('required')">Name is required</mat-error>
+      @if (fundForm.get('name')?.hasError('required')) {
+        <mat-error>Name is required</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Description</mat-label>
       <textarea matInput formControlName="description" rows="3" placeholder="Describe the purpose of this fund..."></textarea>
-      <mat-error *ngIf="fundForm.get('description')?.hasError('required')">Description is required</mat-error>
+      @if (fundForm.get('description')?.hasError('required')) {
+        <mat-error>Description is required</mat-error>
+      }
     </mat-form-field>
 
     <div class="flex flex-col gap-2">

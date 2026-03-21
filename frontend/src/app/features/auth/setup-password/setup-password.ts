@@ -63,12 +63,12 @@ import { NotificationService } from '../../../core/services/notification.service
               >
                 <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
-              <mat-error *ngIf="form.get('password')?.hasError('required')"
-                >Password is required</mat-error
-              >
-              <mat-error *ngIf="form.get('password')?.hasError('minlength')"
-                >Must be at least 6 characters</mat-error
-              >
+              @if (form.get('password')?.hasError('required')) {
+                <mat-error>Password is required</mat-error>
+              }
+              @if (form.get('password')?.hasError('minlength')) {
+                <mat-error>Must be at least 6 characters</mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="w-full">
@@ -88,7 +88,9 @@ import { NotificationService } from '../../../core/services/notification.service
               >
                 <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
-              <mat-error *ngIf="form.hasError('mismatch')">Passwords do not match</mat-error>
+              @if (form.hasError('mismatch')) {
+                <mat-error>Passwords do not match</mat-error>
+              }
             </mat-form-field>
           </div>
         </mat-card-content>
@@ -102,8 +104,11 @@ import { NotificationService } from '../../../core/services/notification.service
             [disabled]="loading() || form.invalid"
             class="w-full sm:w-auto"
           >
-            <span *ngIf="!loading()">Set Password</span>
-            <span *ngIf="loading()">Saving...</span>
+            @if (!loading()) {
+              <span>Set Password</span>
+            } @else {
+              <span>Saving...</span>
+            }
           </button>
         </mat-card-actions>
       </mat-card>

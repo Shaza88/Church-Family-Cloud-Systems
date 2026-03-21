@@ -19,7 +19,7 @@ import { BatchStore } from '../../../core/store/batch.store';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { AuditInfoComponent } from '../../../shared/components/audit-info/audit-info.component';
 import { Household } from '../../../core/models/household.model';
-import { MOCK_HOUSEHOLDS } from '../../../core/data/mock-households';
+import { HouseholdService } from '../../../core/services/household.service';
 
 @Component({
   selector: 'app-batch-entry',
@@ -50,6 +50,7 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
   fundStore = inject(FundStore);
   householdStore = inject(HouseholdStore);
   batchStore = inject(BatchStore);
+  private householdService = inject(HouseholdService);
 
   paymentMethods = ['Cash', 'Check', 'Online'];
   households = signal<Household[]>([]); 
@@ -90,7 +91,9 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.households.set([...MOCK_HOUSEHOLDS]);
+    this.householdService.getAllHouseholds().subscribe(h => {
+      this.households.set(h);
+    });
     
     // Ensure funds are loaded
     if (this.fundStore.allFunds().length === 0) {

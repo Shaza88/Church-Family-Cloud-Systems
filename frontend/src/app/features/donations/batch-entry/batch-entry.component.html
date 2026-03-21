@@ -90,9 +90,9 @@
           </div>
 
           <!-- Table Rows -->
-          <div
-            *ngFor="let row of donationsParam.controls; let i = index"
-            [formGroupName]="i"
+          @for (row of donationsParam.controls; track $index; let i = $index) {
+            <div
+              [formGroupName]="i"
             class="grid grid-cols-12 gap-4 items-start px-2 py-1 hover:bg-gray-50 rounded transition-colors group"
           >
             <!-- Household Autocomplete -->
@@ -110,12 +110,11 @@
                   [displayWith]="displayHousehold"
                   (optionSelected)="onHouseholdSelected($event, i)"
                 >
-                  <mat-option
-                    *ngFor="let household of filteredHouseholdsOptions[i] | async"
-                    [value]="household"
-                  >
-                    {{ household.name }}
-                  </mat-option>
+                  @for (household of filteredHouseholdsOptions[i] | async; track household.id) {
+                    <mat-option [value]="household">
+                      {{ household.name }}
+                    </mat-option>
+                  }
                 </mat-autocomplete>
               </mat-form-field>
               <!-- Hidden ID Field -->
@@ -141,9 +140,11 @@
             <div class="col-span-3 pt-1">
               <mat-form-field appearance="outline" class="w-full dense-form-field">
                 <mat-select formControlName="fundId" placeholder="Select Fund">
-                  <mat-option *ngFor="let fund of fundStore.activeFunds()" [value]="fund.id">
-                    {{ fund.name }}
-                  </mat-option>
+                  @for (fund of fundStore.activeFunds(); track fund.id) {
+                    <mat-option [value]="fund.id">
+                      {{ fund.name }}
+                    </mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
             </div>
@@ -152,9 +153,11 @@
             <div class="col-span-2 pt-1">
               <mat-form-field appearance="outline" class="w-full dense-form-field">
                 <mat-select formControlName="paymentMethod" placeholder="Method">
-                  <mat-option *ngFor="let method of paymentMethods" [value]="method">
-                    {{ method }}
-                  </mat-option>
+                  @for (method of paymentMethods; track method) {
+                    <mat-option [value]="method">
+                      {{ method }}
+                    </mat-option>
+                  }
                 </mat-select>
               </mat-form-field>
             </div>
@@ -199,13 +202,16 @@
               }
             </div>
           </div>
+          }
         </div>
 
-        <div class="mt-4 px-2" *ngIf="!isPosted()">
-          <button type="button" mat-stroked-button color="primary" (click)="addDonationRow()">
-            <mat-icon>add</mat-icon> Add Another Row
-          </button>
-        </div>
+        @if (!isPosted()) {
+          <div class="mt-4 px-2">
+            <button type="button" mat-stroked-button color="primary" (click)="addDonationRow()">
+              <mat-icon>add</mat-icon> Add Another Row
+            </button>
+          </div>
+        }
       </div>
     </div>
   </form>

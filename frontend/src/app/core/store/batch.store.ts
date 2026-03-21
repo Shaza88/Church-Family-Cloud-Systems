@@ -11,12 +11,14 @@ type BatchState = {
   batches: Batch[];
   selectedBatch: Batch | null;
   isLoading: boolean;
+  error: string | null;
 };
 
 const initialState: BatchState = {
   batches: [],
   selectedBatch: null,
   isLoading: false,
+  error: null,
 };
 
 export const BatchStore = signalStore(
@@ -36,13 +38,13 @@ export const BatchStore = signalStore(
     ) => ({
       loadBatches: rxMethod<void>(
         pipe(
-          tap(() => patchState(store, { isLoading: true })),
+          tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap(() =>
             batchService.getBatches().pipe(
               tap({
                 next: (batches) => patchState(store, { batches, isLoading: false }),
                 error: (err) => {
-                  patchState(store, { isLoading: false });
+                  patchState(store, { isLoading: false, error: err.message || 'Failed to load batches.' });
                   notificationService.error(err.message || 'Failed to load batches.');
                 },
               })
@@ -53,7 +55,7 @@ export const BatchStore = signalStore(
 
       loadBatchById: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { isLoading: true })),
+          tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap((id) =>
             batchService.getBatchById(id).pipe(
               tap({
@@ -61,11 +63,14 @@ export const BatchStore = signalStore(
                   if (batch) {
                     patchState(store, { selectedBatch: batch, isLoading: false });
                   } else {
-                    patchState(store, { selectedBatch: null, isLoading: false });
+                    patchState(store, { selectedBatch: null, isLoading: false, error: 'Batch not found.' });
                     notificationService.error('Batch not found.');
                   }
                 },
-                error: () => patchState(store, { isLoading: false }),
+                error: (err) => {
+                  patchState(store, { isLoading: false, error: err.message || 'Failed to load batch.' });
+                  notificationService.error('Failed to load batch.');
+                },
               })
             )
           )
@@ -74,7 +79,7 @@ export const BatchStore = signalStore(
 
       createBatch: rxMethod<{ date: string; expectedTotal: number }>(
         pipe(
-          tap(() => patchState(store, { isLoading: true })),
+          tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap((data) => {
             const currentUserEmail = authStore.user()?.email || 'system';
             const now = new Date().toISOString();
@@ -102,8 +107,8 @@ export const BatchStore = signalStore(
                   });
                   notificationService.success('New batch opened successfully.');
                 },
-                error: () => {
-                  patchState(store, { isLoading: false });
+                error: (err) => {
+                  patchState(store, { isLoading: false, error: err.message || 'Failed to create batch.' });
                   notificationService.error('Failed to create batch.');
                 }
               })
@@ -114,11 +119,11 @@ export const BatchStore = signalStore(
 
       updateBatchStatus: rxMethod<{ id: string, status: 'Posted', actualTotal: number, donationCount: number }>(
         pipe(
-          tap(() => patchState(store, { isLoading: true })),
+          tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap(({ id, status, actualTotal, donationCount }) => {
              const batchToUpdate = store.batches().find(b => b.id === id);
              if (!batchToUpdate) {
-               patchState(store, { isLoading: false });
+               patchState(store, { isLoading: false, error: 'Batch not found locally.' });
                return [];
              }
 
@@ -142,8 +147,8 @@ export const BatchStore = signalStore(
                    });
                    notificationService.success(`Batch successfully ${status.toLowerCase()}!`);
                  },
-                 error: () => {
-                   patchState(store, { isLoading: false });
+                 error: (err) => {
+                   patchState(store, { isLoading: false, error: err.message || 'Failed to update batch status.' });
                    notificationService.error('Failed to update batch status.');
                  }
                })
