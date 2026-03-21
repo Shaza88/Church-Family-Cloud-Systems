@@ -13,6 +13,7 @@ import { HouseholdRelationshipsComponent } from './household-relationships/house
 import { HouseholdStewardshipsComponent } from './household-stewardships/household-stewardships.component';
 import { HouseholdDonationsComponent } from './household-donations/household-donations.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { AuditInfoComponent } from '../../../shared/components/audit-info/audit-info.component';
 import { HasPermissionDirective } from '../../../core/directives/has-permission.directive';
 
 @Component({
@@ -33,6 +34,7 @@ import { HasPermissionDirective } from '../../../core/directives/has-permission.
     HouseholdStewardshipsComponent,
     HouseholdDonationsComponent,
     PageHeaderComponent,
+    AuditInfoComponent,
     HasPermissionDirective,
   ],
   templateUrl: './household-detail.component.html',

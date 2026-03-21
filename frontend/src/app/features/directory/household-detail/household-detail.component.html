@@ -7,17 +7,7 @@
   </app-page-header>
 
   @if (isEditMode && store.selectedHousehold()?.createdAt) {
-    <div class="text-xs text-gray-500 mb-4 px-1 flex flex-wrap gap-x-4">
-      <span
-        >Created by {{ store.selectedHousehold()?.createdBy }} on
-        {{ store.selectedHousehold()?.createdAt | date: 'medium' }}</span
-      >
-      <span class="hidden sm:inline">|</span>
-      <span
-        >Last modified by {{ store.selectedHousehold()?.lastModifiedBy }} on
-        {{ store.selectedHousehold()?.lastModifiedAt | date: 'medium' }}</span
-      >
-    </div>
+    <app-audit-info [entity]="store.selectedHousehold()" customClasses="mb-4 px-1" />
   }
 
   <!-- Content -->

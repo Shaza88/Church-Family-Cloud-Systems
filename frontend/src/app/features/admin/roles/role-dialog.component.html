@@ -1,7 +1,12 @@
 <h2 mat-dialog-title>{{ data.role ? 'Edit Role' : 'New Role' }}</h2>
 
 <mat-dialog-content>
-  <form [formGroup]="form" class="flex flex-col gap-4 pt-4">
+  @if (data.role?.createdAt) {
+    <div class="mb-4 bg-gray-50 rounded p-3 border border-gray-100 mt-2">
+      <app-audit-info [entity]="data.role" layout="column"></app-audit-info>
+    </div>
+  }
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
     <!-- Basic Info -->
     <mat-form-field appearance="outline">
       <mat-label>Role Name</mat-label>
@@ -61,16 +66,4 @@
   >
     Save Role
   </button>
-
-  @if (data.role?.createdAt) {
-    <div class="absolute left-6 bottom-4 text-xs text-gray-500 text-left flex flex-col gap-0.5">
-      <span
-        >Created by {{ data.role?.createdBy }} on {{ data.role?.createdAt | date: 'short' }}</span
-      >
-      <span
-        >Last modified by {{ data.role?.lastModifiedBy }} on
-        {{ data.role?.lastModifiedAt | date: 'short' }}</span
-      >
-    </div>
-  }
 </mat-dialog-actions>

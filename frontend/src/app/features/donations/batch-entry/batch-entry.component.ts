@@ -17,6 +17,7 @@ import { FundStore } from '../../../core/store/fund.store';
 import { HouseholdStore } from '../../../core/store/household.store';
 import { BatchStore } from '../../../core/store/batch.store';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { AuditInfoComponent } from '../../../shared/components/audit-info/audit-info.component';
 import { Household } from '../../../core/models/household.model';
 import { MOCK_HOUSEHOLDS } from '../../../core/data/mock-households';
 
@@ -35,6 +36,7 @@ import { MOCK_HOUSEHOLDS } from '../../../core/data/mock-households';
     MatIconModule,
     MatAutocompleteModule,
     PageHeaderComponent,
+    AuditInfoComponent,
   ],
   templateUrl: './batch-entry.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -22,9 +22,9 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   ],
   providers: [provideNativeDateAdapter()],
   template: `
-    <h2 mat-dialog-title>Create New Batch</h2>
+    <h2 mat-dialog-title class="m-0 border-b border-gray-100 pb-4">Create New Batch</h2>
     
-    <mat-dialog-content class="pt-4">
+    <mat-dialog-content class="!pt-6">
       <form [formGroup]="batchForm" class="flex flex-col gap-4">
         <mat-form-field appearance="outline">
           <mat-label>Batch Date</mat-label>

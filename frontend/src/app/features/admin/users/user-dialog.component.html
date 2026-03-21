@@ -1,7 +1,12 @@
 <h2 mat-dialog-title>{{ data.user ? 'Edit User' : 'New User' }}</h2>
 
 <mat-dialog-content>
-  <form [formGroup]="form" class="flex flex-col gap-4 pt-4">
+  @if (data.user?.createdAt) {
+    <div class="mb-4 bg-gray-50 rounded p-3 border border-gray-100 mt-2">
+      <app-audit-info [entity]="data.user" layout="column"></app-audit-info>
+    </div>
+  }
+  <form [formGroup]="form" class="flex flex-col gap-4 pt-2">
     <!-- Account Info -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <mat-form-field appearance="outline">
@@ -90,16 +95,4 @@
   >
     Save User
   </button>
-
-  @if (data.user?.createdAt) {
-    <div class="absolute left-6 bottom-4 text-xs text-gray-500 text-left flex flex-col gap-0.5">
-      <span
-        >Created by {{ data.user?.createdBy }} on {{ data.user?.createdAt | date: 'short' }}</span
-      >
-      <span
-        >Last modified by {{ data.user?.lastModifiedBy }} on
-        {{ data.user?.lastModifiedAt | date: 'short' }}</span
-      >
-    </div>
-  }
 </mat-dialog-actions>

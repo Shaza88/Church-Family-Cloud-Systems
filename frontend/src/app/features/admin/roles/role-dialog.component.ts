@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
+import { AuditInfoComponent } from '../../../shared/components/audit-info/audit-info.component';
 import { RolePermissionService } from '../../../core/services/role-permission.service';
 import { Permission, Role } from '../../../core/models/user.model';
 
@@ -22,6 +23,7 @@ import { Permission, Role } from '../../../core/models/user.model';
     MatButtonModule,
     MatCheckboxModule,
     MatTabsModule,
+    AuditInfoComponent,
   ],
   templateUrl: './role-dialog.component.html',
 })

@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+import { AuditInfoComponent } from '../../../shared/components/audit-info/audit-info.component';
 import { User, Role } from '../../../core/models/user.model';
 import { RolePermissionService } from '../../../core/services/role-permission.service';
 
@@ -20,6 +21,7 @@ import { RolePermissionService } from '../../../core/services/role-permission.se
     MatInputModule,
     MatButtonModule,
     MatSelectModule,
+    AuditInfoComponent,
   ],
   templateUrl: './user-dialog.component.html',
 })
