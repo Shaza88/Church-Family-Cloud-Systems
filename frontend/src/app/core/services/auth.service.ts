@@ -131,6 +131,31 @@ export class AuthService {
     const stored = localStorage.getItem('mock_users');
     if (stored) {
       this.mockUsers = JSON.parse(stored);
+      
+      // Auto-migrate old avatars in LS
+      let needsSave = false;
+      this.mockUsers.forEach(u => {
+        if (u.avatarUrl && u.avatarUrl.includes('ui-avatars.com') && !u.avatarUrl.includes('bold=true')) {
+          if (!u.avatarUrl.includes('rounded=true')) u.avatarUrl += '&rounded=true';
+          if (!u.avatarUrl.includes('format=svg')) u.avatarUrl += '&format=svg';
+          if (!u.avatarUrl.includes('bold=true')) u.avatarUrl += '&bold=true';
+          needsSave = true;
+        }
+      });
+      if (needsSave) {
+        this.saveMockUsers();
+        // Also update the active session user if it's stored
+        const userStr = localStorage.getItem(this.USER_KEY);
+        if (userStr) {
+          const activeUser = JSON.parse(userStr);
+          const activeMockUser = this.mockUsers.find(x => x.id === activeUser.id);
+          if (activeMockUser && activeMockUser.avatarUrl !== activeUser.avatarUrl) {
+            activeUser.avatarUrl = activeMockUser.avatarUrl;
+            localStorage.setItem(this.USER_KEY, JSON.stringify(activeUser));
+          }
+        }
+      }
+
       console.log(
         '[AuthService] Loaded mock users from LS:',
         this.mockUsers.length,
