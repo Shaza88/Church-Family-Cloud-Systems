@@ -17,10 +17,11 @@
           mat-list-item
           routerLink="/dashboard"
           routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
+          #rlaDashboard="routerLinkActive"
           class="hover:bg-gray-50"
         >
-          <mat-icon matListItemIcon class="text-blue-600">dashboard</mat-icon>
-          <span class="text-blue-900 font-medium">Dashboard</span>
+          <mat-icon matListItemIcon [class]="rlaDashboard.isActive ? 'text-blue-600' : 'text-gray-400'">dashboard</mat-icon>
+          <span [class]="rlaDashboard.isActive ? 'text-blue-900 font-medium' : 'text-gray-600'">Dashboard</span>
         </a>
 
         <!-- Active Link Example -->
@@ -28,25 +29,22 @@
           mat-list-item
           routerLink="/directory"
           routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
+          #rlaDirectory="routerLinkActive"
           class="hover:bg-gray-50"
         >
-          <mat-icon matListItemIcon class="text-blue-600">people</mat-icon>
-          <span class="text-blue-900 font-medium">Directory</span>
-        </a>
-
-        <a mat-list-item href="#">
-          <mat-icon matListItemIcon class="text-gray-400">volunteer_activism</mat-icon>
-          <span class="text-gray-600">Stewardship</span>
+          <mat-icon matListItemIcon [class]="rlaDirectory.isActive ? 'text-blue-600' : 'text-gray-400'">people</mat-icon>
+          <span [class]="rlaDirectory.isActive ? 'text-blue-900 font-medium' : 'text-gray-600'">Directory</span>
         </a>
 
         <a
           mat-list-item
           routerLink="/donations/batch-entry"
           routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
+          #rlaBatch="routerLinkActive"
           class="hover:bg-gray-50"
         >
-          <mat-icon matListItemIcon class="text-blue-600">post_add</mat-icon>
-          <span class="text-blue-900 font-medium">Batch Entry</span>
+          <mat-icon matListItemIcon [class]="rlaBatch.isActive ? 'text-blue-600' : 'text-gray-400'">post_add</mat-icon>
+          <span [class]="rlaBatch.isActive ? 'text-blue-900 font-medium' : 'text-gray-600'">Batch Entry</span>
         </a>
 
         <a mat-list-item href="#">
@@ -60,21 +58,23 @@
           mat-list-item
           routerLink="/admin"
           routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
+          #rlaAdmin="routerLinkActive"
           class="hover:bg-gray-50"
           *appHasPermission="'roles.view'"
         >
-          <mat-icon matListItemIcon class="text-gray-400">security</mat-icon>
-          <span class="text-gray-600">Administration</span>
+          <mat-icon matListItemIcon [class]="rlaAdmin.isActive ? 'text-blue-600' : 'text-gray-400'">security</mat-icon>
+          <span [class]="rlaAdmin.isActive ? 'text-blue-900 font-medium' : 'text-gray-600'">Administration</span>
         </a>
 
         <a
           mat-list-item
           routerLink="/settings"
           routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
+          #rlaSettings="routerLinkActive"
           class="hover:bg-gray-50"
         >
-          <mat-icon matListItemIcon class="text-gray-400">settings</mat-icon>
-          <span class="text-gray-600">Settings</span>
+          <mat-icon matListItemIcon [class]="rlaSettings.isActive ? 'text-blue-600' : 'text-gray-400'">settings</mat-icon>
+          <span [class]="rlaSettings.isActive ? 'text-blue-900 font-medium' : 'text-gray-600'">Settings</span>
         </a>
       </mat-nav-list>
     </mat-sidenav>
@@ -105,7 +105,10 @@
           <button mat-icon-button [matMenuTriggerFor]="userMenu" class="!overflow-visible">
             <img
               [src]="
-                authStore.userAvatar() || 'https://ui-avatars.com/api/?name=' + authStore.username() + '&rounded=true&format=svg&bold=true'
+                authStore.userAvatar() ||
+                'https://ui-avatars.com/api/?name=' +
+                  authStore.username() +
+                  '&rounded=true&format=svg&bold=true'
               "
               class="w-9 h-9 rounded-full border border-gray-200 shadow-sm"
               alt="User Avatar"
