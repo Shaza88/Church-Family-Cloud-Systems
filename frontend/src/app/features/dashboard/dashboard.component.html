@@ -13,7 +13,7 @@
             <p class="text-sm font-medium text-gray-500 uppercase tracking-wider m-0">Active Households</p>
             <div class="flex items-center justify-center gap-2 mt-2">
               <h2 class="text-4xl font-extrabold text-gray-900 m-0">
-                @if (householdStore.loading()) {
+                @if (loadingHouseholds()) {
                   <mat-spinner diameter="24" class="inline-block"></mat-spinner>
                 } @else {
                   {{ activeHouseholdsCount() }}

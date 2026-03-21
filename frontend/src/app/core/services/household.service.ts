@@ -13,6 +13,10 @@ export class HouseholdService {
     return getHouseholds(query);
   }
 
+  getAllHouseholds(): Observable<Household[]> {
+    return of(MOCK_HOUSEHOLDS).pipe(delay(200));
+  }
+
   getHouseholdById(id: string): Observable<Household | undefined> {
     const household = MOCK_HOUSEHOLDS.find((h) => h.id === id);
     return of(household).pipe(delay(500));
