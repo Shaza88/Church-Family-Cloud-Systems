@@ -15,6 +15,7 @@ export interface Individual {
   phone?: string;
   profession?: string;
   relationship?: string; // e.g. Father, Mother, etc.
+  groupIds?: string[]; // IDs of assigned ministry groups
 }
 
 export interface Address {

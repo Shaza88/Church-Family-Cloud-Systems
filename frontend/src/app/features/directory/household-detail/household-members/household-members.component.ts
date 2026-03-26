@@ -13,6 +13,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { HouseholdStore } from '../../../../core/store/household.store';
 import { LookupStore } from '../../../../core/store/lookup.store';
+import { GroupStore } from '../../../../core/store/group.store';
 import { Household, Individual } from '../../../../core/models/household.model';
 
 @Component({
@@ -37,6 +38,7 @@ import { Household, Individual } from '../../../../core/models/household.model';
 export class HouseholdMembersComponent implements OnInit {
   store = inject(HouseholdStore);
   lookupStore = inject(LookupStore);
+  groupStore = inject(GroupStore);
   fb = inject(FormBuilder);
 
   form: FormGroup;
@@ -87,6 +89,7 @@ export class HouseholdMembersComponent implements OnInit {
     if (this.lookupStore.items().length === 0) {
       this.lookupStore.loadLookups();
     }
+    this.groupStore.loadAllGroups();
 
     // Ensure spouse is disabled initially if unchecked
     if (!this.form.get('hasSpouse')?.value) {
@@ -110,6 +113,7 @@ export class HouseholdMembersComponent implements OnInit {
       phone: [''],
       profession: [''],
       relationship: [role === 'Other' ? '' : '', role === 'Other' ? Validators.required : null],
+      groupIds: [[]],
     });
   }
 

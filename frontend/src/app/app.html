@@ -47,6 +47,17 @@
           <span [class]="rlaBatch.isActive ? 'text-blue-900 font-medium' : 'text-gray-600'">Batch Entry</span>
         </a>
 
+        <a
+          mat-list-item
+          routerLink="/groups"
+          routerLinkActive="bg-blue-50 border-r-4 border-blue-600"
+          #rlaGroups="routerLinkActive"
+          class="hover:bg-gray-50"
+        >
+          <mat-icon matListItemIcon [class]="rlaGroups.isActive ? 'text-blue-600' : 'text-gray-400'">groups</mat-icon>
+          <span [class]="rlaGroups.isActive ? 'text-blue-900 font-medium' : 'text-gray-600'">Groups & Ministries</span>
+        </a>
+
         <a mat-list-item href="#">
           <mat-icon matListItemIcon class="text-gray-400">bar_chart</mat-icon>
           <span class="text-gray-600">Reports</span>

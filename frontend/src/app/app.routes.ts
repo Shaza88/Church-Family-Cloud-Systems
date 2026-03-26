@@ -74,4 +74,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () => import('./features/donations/batch-entry.routes').then((m) => m.BATCH_ENTRY_ROUTES),
   },
+  {
+    path: 'groups',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/groups/groups.routes').then((m) => m.GROUP_ROUTES),
+  },
 ];

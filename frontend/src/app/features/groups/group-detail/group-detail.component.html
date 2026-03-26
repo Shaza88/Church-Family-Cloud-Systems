@@ -1,0 +1,64 @@
+<div class="container mx-auto p-4 md:p-6 max-w-7xl">
+  <app-page-header
+    [title]="groupStore.selectedGroup()?.name || 'Loading...'"
+    [subtitle]="groupStore.selectedGroup()?.description || 'Ministry Group Roster'"
+  >
+    <div class="flex gap-2">
+      <button mat-stroked-button (click)="goBack()">
+        <mat-icon>arrow_back</mat-icon> Back
+      </button>
+      <button mat-flat-button color="primary" (click)="messageGroup()">
+        <mat-icon>email</mat-icon> Message Group
+      </button>
+    </div>
+  </app-page-header>
+
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 mt-6 overflow-hidden">
+    <div class="p-4 border-b border-gray-100 flex items-center bg-gray-50">
+      <mat-icon class="text-gray-400 mr-2">group</mat-icon>
+      <span class="font-medium text-gray-700">Group Roster ({{ dataSource.data.length }})</span>
+    </div>
+    
+    <div class="overflow-x-auto">
+      <table mat-table [dataSource]="dataSource" class="w-full">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Member Name </th>
+          <td mat-cell *matCellDef="let member" class="font-medium text-gray-900">
+            {{ member.lastName || 'Inherited' }}, {{ member.firstName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef> Role </th>
+          <td mat-cell *matCellDef="let member" class="text-gray-600">
+            {{ member.role }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> Email Address </th>
+          <td mat-cell *matCellDef="let member" class="text-gray-600">
+            {{ member.email || 'N/A' }}
+          </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef> Phone Number </th>
+          <td mat-cell *matCellDef="let member" class="text-gray-600">
+            {{ member.phone || 'N/A' }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50"></tr>
+        
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-8 text-gray-500" [attr.colspan]="displayedColumns.length">
+            No members are currently assigned to this group.
+          </td>
+        </tr>
+      </table>
+    </div>
+    <mat-paginator [pageSizeOptions]="[10, 25, 50]" showFirstLastButtons></mat-paginator>
+  </div>
+</div>
