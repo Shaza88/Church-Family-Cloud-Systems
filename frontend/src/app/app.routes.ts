@@ -79,4 +79,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     loadChildren: () => import('./features/groups/groups.routes').then((m) => m.GROUP_ROUTES),
   },
+  {
+    path: 'communications',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/communications/communications.routes').then((m) => m.COMMUNICATIONS_ROUTES),
+  },
 ];
