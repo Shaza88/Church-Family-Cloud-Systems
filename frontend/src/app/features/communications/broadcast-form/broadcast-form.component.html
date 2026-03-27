@@ -39,13 +39,9 @@
           }
 
           <div class="mt-2 p-4 bg-blue-50 rounded-lg flex flex-col items-center justify-center text-center">
-            @if (isCalculating) {
-              <mat-spinner diameter="32"></mat-spinner>
-            } @else {
-              <span class="text-4xl font-extrabold text-blue-900 tracking-tight">{{ recipientCount }}</span>
-            }
+            <span class="text-4xl font-extrabold text-blue-900 tracking-tight">{{ recipientCount() }}</span>
             <span class="text-sm font-medium text-blue-700 uppercase tracking-wider mt-1">Recipient Count</span>
-            @if (recipientCount === 0 && !isCalculating) {
+            @if (recipientCount() === 0) {
               <span class="text-xs text-red-500 mt-2 font-medium">No members found matching these filters.</span>
             }
           </div>
@@ -79,7 +75,7 @@
           </mat-form-field>
         </mat-card-content>
         <div class="bg-gray-50 border-t border-gray-100 px-6 py-4 flex justify-end">
-          <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || recipientCount === 0 || isSending" class="h-12 px-8">
+          <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || recipientCount() === 0 || isSending" class="h-12 px-8">
             @if (isSending) {
               <mat-spinner diameter="20" class="mr-2 inline-block relative top-1"></mat-spinner>
             } @else {

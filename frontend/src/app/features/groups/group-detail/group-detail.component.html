@@ -4,10 +4,11 @@
     [subtitle]="groupStore.selectedGroup()?.description || 'Ministry Group Roster'"
   >
     <div class="flex gap-2">
-      <button mat-stroked-button (click)="goBack()">
-        <mat-icon>arrow_back</mat-icon> Back
+      <button mat-stroked-button (click)="goBack()"><mat-icon>arrow_back</mat-icon> Back</button>
+      <button mat-flat-button color="primary" (click)="addMembers()">
+        <mat-icon>person_add</mat-icon> Add Members
       </button>
-      <button mat-flat-button color="primary" (click)="messageGroup()">
+      <button mat-flat-button color="accent" (click)="messageGroup()">
         <mat-icon>email</mat-icon> Message Group
       </button>
     </div>
@@ -18,42 +19,60 @@
       <mat-icon class="text-gray-400 mr-2">group</mat-icon>
       <span class="font-medium text-gray-700">Group Roster ({{ dataSource.data.length }})</span>
     </div>
-    
+
     <div class="overflow-x-auto">
       <table mat-table [dataSource]="dataSource" class="w-full">
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Member Name </th>
+          <th mat-header-cell *matHeaderCellDef>Member Name</th>
           <td mat-cell *matCellDef="let member" class="font-medium text-gray-900">
             {{ member.lastName || 'Inherited' }}, {{ member.firstName }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="role">
-          <th mat-header-cell *matHeaderCellDef> Role </th>
+          <th mat-header-cell *matHeaderCellDef>Role</th>
           <td mat-cell *matCellDef="let member" class="text-gray-600">
             {{ member.role }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="email">
-          <th mat-header-cell *matHeaderCellDef> Email Address </th>
+          <th mat-header-cell *matHeaderCellDef>Email Address</th>
           <td mat-cell *matCellDef="let member" class="text-gray-600">
             {{ member.email || 'N/A' }}
           </td>
         </ng-container>
-        
+
         <ng-container matColumnDef="phone">
-          <th mat-header-cell *matHeaderCellDef> Phone Number </th>
+          <th mat-header-cell *matHeaderCellDef>Phone Number</th>
           <td mat-cell *matCellDef="let member" class="text-gray-600">
             {{ member.phone || 'N/A' }}
           </td>
         </ng-container>
 
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="text-right">Actions</th>
+          <td mat-cell *matCellDef="let member" class="text-right">
+            <button
+              mat-icon-button
+              color="warn"
+              matTooltip="Remove from Group"
+              (click)="removeMember(member)"
+            >
+              <mat-icon>person_remove</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="hover:bg-gray-50"></tr>
-        
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover:bg-gray-50"></tr>
+
         <tr class="mat-row" *matNoDataRow>
-          <td class="mat-cell text-center py-8 text-gray-500" [attr.colspan]="displayedColumns.length">
+          <td
+            class="mat-cell text-center py-8 text-gray-500"
+            [attr.colspan]="displayedColumns.length"
+          >
             No members are currently assigned to this group.
           </td>
         </tr>
