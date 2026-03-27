@@ -95,6 +95,15 @@ export const GroupStore = signalStore(
           )
         )
       ),
+    };
+  }),
+
+  withMethods((store) => {
+    const groupService = inject(GroupService);
+    const notificationService = inject(NotificationService);
+    const authStore = inject(AuthStore);
+
+    return {
       updateFilter(query: string) {
         patchState(store, { filter: query, pageIndex: 0 });
         store.loadGroups();
