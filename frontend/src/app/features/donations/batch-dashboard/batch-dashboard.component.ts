@@ -17,6 +17,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { BatchStore } from '../../../core/store/batch.store';
 import { Batch } from '../../../core/models/batch.model';
 import { BatchDialogComponent } from './batch-dialog.component';
+import { ExportService } from '../../../core/services/export.service';
 
 @Component({
   selector: 'app-batch-dashboard',
@@ -100,5 +101,16 @@ export class BatchDashboardComponent implements OnInit {
 
   viewBatch(batch: Batch) {
     this.router.navigate(['/donations/batch-entry', batch.id]);
+  }
+
+  exportService = inject(ExportService);
+
+  exportCsv() {
+    let data = this.dataSource.filteredData || this.dataSource.data;
+    // Natively sort the unpaginated payload matching the visual header sort configurations
+    if (this.dataSource.sort) {
+      data = this.dataSource.sortData(data, this.dataSource.sort);
+    }
+    this.exportService.exportBatches(data).subscribe();
   }
 }

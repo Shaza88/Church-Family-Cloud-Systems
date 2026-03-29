@@ -19,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 import { LookupStore } from '../../../core/store/lookup.store';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { ExportService } from '../../../core/services/export.service';
 
 @Component({
   selector: 'cfcs-household-directory',
@@ -104,5 +105,26 @@ export class HouseholdDirectoryComponent implements OnInit {
   openEditDialog(household: Household) {
     this.store.loadHousehold(household.id); // Pre-load selected household
     this.router.navigate(['/directory', household.id]);
+  }
+
+  exportService = inject(ExportService);
+  isExporting = false;
+
+  exportCsv() {
+    this.isExporting = true;
+    const query = {
+      pageIndex: 0,
+      pageSize: 10,
+      search: this.store.filter(),
+      filters: this.store.advancedFilter() || undefined,
+      sort: {
+        active: this.store.sortColumn(),
+        direction: this.store.sortDirection()
+      }
+    };
+    
+    this.exportService.exportHouseholds(query).subscribe(() => {
+      this.isExporting = false;
+    });
   }
 }
