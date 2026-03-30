@@ -1,92 +1,170 @@
-<div class="container mx-auto p-4 md:p-6 max-w-7xl">
-  <app-page-header title="Dashboard" subtitle="Overview of your church's health and activity">
-  </app-page-header>
-
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
-    
-    <!-- Active Households Metric -->
-    <mat-card class="rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
-      <div class="h-2 w-full bg-indigo-500"></div>
-      <mat-card-content class="p-6">
-        <div class="flex items-center relative min-h-[80px]">
-          <div class="w-full text-center">
-            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider m-0">Active Households</p>
-            <div class="flex items-center justify-center gap-2 mt-2">
-              <h2 class="text-4xl font-extrabold text-gray-900 m-0">
-                @if (loadingHouseholds()) {
-                  <mat-spinner diameter="24" class="inline-block"></mat-spinner>
-                } @else {
-                  {{ activeHouseholdsCount() }}
-                }
-              </h2>
-            </div>
-          </div>
-          <div class="absolute right-0 p-3 bg-indigo-50 rounded-full flex-shrink-0">
-            <mat-icon class="text-indigo-500 text-3xl h-[36px] w-[36px] flex items-center justify-center">family_restroom</mat-icon>
-          </div>
-        </div>
-        <p class="text-xs text-gray-500 mt-4 m-0 flex items-center gap-1">
-          <mat-icon class="text-[14px] w-[14px] h-[14px] text-green-500">trending_up</mat-icon> 
-          Based on directory status
-        </p>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- YTD Donations Metric -->
-    <mat-card class="rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
-      <div class="h-2 w-full bg-emerald-500"></div>
-      <mat-card-content class="p-6">
-        <div class="flex items-center relative min-h-[80px]">
-          <div class="w-full text-center">
-            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider m-0">YTD Donations</p>
-            <div class="flex items-center justify-center gap-2 mt-2">
-              <h2 class="text-4xl font-extrabold text-gray-900 m-0">
-                @if (loadingDonations()) {
-                  <mat-spinner diameter="24" class="inline-block"></mat-spinner>
-                } @else {
-                  {{ ytdDonationsSum() | currency }}
-                }
-              </h2>
-            </div>
-          </div>
-          <div class="absolute right-0 p-3 bg-emerald-50 rounded-full flex-shrink-0">
-            <mat-icon class="text-emerald-500 text-3xl h-[36px] w-[36px] flex items-center justify-center">volunteer_activism</mat-icon>
-          </div>
-        </div>
-        <p class="text-xs text-gray-500 mt-4 m-0 flex items-center gap-1">
-          <mat-icon class="text-[14px] w-[14px] h-[14px] text-emerald-500">calendar_today</mat-icon> 
-          Current Calendar Year
-        </p>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Total System Users Metric -->
-    <mat-card class="rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
-      <div class="h-2 w-full bg-amber-500"></div>
-      <mat-card-content class="p-6">
-        <div class="flex items-center relative min-h-[80px]">
-          <div class="w-full text-center">
-            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider m-0">System Users</p>
-            <div class="flex items-center justify-center gap-2 mt-2">
-              <h2 class="text-4xl font-extrabold text-gray-900 m-0">
-                @if (loadingUsers()) {
-                  <mat-spinner diameter="24" class="inline-block"></mat-spinner>
-                } @else {
-                  {{ totalUsers() }}
-                }
-              </h2>
-            </div>
-          </div>
-          <div class="absolute right-0 p-3 bg-amber-50 rounded-full flex-shrink-0">
-            <mat-icon class="text-amber-500 text-3xl h-[36px] w-[36px] flex items-center justify-center">admin_panel_settings</mat-icon>
-          </div>
-        </div>
-        <p class="text-xs text-gray-500 mt-4 m-0 flex items-center gap-1">
-          <mat-icon class="text-[14px] w-[14px] h-[14px] text-gray-400">group</mat-icon> 
-          Total Admin/Staff Accounts
-        </p>
-      </mat-card-content>
-    </mat-card>
-
+<div class="p-8 space-y-8">
+  <!-- Header Section -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div>
+      <h2 class="text-3xl font-extrabold text-primary tracking-tight font-headline">Global Dashboard</h2>
+      <p class="text-on-surface-variant font-body">Overview of sanctuary operations and financial stewardship.</p>
+    </div>
   </div>
+
+  <!-- Top Section: Metric Cards (Grid 4-col) -->
+  <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Card 1: Households -->
+    <cfcs-card [level]="'lowest'" [ghostBorder]="true">
+      <div class="flex justify-between items-start mb-4">
+        <div class="p-2 bg-primary-fixed rounded-lg text-primary">
+          <mat-icon>groups</mat-icon>
+        </div>
+        <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">+12% this month</span>
+      </div>
+      <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">Total Households</p>
+      <h3 class="text-3xl font-extrabold text-primary font-headline">
+        @if (loadingHouseholds()) {
+          <mat-spinner diameter="24"></mat-spinner>
+        } @else {
+          {{ activeHouseholdsCount() }}
+        }
+      </h3>
+    </cfcs-card>
+
+    <!-- Card 2: Donations -->
+    <cfcs-card [level]="'lowest'" [ghostBorder]="true">
+      <div class="flex justify-between items-start mb-4">
+        <div class="p-2 bg-secondary-container rounded-lg text-secondary">
+          <mat-icon>payments</mat-icon>
+        </div>
+        <span class="text-xs font-bold text-on-surface-variant bg-surface-container-high px-2 py-1 rounded">94% of target</span>
+      </div>
+      <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">YTD Donations</p>
+      <h3 class="text-3xl font-extrabold text-primary font-headline">
+        @if (loadingDonations()) {
+          <mat-spinner diameter="24"></mat-spinner>
+        } @else {
+          {{ ytdDonationsSum() | currency }}
+        }
+      </h3>
+    </cfcs-card>
+
+    <!-- Card 3: System Users (Repurposed from Active Batches to retain logic) -->
+    <cfcs-card [level]="'lowest'" [ghostBorder]="true">
+      <div class="flex justify-between items-start mb-4">
+        <div class="p-2 bg-tertiary-fixed rounded-lg text-tertiary">
+          <mat-icon>admin_panel_settings</mat-icon>
+        </div>
+      </div>
+      <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">System Users</p>
+      <h3 class="text-3xl font-extrabold text-primary font-headline">
+        @if (loadingUsers()) {
+          <mat-spinner diameter="24"></mat-spinner>
+        } @else {
+          {{ totalUsers() }}
+        }
+      </h3>
+    </cfcs-card>
+
+    <!-- Card 4: System Health -->
+    <cfcs-card [level]="'lowest'" [ghostBorder]="true">
+      <div class="flex justify-between items-start mb-4">
+        <div class="p-2 bg-green-100 rounded-lg text-green-700">
+          <mat-icon>verified_user</mat-icon>
+        </div>
+        <mat-icon class="text-green-600">check_circle</mat-icon>
+      </div>
+      <p class="text-on-surface-variant text-xs font-semibold uppercase tracking-wider mb-1">System Health</p>
+      <h3 class="text-3xl font-extrabold text-primary font-headline">100% Secure</h3>
+    </cfcs-card>
+  </section>
+
+  <!-- Middle Section: Ministry Pulse & Activity -->
+  <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Ministry Pulse Chart Shared Component -->
+    <div class="lg:col-span-7">
+      <cfcs-ministry-pulse 
+        title="Ministry Pulse: YTD Donations"
+        [value]="(ytdDonationsSum() | currency)!"
+        icon="account_balance"
+        [percentFilled]="88"
+        [trend]="4.2">
+      </cfcs-ministry-pulse>
+    </div>
+
+    <!-- Recent Activity List (5 cols) -->
+    <div class="lg:col-span-5">
+      <cfcs-card [level]="'lowest'" [ghostBorder]="true" class="h-full flex flex-col">
+        <h4 class="text-lg font-bold text-primary font-headline mb-6">Recent Activity</h4>
+        
+        <div class="space-y-6 flex-1">
+          <!-- Activity 1 -->
+          <div class="flex gap-4 items-start">
+            <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-blue-700 flex-shrink-0">
+              <mat-icon>post_add</mat-icon>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-primary">Financial Batch Posted</p>
+              <p class="text-xs text-on-surface-variant">Sunday Service Offertory - $12,450.00</p>
+              <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">2 hours ago</p>
+            </div>
+          </div>
+          
+          <!-- Activity 2 -->
+          <div class="flex gap-4 items-start">
+            <div class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-700 flex-shrink-0">
+              <mat-icon>person_add</mat-icon>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-primary">New Member Added</p>
+              <p class="text-xs text-on-surface-variant">The Harrison Family (4 members)</p>
+              <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">4 hours ago</p>
+            </div>
+          </div>
+          
+          <!-- Activity 3 -->
+          <div class="flex gap-4 items-start">
+            <div class="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-purple-700 flex-shrink-0">
+              <mat-icon>account_balance</mat-icon>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-primary">New Fund Created</p>
+              <p class="text-xs text-on-surface-variant">Roof Restoration 2024 Campaign</p>
+              <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">Yesterday</p>
+            </div>
+          </div>
+        </div>
+        
+        <button class="w-full mt-8 py-2 text-primary font-bold text-xs uppercase tracking-widest hover:bg-slate-50 transition-colors border-t border-slate-100">
+          View All Activity
+        </button>
+      </cfcs-card>
+    </div>
+  </section>
+
+  <!-- Bottom Section: System Analytics (Bento Style) -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1 bg-primary text-white p-8 rounded-2xl relative overflow-hidden group hover:shadow-lg transition-transform border border-transparent">
+      <div class="relative z-10">
+        <h5 class="text-sm font-bold uppercase tracking-widest opacity-80 mb-2">Member Growth</h5>
+        <p class="text-4xl font-extrabold font-headline mb-4">+42</p>
+        <p class="text-xs opacity-70">Net new members this quarter across all campus locations.</p>
+      </div>
+      <div class="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-110 transition-transform">
+        <mat-icon class="text-[120px] !w-[120px] !h-[120px]">trending_up</mat-icon>
+      </div>
+    </div>
+    
+    <div class="md:col-span-2 bg-surface-container-high p-8 rounded-2xl flex items-center gap-8 border border-outline-variant/15 hover:border-outline-variant/30 transition-colors">
+      <div class="flex-1">
+        <h5 class="text-primary font-bold font-headline mb-2">Quarterly Giving Goal</h5>
+        <div class="w-full bg-slate-300 h-3 rounded-full overflow-hidden mb-3">
+          <div class="bg-gradient-to-r from-primary to-primary-container h-full w-[88%] rounded-full"></div>
+        </div>
+        <div class="flex justify-between items-center text-xs font-bold text-on-surface-variant">
+          <span>{{ ytdDonationsSum() | currency }} Collected</span>
+          <span>$480,000 Target</span>
+        </div>
+      </div>
+      <div class="w-24 h-24 rounded-full border-4 border-primary/20 flex items-center justify-center bg-white shadow-ambient">
+        <span class="text-xl font-extrabold text-primary font-headline">88%</span>
+      </div>
+    </div>
+  </section>
 </div>
