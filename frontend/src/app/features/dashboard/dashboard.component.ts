@@ -9,7 +9,6 @@ import { Household } from '../../core/models/household.model';
 import { DonationService } from '../../core/services/donation.service';
 import { AuthService } from '../../core/services/auth.service';
 import { CardComponent } from '../../shared/components/card/card.component';
-import { ButtonComponent } from '../../shared/components/button/button.component';
 import { MinistryPulseComponent } from '../../shared/components/ministry-pulse/ministry-pulse.component';
 
 @Component({
@@ -21,7 +20,6 @@ import { MinistryPulseComponent } from '../../shared/components/ministry-pulse/m
     MatIconModule,
     MatProgressSpinnerModule,
     CardComponent,
-    ButtonComponent,
     MinistryPulseComponent
   ],
   templateUrl: './dashboard.component.html',
