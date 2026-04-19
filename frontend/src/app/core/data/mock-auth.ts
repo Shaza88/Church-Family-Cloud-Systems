@@ -36,6 +36,26 @@ export const MOCK_PERMISSIONS: Permission[] = [
   { id: 'p16', name: 'documents.manage', group: 'Household', description: 'Manage documents' },
   { id: 'p17', name: 'pictures.view', group: 'Household', description: 'View pictures' },
   { id: 'p18', name: 'pictures.manage', group: 'Household', description: 'Manage pictures' },
+  { id: 'p19', name: 'stewardships.view', group: 'Household', description: 'View stewardships' },
+  { id: 'p20', name: 'stewardships.manage', group: 'Household', description: 'Manage stewardships' },
+
+  // Finances Permissions
+  { id: 'p21', name: 'donations.view', group: 'Finances', description: 'View individual donations' },
+  { id: 'p22', name: 'donations.manage', group: 'Finances', description: 'Manage individual donations' },
+  { id: 'p23', name: 'donations.batch', group: 'Finances', description: 'Access batch entry' },
+  { id: 'p24', name: 'taxstatements.view', group: 'Finances', description: 'View tax statements' },
+  { id: 'p25', name: 'taxstatements.generate', group: 'Finances', description: 'Generate tax statements' },
+
+  // Groups & Ministries Permissions
+  { id: 'p26', name: 'groups.view', group: 'Groups', description: 'View groups and ministries' },
+  { id: 'p27', name: 'groups.manage', group: 'Groups', description: 'Manage groups and members' },
+
+  // Communications Permissions
+  { id: 'p28', name: 'communications.view', group: 'Communications', description: 'View communications' },
+  { id: 'p29', name: 'communications.send', group: 'Communications', description: 'Send communications' },
+
+  // Reports Permissions
+  { id: 'p30', name: 'reports.view', group: 'Reports', description: 'View reports' },
 ];
 
 export const MOCK_ROLES: Role[] = [
@@ -62,6 +82,18 @@ export const MOCK_ROLES: Role[] = [
       'p16',
       'p17',
       'p18',
+      'p19',
+      'p20',
+      'p21',
+      'p22',
+      'p23',
+      'p24',
+      'p25',
+      'p26',
+      'p27',
+      'p28',
+      'p29',
+      'p30',
     ],
     createdBy: 'system',
     createdAt: new Date('2023-01-01T08:00:00Z').toISOString(),
@@ -72,7 +104,7 @@ export const MOCK_ROLES: Role[] = [
     id: 'r2',
     name: 'Secretary',
     description: 'Can manage households but not security settings',
-    permissionIds: ['p1', 'p2', 'p3', 'p5', 'p6', 'p13', 'p14', 'p15', 'p16', 'p17', 'p18'], // No delete (p4), no security (p7-p12)
+    permissionIds: ['p1', 'p2', 'p3', 'p5', 'p6', 'p13', 'p14', 'p15', 'p16', 'p17', 'p18', 'p19', 'p20', 'p21', 'p22', 'p23', 'p24', 'p25', 'p26', 'p27', 'p28', 'p29', 'p30'], // No delete (p4), no security (p7-p12)
     createdBy: 'system',
     createdAt: new Date('2023-01-15T10:30:00Z').toISOString(),
     lastModifiedBy: 'admin@example.com',
@@ -82,7 +114,7 @@ export const MOCK_ROLES: Role[] = [
     id: 'r3',
     name: 'Viewer',
     description: 'Read-only access',
-    permissionIds: ['p1', 'p5', 'p13', 'p15', 'p17'],
+    permissionIds: ['p1', 'p5', 'p13', 'p15', 'p17', 'p19', 'p21', 'p24', 'p26', 'p28', 'p30'],
     createdBy: 'system',
     createdAt: new Date('2023-01-15T10:35:00Z').toISOString(),
     lastModifiedBy: 'system',

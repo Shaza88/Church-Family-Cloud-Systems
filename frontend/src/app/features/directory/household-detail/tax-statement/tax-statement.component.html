@@ -1,7 +1,8 @@
 <div class="min-h-screen bg-gray-50 print:bg-white flex flex-col items-center py-8 print:py-0">
-  
   <!-- Action Bar (Hidden when printing) -->
-  <div class="w-full max-w-4xl bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8 flex justify-between items-center print:hidden">
+  <div
+    class="w-full max-w-4xl bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-8 flex justify-between items-center print:hidden"
+  >
     <button mat-stroked-button color="primary" (click)="goBack()">
       <mat-icon>arrow_back</mat-icon> Back to Household
     </button>
@@ -14,24 +15,29 @@
   </div>
 
   <!-- The Actual Printable Document -->
-  <div class="w-full max-w-4xl bg-white shadow-md border border-gray-200 p-12 print:shadow-none print:border-none print:p-0">
-    
+  <div
+    class="w-full max-w-4xl bg-white shadow-md border border-gray-200 p-12 print:shadow-none print:border-none print:p-0"
+  >
     <!-- Letterhead -->
     <div class="flex justify-between items-start border-b-2 border-gray-800 pb-8 mb-8">
       <div>
         <div class="flex items-center gap-3 mb-2">
-          <div class="w-10 h-10 bg-gray-900 text-white rounded-lg flex items-center justify-center print:border print:border-black print:bg-white print:text-black">
+          <div
+            class="w-10 h-10 bg-gray-900 text-white rounded-lg flex items-center justify-center print:border print:border-black print:bg-white print:text-black"
+          >
             <mat-icon class="text-lg">church</mat-icon>
           </div>
-          <h1 class="text-2xl font-bold text-gray-900 tracking-tight m-0">Church Family Cloud</h1>
+          <h1 class="text-2xl font-bold text-gray-900 tracking-tight m-0">Holy Ascension</h1>
         </div>
-        <p class="text-gray-600 text-sm m-0">123 Grace Avenue</p>
-        <p class="text-gray-600 text-sm m-0">Springfield, IL 62701</p>
-        <p class="text-gray-600 text-sm m-0">(555) 123-4567 | finance&#64;churchfamily.org</p>
+        <p class="text-gray-600 text-sm m-0">558 Highland Road</p>
+        <p class="text-gray-600 text-sm m-0">West Chester, PA, 19380</p>
+        <p class="text-gray-600 text-sm m-0">(610) 436-4659 | admin@holyascension.net</p>
       </div>
       <div class="text-right">
-        <h2 class="text-xl font-bold text-gray-800 uppercase tracking-widest m-0">{{ fiscalYear }} Tax Statement</h2>
-        <p class="text-gray-500 text-sm mt-1">Generated: {{ today | date:'longDate' }}</p>
+        <h2 class="text-xl font-bold text-gray-800 uppercase tracking-widest m-0">
+          {{ fiscalYear }} Tax Statement
+        </h2>
+        <p class="text-gray-500 text-sm mt-1">Generated: {{ today | date: 'longDate' }}</p>
       </div>
     </div>
 
@@ -45,7 +51,8 @@
           <p class="text-gray-600 m-0">{{ household()?.address?.street2 }}</p>
         }
         <p class="text-gray-600 m-0">
-          {{ household()?.address?.city }}, {{ household()?.address?.state }} {{ household()?.address?.zip }}
+          {{ household()?.address?.city }}, {{ household()?.address?.state }}
+          {{ household()?.address?.zip }}
         </p>
       }
       @if (household()?.phone) {
@@ -54,9 +61,13 @@
     </div>
 
     <!-- Total Summary Box -->
-    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-12 flex justify-between items-center print:bg-white print:border-gray-400">
+    <div
+      class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-12 flex justify-between items-center print:bg-white print:border-gray-400"
+    >
       <div>
-        <p class="text-gray-600 font-medium m-0">Total Tax-Deductible Contributions for {{ fiscalYear }}</p>
+        <p class="text-gray-600 font-medium m-0">
+          Total Tax-Deductible Contributions for {{ fiscalYear }}
+        </p>
         <p class="text-xs text-gray-500 mt-1">Under IRS section 501(c)(3) guidelines.</p>
       </div>
       <div class="text-3xl font-bold text-gray-900">
@@ -66,15 +77,18 @@
 
     <!-- Official Statement Text -->
     <p class="text-gray-700 leading-relaxed mb-8 text-justify">
-      Thank you for your generous support of our ministries. This statement confirms your contributions for the calendar year {{ fiscalYear }}. 
-      No goods or services were provided by the church in exchange for these contributions, other than intangible religious benefits. 
+      Thank you for your generous support of our ministries. This statement confirms your
+      contributions for the calendar year {{ fiscalYear }}. No goods or services were provided by
+      the church in exchange for these contributions, other than intangible religious benefits.
       Please retain this document for your tax records.
     </p>
 
     <!-- Detailed Ledger -->
     <div class="mb-12">
-      <h3 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-2 mb-4">Contribution Details</h3>
-      
+      <h3 class="text-lg font-bold text-gray-900 border-b border-gray-300 pb-2 mb-4">
+        Contribution Details
+      </h3>
+
       <table class="w-full text-left text-sm">
         <thead>
           <tr class="border-b border-gray-300 text-gray-600 font-medium h-10">
@@ -88,8 +102,10 @@
         <tbody>
           @for (donation of deductibleDonations(); track donation.id) {
             <tr class="border-b border-gray-100 print:border-gray-200 h-10">
-              <td class="py-2 text-gray-800">{{ donation.date | date:'shortDate' }}</td>
-              <td class="py-2 text-gray-900 font-medium text-right">{{ donation.amount | currency }}</td>
+              <td class="py-2 text-gray-800">{{ donation.date | date: 'shortDate' }}</td>
+              <td class="py-2 text-gray-900 font-medium text-right">
+                {{ donation.amount | currency }}
+              </td>
               <td class="py-2 text-gray-600 pl-6">{{ getFundName(donation.fundId) }}</td>
               <td class="py-2 text-gray-600">{{ donation.paymentMethod }}</td>
               <td class="py-2 text-gray-500 italic">{{ donation.reference || '--' }}</td>
@@ -107,17 +123,18 @@
     </div>
 
     <!-- Signature Line -->
-    <div class="mt-24 pt-8 border-t border-gray-200 flex justify-between items-end print:border-gray-800">
+    <div
+      class="mt-24 pt-8 border-t border-gray-200 flex justify-between items-end print:border-gray-800"
+    >
       <div>
         <p class="text-gray-800 font-medium m-0">Authorized Signature</p>
         <p class="text-gray-500 text-sm">Church Financial Secretary</p>
       </div>
       <div>
         @if (false) {
-          <img src="assets/signature.png" alt="Signature" class="h-10">
+          <img src="assets/signature.png" alt="Signature" class="h-10" />
         }
       </div>
     </div>
-
   </div>
 </div>

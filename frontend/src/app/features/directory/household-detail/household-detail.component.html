@@ -46,12 +46,16 @@
       </mat-tab>
       <mat-tab label="Stewardship">
         <ng-template matTabContent>
-          <app-household-stewardships></app-household-stewardships>
+          <div *appHasPermission="'stewardships.view'; else noAccess">
+            <app-household-stewardships></app-household-stewardships>
+          </div>
         </ng-template>
       </mat-tab>
       <mat-tab label="Donations">
         <ng-template matTabContent>
-          <app-household-donations></app-household-donations>
+          <div *appHasPermission="'donations.view'; else noAccess">
+            <app-household-donations></app-household-donations>
+          </div>
         </ng-template>
       </mat-tab>
       <ng-template #noAccess>

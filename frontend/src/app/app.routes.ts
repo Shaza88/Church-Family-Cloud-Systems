@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { permissionGuard } from './core/guards/permission.guard';
 
 export const routes: Routes = [
   {
@@ -71,17 +72,17 @@ export const routes: Routes = [
   },
   {
     path: 'donations/batch-entry',
-    canActivate: [authGuard],
+    canActivate: [authGuard, permissionGuard('donations.batch')],
     loadChildren: () => import('./features/donations/batch-entry.routes').then((m) => m.BATCH_ENTRY_ROUTES),
   },
   {
     path: 'groups',
-    canActivate: [authGuard],
+    canActivate: [authGuard, permissionGuard('groups.view')],
     loadChildren: () => import('./features/groups/groups.routes').then((m) => m.GROUP_ROUTES),
   },
   {
     path: 'communications',
-    canActivate: [authGuard],
+    canActivate: [authGuard, permissionGuard('communications.view')],
     loadChildren: () => import('./features/communications/communications.routes').then((m) => m.COMMUNICATIONS_ROUTES),
   },
 ];
