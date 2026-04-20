@@ -11,6 +11,7 @@ import { HouseholdStore } from '../../../../core/store/household.store';
 import { DonationStore } from '../../../../core/store/donation.store';
 import { FundStore } from '../../../../core/store/fund.store';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
+import { HasPermissionDirective } from '../../../../core/directives/has-permission.directive';
 import { signal } from '@angular/core';
 
 @Component({
@@ -25,6 +26,7 @@ import { signal } from '@angular/core';
     MatFormFieldModule,
     MatProgressSpinnerModule,
     EmptyStateComponent,
+    HasPermissionDirective,
   ],
   templateUrl: './household-donations.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

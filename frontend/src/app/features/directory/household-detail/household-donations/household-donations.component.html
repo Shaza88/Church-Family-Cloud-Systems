@@ -3,7 +3,7 @@
     <h2 class="text-xl font-bold text-gray-800 m-0">Donations History</h2>
     
     <div class="flex items-center gap-3" *appHasPermission="'taxstatements.view'">
-      <mat-form-field appearance="outline" class="dense-form-field w-32 pb-0 mb-[-1.25em]">
+      <mat-form-field appearance="outline" class="dense-form-field w-40 pb-0 mb-[-1.25em]">
         <mat-label>Fiscal Year</mat-label>
         <mat-select [value]="selectedYear()" (selectionChange)="selectedYear.set($event.value)">
           @for (year of availableYears; track year) {
@@ -12,7 +12,7 @@
         </mat-select>
       </mat-form-field>
 
-      <button mat-stroked-button color="primary" class="h-[40px]" (click)="generateTaxStatement()">
+      <button mat-flat-button color="primary" class="h-[40px]" (click)="generateTaxStatement()">
         <mat-icon>print</mat-icon>
         Tax Statement
       </button>
