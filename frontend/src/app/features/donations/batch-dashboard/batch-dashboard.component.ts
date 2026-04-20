@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { BatchStore } from '../../../core/store/batch.store';
-import { Batch } from '../../../core/models/batch.model';
+import { Batch, BatchStatus } from '../../../core/models/batch.model';
 import { BatchDialogComponent } from './batch-dialog.component';
 import { ExportService } from '../../../core/services/export.service';
 
@@ -43,6 +43,8 @@ export class BatchDashboardComponent implements OnInit {
   batchStore = inject(BatchStore);
   dialog = inject(MatDialog);
   router = inject(Router);
+
+  BatchStatus = BatchStatus;
 
   displayedColumns = ['date', 'status', 'expectedTotal', 'actualTotal', 'donationCount', 'createdBy', 'actions'];
   dataSource = new MatTableDataSource<Batch>();
@@ -101,6 +103,13 @@ export class BatchDashboardComponent implements OnInit {
 
   viewBatch(batch: Batch) {
     this.router.navigate(['/donations/batch-entry', batch.id]);
+  }
+
+  deleteBatch(batch: Batch, event: Event) {
+    event.stopPropagation();
+    if (confirm(`Are you sure you want to permanently delete this Batch?`)) {
+      this.batchStore.deleteBatch(batch.id);
+    }
   }
 
   exportService = inject(ExportService);

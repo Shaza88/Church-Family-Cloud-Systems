@@ -1,6 +1,9 @@
 import { AuditableEntity } from './base.model';
 
-export type BatchStatus = 'Open' | 'Posted';
+export enum BatchStatus {
+  Open = 'Open',
+  Posted = 'Posted'
+}
 
 export interface Batch extends AuditableEntity {
   id: string;

@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed, ChangeDetectionStrategy, effect } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, signal, computed, ChangeDetectionStrategy, effect, ChangeDetectorRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -9,9 +9,10 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Observable, Subscription, map, startWith } from 'rxjs';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Observable, Subscription, map, startWith, combineLatest } from 'rxjs';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { BatchStatus } from '../../../core/models/batch.model';
 import { DonationStore } from '../../../core/store/donation.store';
 import { FundStore } from '../../../core/store/fund.store';
 import { HouseholdStore } from '../../../core/store/household.store';
@@ -35,6 +36,7 @@ import { HouseholdService } from '../../../core/services/household.service';
     MatButtonModule,
     MatIconModule,
     MatAutocompleteModule,
+    RouterModule,
     PageHeaderComponent,
     AuditInfoComponent,
   ],
@@ -59,6 +61,8 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
     donations: this.fb.array([], [Validators.required]),
   });
 
+  private cdr = inject(ChangeDetectorRef);
+
   constructor() {
     effect(() => {
       // Reactive Form sync: strictly bind the disabled state to the active batch store
@@ -75,16 +79,20 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
   // Computed batch properties
   batchId = computed(() => this.batchStore.selectedBatch()?.id);
   expectedTotal = computed(() => this.batchStore.selectedBatch()?.expectedTotal || 0);
-  isPosted = computed(() => this.batchStore.selectedBatch()?.status === 'Posted');
+  isPosted = computed(() => {
+    return this.batchStore.selectedBatch()?.status === BatchStatus.Posted;
+  });
   
   isBalanced = computed(() => {
     return this.runningTotal() === this.expectedTotal() && this.runningTotal() > 0;
   });
 
   private donations$ = toObservable(this.donationStore.donations);
+  private households$ = toObservable(this.households);
 
   filteredHouseholdsOptions: Observable<Household[]>[] = [];
   private formChangesSub!: Subscription;
+  private isPopulated = false;
 
   get donationsParam(): FormArray {
     return this.batchForm.get('donations') as FormArray;
@@ -93,6 +101,7 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.householdService.getAllHouseholds().subscribe(h => {
       this.households.set(h);
+      this.populateFormIfReady();
     });
     
     // Ensure funds are loaded
@@ -100,36 +109,33 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
       this.fundStore.loadFunds();
     }
 
-    // Load specific batch from URL
+    // Load specific batch from URL or reset for new
     this.route.paramMap.subscribe(params => {
+      this.isPopulated = false;
       const id = params.get('id');
       if (id) {
         this.batchStore.loadBatchById(id);
         this.donationStore.loadDonationsForBatch(id);
+      } else {
+        this.batchStore.clearSelectedBatch();
+        this.donationStore.clearDonations();
+        
+        // Wipe form completely and inject a single fresh row
+        while (this.donationsParam.length > 0) {
+          this.donationsParam.removeAt(0);
+        }
+        this.filteredHouseholdsOptions = [];
+        this.addDonationRow();
+        
+        // Enforce enabled state for fresh entry
+        this.batchForm.enable({ emitEvent: false });
+        this.cdr.markForCheck();
       }
     });
 
     // Populate the form if existing donations are found
-    this.donations$.subscribe(donations => {
-      if (donations.length > 0) {
-        this.donationsParam.clear({ emitEvent: false });
-        donations.forEach(d => {
-          const row = this.createDonationRow();
-          const h = this.households().find(x => x.id === d.householdId);
-          row.patchValue({
-             householdSearch: h || '',
-             householdId: d.householdId,
-             amount: d.amount,
-             fundId: d.fundId,
-             paymentMethod: d.paymentMethod,
-             reference: d.reference || ''
-          }, { emitEvent: false });
-          this.donationsParam.push(row, { emitEvent: false });
-        });
-        
-        // Manually trigger the valueChanges pipeline to sum runningTotals for preloaded data
-        this.donationsParam.updateValueAndValidity();
-      }
+    this.donations$.subscribe(() => {
+      this.populateFormIfReady();
     });
 
     // Add initial empty row if none exists
@@ -160,6 +166,50 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
     }
   }
 
+  private populateFormIfReady() {
+    const donations = this.donationStore.donations();
+    const households = this.households();
+    
+    if (donations.length > 0 && households.length > 0 && !this.isPopulated) {
+      this.isPopulated = true;
+      
+      donations.forEach((d, idx) => {
+        let row: FormGroup;
+        if (idx < this.donationsParam.length) {
+          row = this.donationsParam.at(idx) as FormGroup;
+        } else {
+          row = this.createDonationRow();
+          this.donationsParam.push(row, { emitEvent: false });
+        }
+        
+        const h = households.find(x => x.id === d.householdId);
+        
+        row.patchValue({
+           householdSearch: h || '',
+           householdId: d.householdId,
+           amount: d.amount,
+           fundId: d.fundId,
+           paymentMethod: d.paymentMethod,
+           reference: d.reference || ''
+        }, { emitEvent: false });
+      });
+      
+      // Clean up excess rows if any
+      while (this.donationsParam.length > donations.length) {
+        this.donationsParam.removeAt(this.donationsParam.length - 1);
+      }
+      
+      this.donationsParam.updateValueAndValidity();
+      
+      // Explicitly enforce disabled state for all created rows if posted
+      if (this.isPosted()) {
+        this.batchForm.disable({ emitEvent: false });
+      }
+      
+      this.cdr.markForCheck();
+    }
+  }
+
   createDonationRow(): FormGroup {
     const row = this.fb.group({
       householdSearch: ['', [Validators.required]],
@@ -172,11 +222,15 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
 
     // Wire up the autocomplete
     const index = this.donationsParam.length;
-    this.filteredHouseholdsOptions[index] = row.get('householdSearch')!.valueChanges.pipe(
-      startWith(''),
-      map((value: any) => {
+    this.filteredHouseholdsOptions[index] = combineLatest([
+      row.get('householdSearch')!.valueChanges.pipe(startWith(row.get('householdSearch')!.value || '')),
+      this.households$
+    ]).pipe(
+      map(([value, householdsList]: [any, Household[]]) => {
         const name = typeof value === 'string' ? value : value?.name;
-        return name ? this._filterHouseholds(name as string) : this.households().slice();
+        if (!name) return householdsList.slice();
+        const filterValue = name.toLowerCase();
+        return householdsList.filter((h: any) => h.name.toLowerCase().includes(filterValue));
       })
     );
 
@@ -199,6 +253,8 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
     if (this.donationsParam.length === 0) {
       this.addDonationRow();
     }
+    
+    this.cdr.markForCheck();
   }
 
   displayHousehold(household: Household): string {
@@ -255,7 +311,7 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
     // Transition the overarching Batch to Posted
     this.batchStore.updateBatchStatus({
       id: this.batchId()!,
-      status: 'Posted',
+      status: BatchStatus.Posted,
       actualTotal: this.runningTotal(),
       donationCount: donationsToSave.length
     });
@@ -264,5 +320,17 @@ export class BatchEntryComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.router.navigate(['/donations/batch-entry']);
     }, 1000);
+  }
+
+  deleteBatch() {
+    if (confirm('Are you sure you want to permanently delete this Batch?')) {
+      const id = this.batchId();
+      if (id) {
+        this.batchStore.deleteBatch(id);
+        setTimeout(() => {
+          this.router.navigate(['/donations/batch-entry']);
+        }, 800);
+      }
+    }
   }
 }

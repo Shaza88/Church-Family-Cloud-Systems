@@ -2,7 +2,7 @@ import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
-import { Batch } from '../models/batch.model';
+import { Batch, BatchStatus } from '../models/batch.model';
 import { BatchService } from '../services/batch.service';
 import { NotificationService } from '../services/notification.service';
 import { AuthStore } from './auth.store';
@@ -36,6 +36,8 @@ export const BatchStore = signalStore(
       authStore = inject(AuthStore),
       notificationService = inject(NotificationService),
     ) => ({
+      clearSelectedBatch: () => patchState(store, { selectedBatch: null }),
+      
       loadBatches: rxMethod<void>(
         pipe(
           tap(() => patchState(store, { isLoading: true, error: null })),
@@ -55,7 +57,7 @@ export const BatchStore = signalStore(
 
       loadBatchById: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
+          tap(() => patchState(store, { isLoading: true, error: null, selectedBatch: null })),
           switchMap((id) =>
             batchService.getBatchById(id).pipe(
               tap({
@@ -90,7 +92,7 @@ export const BatchStore = signalStore(
               expectedTotal: data.expectedTotal,
               actualTotal: 0,
               donationCount: 0,
-              status: 'Open',
+              status: BatchStatus.Open,
               createdBy: currentUserEmail,
               createdAt: now,
               lastModifiedBy: currentUserEmail,
@@ -117,7 +119,7 @@ export const BatchStore = signalStore(
         )
       ),
 
-      updateBatchStatus: rxMethod<{ id: string, status: 'Posted', actualTotal: number, donationCount: number }>(
+      updateBatchStatus: rxMethod<{ id: string, status: BatchStatus, actualTotal: number, donationCount: number }>(
         pipe(
           tap(() => patchState(store, { isLoading: true, error: null })),
           switchMap(({ id, status, actualTotal, donationCount }) => {
@@ -154,6 +156,34 @@ export const BatchStore = signalStore(
                })
              );
           })
+        )
+      ),
+
+      deleteBatch: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, { isLoading: true, error: null })),
+          switchMap((id) =>
+            batchService.deleteBatch(id).pipe(
+              tap({
+                next: (success) => {
+                  if (success) {
+                    patchState(store, {
+                      batches: store.batches().filter(b => b.id !== id),
+                      isLoading: false,
+                    });
+                    notificationService.success('Batch successfully deleted.');
+                  } else {
+                    patchState(store, { isLoading: false, error: 'Batch not found.' });
+                    notificationService.error('Batch not found to delete.');
+                  }
+                },
+                error: (err) => {
+                  patchState(store, { isLoading: false, error: err.message || 'Failed to delete batch.' });
+                  notificationService.error('Failed to delete batch.');
+                }
+              })
+            )
+          )
         )
       )
     })

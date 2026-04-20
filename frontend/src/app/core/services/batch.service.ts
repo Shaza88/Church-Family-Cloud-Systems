@@ -30,4 +30,13 @@ export class BatchService {
     }
     return of(updatedBatch).pipe(delay(400));
   }
+
+  deleteBatch(id: string): Observable<boolean> {
+    const index = this.batches.findIndex(b => b.id === id);
+    if (index !== -1) {
+      this.batches.splice(index, 1);
+      return of(true).pipe(delay(300));
+    }
+    return of(false).pipe(delay(300));
+  }
 }

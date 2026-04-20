@@ -33,6 +33,8 @@ export const DonationStore = signalStore(
       donationService = inject(DonationService),
       notificationService = inject(NotificationService),
     ) => ({
+      clearDonations: () => patchState(store, { donations: [] }),
+
       loadDonationsForHousehold: rxMethod<string>(
         pipe(
           tap(() => patchState(store, { isLoading: true, error: null })),
@@ -52,7 +54,7 @@ export const DonationStore = signalStore(
 
       loadDonationsForBatch: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
+          tap(() => patchState(store, { isLoading: true, error: null, donations: [] })),
           switchMap((batchId) =>
             donationService.getDonationsByBatchId(batchId).pipe(
               tap({

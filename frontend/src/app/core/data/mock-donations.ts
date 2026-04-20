@@ -1,5 +1,5 @@
 import { Donation } from '../models/donation.model';
-import { Batch } from '../models/batch.model';
+import { Batch, BatchStatus } from '../models/batch.model';
 
 export const MOCK_BATCHES: Batch[] = [
   {
@@ -8,7 +8,7 @@ export const MOCK_BATCHES: Batch[] = [
     expectedTotal: 500.0,
     actualTotal: 500.0,
     donationCount: 1,
-    status: 'Posted',
+    status: BatchStatus.Posted,
     createdBy: 'system',
     createdAt: new Date('2024-10-15T10:00:00Z').toISOString(),
   },
@@ -18,7 +18,7 @@ export const MOCK_BATCHES: Batch[] = [
     expectedTotal: 250.0,
     actualTotal: 250.0,
     donationCount: 1,
-    status: 'Posted',
+    status: BatchStatus.Posted,
     createdBy: 'system',
     createdAt: new Date('2024-11-01T09:30:00Z').toISOString(),
   },
@@ -28,7 +28,7 @@ export const MOCK_BATCHES: Batch[] = [
     expectedTotal: 1000.0,
     actualTotal: 1000.0,
     donationCount: 1,
-    status: 'Posted',
+    status: BatchStatus.Posted,
     createdBy: 'system',
     createdAt: new Date('2024-12-25T11:15:00Z').toISOString(),
   },
@@ -38,7 +38,7 @@ export const MOCK_BATCHES: Batch[] = [
     expectedTotal: 100.0,
     actualTotal: 100.0,
     donationCount: 1,
-    status: 'Posted',
+    status: BatchStatus.Posted,
     createdBy: 'system',
     createdAt: new Date('2025-01-10T08:45:00Z').toISOString(),
   },
@@ -48,7 +48,7 @@ export const MOCK_BATCHES: Batch[] = [
     expectedTotal: 150.0,
     actualTotal: 150.0,
     donationCount: 1,
-    status: 'Posted',
+    status: BatchStatus.Posted,
     createdBy: 'system',
     createdAt: new Date('2025-02-05T14:20:00Z').toISOString(),
   }
