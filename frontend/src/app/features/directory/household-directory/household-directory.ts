@@ -64,6 +64,7 @@ export class HouseholdDirectoryComponent implements OnInit {
 
   ngOnInit() {
     this.store.loadHouseholds();
+    this.lookupStore.loadLookups();
   }
 
   applyFilter(event: Event) {

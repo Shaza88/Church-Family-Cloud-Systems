@@ -79,7 +79,7 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
   formTrigger = signal(0);
 
   /** Flat list of matched Individual records based on current form state */
-  matchedRecipients = computed<{ name: string; household: string }[]>(() => {
+  matchedRecipients = computed<{ name: string; household: string; email?: string }[]>(() => {
     this.formTrigger(); // reactivity tracker
 
     if (!this.form) return [];
@@ -182,6 +182,19 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  openHistoryRecipientPreview(log: import('../../../core/models/broadcast-log.model').BroadcastLog): void {
+    const data: RecipientPreviewData = {
+      audienceLabel: log.targetAudience,
+      recipients: log.recipients || [],
+    };
+    this.dialog.open(RecipientPreviewDialogComponent, {
+      data,
+      width: '480px',
+      maxHeight: '80vh',
+      panelClass: 'cfcs-dialog',
+    });
+  }
+
   sendBroadcast(): void {
     if (this.form.invalid || this.recipientCount() === 0) {
       this.form.markAllAsTouched();
@@ -194,6 +207,7 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
       body: this.form.value.message as string,
       recipientCount: this.recipientCount(),
       targetAudience: this.audienceLabel(),
+      recipients: this.matchedRecipients(),
     };
 
     of(true)
@@ -221,15 +235,19 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
   private _flattenMembers(
     households: Household[],
     memberFilter?: (m: Individual) => boolean
-  ): { name: string; household: string }[] {
-    const result: { name: string; household: string }[] = [];
+  ): { name: string; household: string; email?: string }[] {
+    const result: { name: string; household: string; email?: string }[] = [];
     households.forEach((h) => {
       (h.members ?? []).forEach((m) => {
         if (!memberFilter || memberFilter(m)) {
-          result.push({
-            name: `${m.firstName}${m.lastName ? ' ' + m.lastName : ''}`,
-            household: h.name,
-          });
+          // Only include recipients who actually have an email address
+          if (m.email && m.email.trim() !== '') {
+            result.push({
+              name: `${m.firstName}${m.lastName ? ' ' + m.lastName : ''}`,
+              email: m.email,
+              household: h.name,
+            });
+          }
         }
       });
     });

@@ -7,7 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 
 export interface RecipientPreviewData {
   audienceLabel: string;
-  recipients: { name: string; household: string }[];
+  recipients: { name: string; household: string; email?: string }[];
 }
 
 @Component({
@@ -51,7 +51,12 @@ export interface RecipientPreviewData {
                 </div>
                 <div class="min-w-0">
                   <p class="text-sm font-semibold text-gray-800 m-0 truncate">{{ r.name }}</p>
-                  <p class="text-xs text-gray-500 m-0 truncate">{{ r.household }}</p>
+                  <p class="text-[11px] text-gray-500 m-0 truncate">{{ r.household }}</p>
+                  @if (r.email) {
+                    <p class="text-[11px] text-blue-600 m-0 font-medium truncate">{{ r.email }}</p>
+                  } @else {
+                    <p class="text-[11px] text-gray-400 italic m-0 truncate">No email on file</p>
+                  }
                 </div>
               </li>
             }

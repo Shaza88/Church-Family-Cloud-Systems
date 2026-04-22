@@ -8,6 +8,7 @@ export const MOCK_BROADCAST_LOGS: BroadcastLog[] = [
     dateSent: '2025-04-13T09:00:00.000Z',
     recipientCount: 84,
     targetAudience: 'All Active Households',
+    recipients: [{ name: 'John Doe', household: 'Doe Family', email: 'john@example.com' }, { name: 'Jane Doe', household: 'Doe Family', email: 'jane@example.com' }],
   },
   {
     id: 'bl-002',
@@ -16,6 +17,7 @@ export const MOCK_BROADCAST_LOGS: BroadcastLog[] = [
     dateSent: '2025-03-28T14:30:00.000Z',
     recipientCount: 22,
     targetAudience: 'Choir',
+    recipients: [{ name: 'Alice Smith', household: 'Smith Family', email: 'alice@example.com' }],
   },
   {
     id: 'bl-003',
@@ -24,5 +26,6 @@ export const MOCK_BROADCAST_LOGS: BroadcastLog[] = [
     dateSent: '2025-03-01T08:00:00.000Z',
     recipientCount: 97,
     targetAudience: 'All Active Households',
+    recipients: [{ name: 'Bob Johnson', household: 'Johnson Family', email: 'bob@example.com' }],
   },
 ];
