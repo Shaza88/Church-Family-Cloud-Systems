@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, delay } from 'rxjs';
-import { BroadcastLog } from '../models/broadcast-log.model';
-import { MOCK_BROADCAST_LOGS } from '../data/mock-broadcast-logs';
+import { BroadcastLog, BroadcastRecipient } from '../models/broadcast-log.model';
+import { MOCK_BROADCAST_LOGS, MOCK_BROADCAST_RECIPIENTS } from '../data/mock-broadcast-logs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +10,7 @@ export class BroadcastLogService {
   // In-memory store backed by mock data. When a real backend is available,
   // each method body becomes an HttpClient call to the API.
   private logs: BroadcastLog[] = [...MOCK_BROADCAST_LOGS];
+  private recipientsData: Map<string, BroadcastRecipient[]> = new Map(Object.entries(MOCK_BROADCAST_RECIPIENTS));
 
   getLogs(): Observable<BroadcastLog[]> {
     // Return sorted newest-first so the store receives pre-sorted data.
@@ -19,8 +20,13 @@ export class BroadcastLogService {
     return of(sorted).pipe(delay(400));
   }
 
-  addLog(log: BroadcastLog): Observable<BroadcastLog> {
+  getBroadcastRecipients(id: string): Observable<BroadcastRecipient[]> {
+    return of(this.recipientsData.get(id) || []).pipe(delay(400));
+  }
+
+  addLog(log: BroadcastLog, recipients: BroadcastRecipient[]): Observable<BroadcastLog> {
     this.logs.unshift(log); // Insert at top so it's always newest-first
+    this.recipientsData.set(log.id, recipients);
     return of(log).pipe(delay(300));
   }
 }

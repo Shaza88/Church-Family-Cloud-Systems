@@ -6,9 +6,10 @@ import {
   effect,
   signal,
   computed,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormGroupDirective } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,7 +29,9 @@ import { GroupStore } from '../../../core/store/group.store';
 import { HouseholdService } from '../../../core/services/household.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { BroadcastLogStore } from '../../../core/store/broadcast-log.store';
+import { BroadcastLogService } from '../../../core/services/broadcast-log.service';
 import { Household, Individual } from '../../../core/models/household.model';
+import { BroadcastLog, BroadcastRecipient } from '../../../core/models/broadcast-log.model';
 import {
   RecipientPreviewDialogComponent,
   RecipientPreviewData,
@@ -63,7 +66,10 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
   householdService = inject(HouseholdService);
   notificationService = inject(NotificationService);
   broadcastLogStore = inject(BroadcastLogStore);
+  broadcastLogService = inject(BroadcastLogService);
   dialog = inject(MatDialog);
+
+  @ViewChild(FormGroupDirective) formDirective!: FormGroupDirective;
 
   form: FormGroup;
   audienceTypes = ['All Active Households', 'Specific Ministry Groups'];
@@ -77,9 +83,10 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
   /** All households cached locally for fast filtering (avoids repeated service calls) */
   allHouseholds = signal<Household[]>([]);
   formTrigger = signal(0);
+  historyLoadingId = signal<string | null>(null);
 
   /** Flat list of matched Individual records based on current form state */
-  matchedRecipients = computed<{ name: string; household: string; email?: string }[]>(() => {
+  matchedRecipients = computed<BroadcastRecipient[]>(() => {
     this.formTrigger(); // reactivity tracker
 
     if (!this.form) return [];
@@ -182,16 +189,26 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  openHistoryRecipientPreview(log: import('../../../core/models/broadcast-log.model').BroadcastLog): void {
-    const data: RecipientPreviewData = {
-      audienceLabel: log.targetAudience,
-      recipients: log.recipients || [],
-    };
-    this.dialog.open(RecipientPreviewDialogComponent, {
-      data,
-      width: '480px',
-      maxHeight: '80vh',
-      panelClass: 'cfcs-dialog',
+  openHistoryRecipientPreview(log: BroadcastLog): void {
+    this.historyLoadingId.set(log.id);
+    this.broadcastLogService.getBroadcastRecipients(log.id).subscribe({
+      next: (recipients) => {
+        this.historyLoadingId.set(null);
+        const data: RecipientPreviewData = {
+          audienceLabel: log.targetAudience,
+          recipients: recipients,
+        };
+        this.dialog.open(RecipientPreviewDialogComponent, {
+          data,
+          width: '480px',
+          maxHeight: '80vh',
+          panelClass: 'cfcs-dialog',
+        });
+      },
+      error: () => {
+        this.historyLoadingId.set(null);
+        this.notificationService.error('Failed to load recipients for this broadcast.');
+      }
     });
   }
 
@@ -217,15 +234,28 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
       )
       .subscribe(() => {
         // --- Behavior Patch: persist audit record ---
-        this.broadcastLogStore.addLog(snapshot);
+        this.broadcastLogStore.addLog({
+          log: snapshot,
+          recipients: this.matchedRecipients()
+        });
 
         this.notificationService.success(
           `Broadcast successfully sent to ${snapshot.recipientCount} recipients!`
         );
-        this.form.reset({
+
+        const defaultValues = {
           audienceType: 'All Active Households',
           selectedGroups: [],
-        });
+          subject: '',
+          message: ''
+        };
+
+        if (this.formDirective) {
+          this.formDirective.resetForm(defaultValues);
+        } else {
+          this.form.reset(defaultValues);
+        }
+        
         window.history.replaceState({}, '', '/communications');
       });
   }
@@ -235,8 +265,8 @@ export class BroadcastFormComponent implements OnInit, OnDestroy {
   private _flattenMembers(
     households: Household[],
     memberFilter?: (m: Individual) => boolean
-  ): { name: string; household: string; email?: string }[] {
-    const result: { name: string; household: string; email?: string }[] = [];
+  ): BroadcastRecipient[] {
+    const result: BroadcastRecipient[] = [];
     households.forEach((h) => {
       (h.members ?? []).forEach((m) => {
         if (!memberFilter || memberFilter(m)) {

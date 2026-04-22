@@ -97,12 +97,14 @@
                   type="submit"
                   [disabled]="form.invalid || recipientCount() === 0 || isSending"
                   class="h-12 px-8">
-                  @if (isSending) {
-                    <mat-spinner diameter="20" class="mr-2 inline-block relative top-1"></mat-spinner>
-                  } @else {
-                    <mat-icon>send</mat-icon>
-                  }
-                  <span class="pl-1">{{ isSending ? 'Sending...' : 'Send Broadcast' }}</span>
+                  <div class="flex items-center gap-2">
+                    @if (isSending) {
+                      <mat-spinner diameter="20"></mat-spinner>
+                    } @else {
+                      <mat-icon class="!m-0">send</mat-icon>
+                    }
+                    <span>Send Broadcast</span>
+                  </div>
                 </button>
               </div>
             </mat-card>
@@ -181,8 +183,12 @@
                     <td mat-cell *matCellDef="let log" class="px-4 text-right">
                       <div class="flex items-center justify-end gap-1">
                         <span class="text-sm font-bold text-gray-800">{{ log.recipientCount }}</span>
-                        <button mat-icon-button color="primary" class="scale-90" matTooltip="View List" (click)="openHistoryRecipientPreview(log)">
-                          <mat-icon class="!text-[20px] text-blue-500 hover:text-blue-700">visibility</mat-icon>
+                        <button mat-icon-button color="primary" class="scale-90" matTooltip="View List" [disabled]="historyLoadingId() === log.id" (click)="openHistoryRecipientPreview(log)">
+                          @if (historyLoadingId() === log.id) {
+                            <mat-spinner diameter="16"></mat-spinner>
+                          } @else {
+                            <mat-icon class="!text-[20px] text-blue-500 hover:text-blue-700">visibility</mat-icon>
+                          }
                         </button>
                       </div>
                     </td>

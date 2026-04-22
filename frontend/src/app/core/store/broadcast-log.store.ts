@@ -51,15 +51,15 @@ export const BroadcastLogStore = signalStore(
         )
       ),
 
-      addLog(log: Omit<BroadcastLog, 'id' | 'dateSent'>): void {
+      addLog(payload: { log: Omit<BroadcastLog, 'id' | 'dateSent'>; recipients: import('../models/broadcast-log.model').BroadcastRecipient[] }): void {
         patchState(store, { saving: true, error: null });
         const newLog: BroadcastLog = {
-          ...log,
+          ...payload.log,
           id: crypto.randomUUID(),
           dateSent: new Date().toISOString(),
         };
 
-        broadcastLogService.addLog(newLog).subscribe({
+        broadcastLogService.addLog(newLog, payload.recipients).subscribe({
           next: (saved) => {
             // Prepend to keep newest-first ordering in the signal store
             patchState(store, {
