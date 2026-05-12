@@ -5,7 +5,7 @@ namespace ChurchFamily.Core.Entities;
 /// </summary>
 public class RolePermission
 {
-    public Guid RoleId { get; set; }
+    public string RoleId { get; set; } = string.Empty;
     public ApplicationRole Role { get; set; } = null!;
 
     public Guid PermissionId { get; set; }

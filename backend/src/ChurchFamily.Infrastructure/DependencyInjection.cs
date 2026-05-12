@@ -1,6 +1,7 @@
 using ChurchFamily.Application.Common.Interfaces;
 using ChurchFamily.Core.Entities;
 using ChurchFamily.Infrastructure.Persistence;
+using ChurchFamily.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,8 @@ public static class DependencyInjection
 
         services.AddScoped<IApplicationDbContext>(provider =>
             provider.GetRequiredService<ApplicationDbContext>());
+
+        services.AddScoped<ITokenService, TokenService>();
 
         services.AddIdentityCore<ApplicationUser>(options =>
         {
