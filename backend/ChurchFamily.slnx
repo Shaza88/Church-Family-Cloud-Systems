@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ChurchFamily.Api/ChurchFamily.Api.csproj" />
+    <Project Path="src/ChurchFamily.Application/ChurchFamily.Application.csproj" />
+    <Project Path="src/ChurchFamily.Core/ChurchFamily.Core.csproj" />
+    <Project Path="src/ChurchFamily.Infrastructure/ChurchFamily.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ChurchFamily.Application.Tests/ChurchFamily.Application.Tests.csproj" />
+  </Folder>
+</Solution>
