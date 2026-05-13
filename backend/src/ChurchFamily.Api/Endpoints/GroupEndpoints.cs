@@ -12,8 +12,8 @@ public static class GroupEndpoints
     {
         var group = app.MapGroup("/api/groups").WithTags("Groups");
 
-        group.MapGet("/", async ([AsParameters] PageRequest request, ISender sender, CancellationToken ct) =>
-            Results.Ok(await sender.Send(new GetGroupsQuery(request), ct)))
+        group.MapGet("/", async (int? pageIndex, int? pageSize, ISender sender, CancellationToken ct) =>
+            Results.Ok(await sender.Send(new GetGroupsQuery(new PageRequest { PageIndex = pageIndex ?? 0, PageSize = pageSize ?? 10 }), ct)))
             .WithName("GetGroups")
             .WithSummary("Get paginated list of groups");
 

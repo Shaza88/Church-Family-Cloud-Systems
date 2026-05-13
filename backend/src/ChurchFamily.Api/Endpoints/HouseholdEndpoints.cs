@@ -15,12 +15,12 @@ public static class HouseholdEndpoints
             .WithTags("Households")
             ;
 
-        // GET /api/households?pageIndex=0&pageSize=10&search=...&sort.active=name&sort.direction=asc
+        // GET /api/households?pageIndex=0&pageSize=10&search=...&sortActive=name&sortDirection=asc
         group.MapGet("/", async (
-            [AsParameters] QueryRequest request,
+            [AsParameters] FlatQueryRequest flat,
             ISender sender, CancellationToken ct) =>
         {
-            var result = await sender.Send(new GetHouseholdsQuery(request), ct);
+            var result = await sender.Send(new GetHouseholdsQuery(flat.ToQueryRequest()), ct);
             return Results.Ok(result);
         })
         .WithName("GetHouseholds")

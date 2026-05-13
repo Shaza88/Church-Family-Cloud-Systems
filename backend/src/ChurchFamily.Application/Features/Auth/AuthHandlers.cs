@@ -37,7 +37,7 @@ public class LoginCommandHandler(
             .ToListAsync(ct);
 
         var permissions = await context.RolePermissions
-            .Where(rp => roleIds.Contains(rp.RoleId.ToString()))
+            .Where(rp => roleIds.Contains(rp.RoleId))
             .Select(rp => rp.Permission.Name)
             .Distinct()
             .ToListAsync(ct);
@@ -71,7 +71,7 @@ public class GetCurrentUserQueryHandler(
             .ToListAsync(ct);
 
         var permissions = await context.RolePermissions
-            .Where(rp => roleIds.Contains(rp.RoleId.ToString()))
+            .Where(rp => roleIds.Contains(rp.RoleId))
             .Select(rp => rp.Permission.Name)
             .Distinct()
             .ToListAsync(ct);

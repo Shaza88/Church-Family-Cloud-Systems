@@ -80,13 +80,13 @@ public static class SeedIdentity
         var result = new List<RolePermission>();
 
         foreach (var idx in AdminPermissionIndices)
-            result.Add(new RolePermission { RoleId = Guid.Parse(AdminRoleId), PermissionId = new Guid($"100000{idx:D2}-0000-0000-0000-000000000001") });
+            result.Add(new RolePermission { RoleId = AdminRoleId, PermissionId = new Guid($"100000{idx:D2}-0000-0000-0000-000000000001") });
 
         foreach (var idx in SecretaryPermissionIndices)
-            result.Add(new RolePermission { RoleId = Guid.Parse(SecretaryRoleId), PermissionId = new Guid($"100000{idx:D2}-0000-0000-0000-000000000001") });
+            result.Add(new RolePermission { RoleId = SecretaryRoleId, PermissionId = new Guid($"100000{idx:D2}-0000-0000-0000-000000000001") });
 
         foreach (var idx in ViewerPermissionIndices)
-            result.Add(new RolePermission { RoleId = Guid.Parse(ViewerRoleId), PermissionId = new Guid($"100000{idx:D2}-0000-0000-0000-000000000001") });
+            result.Add(new RolePermission { RoleId = ViewerRoleId, PermissionId = new Guid($"100000{idx:D2}-0000-0000-0000-000000000001") });
 
         return result;
     }
