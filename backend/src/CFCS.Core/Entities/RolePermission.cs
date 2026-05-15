@@ -1,0 +1,13 @@
+namespace CFCS.Core.Entities;
+
+/// <summary>
+/// Join entity for the many-to-many relationship between ApplicationRole and Permission.
+/// </summary>
+public class RolePermission
+{
+    public string RoleId { get; set; } = string.Empty;
+    public ApplicationRole Role { get; set; } = null!;
+
+    public Guid PermissionId { get; set; }
+    public Permission Permission { get; set; } = null!;
+}

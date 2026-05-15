@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CFCS.Api/CFCS.Api.csproj" />
+    <Project Path="src/CFCS.Application/CFCS.Application.csproj" />
+    <Project Path="src/CFCS.Core/CFCS.Core.csproj" />
+    <Project Path="src/CFCS.Infrastructure/CFCS.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/CFCS.Application.Tests/CFCS.Application.Tests.csproj" />
+  </Folder>
+</Solution>
